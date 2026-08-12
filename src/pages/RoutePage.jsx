@@ -4,9 +4,9 @@ import SiteHeader from "../components/SiteHeader";
 
 function RoutePage({ title, description }) {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen px-12 bg-slate-50 text-slate-900">
       <SiteHeader />
-      <section className="px-6 py-16 md:px-10">
+      <section className="py-16">
         <div className="mx-auto max-w-5xl rounded-[28px] border border-slate-200 bg-white px-8 py-14 shadow-[0_18px_36px_rgba(15,23,42,0.08)]">
           <p className="text-sm font-bold uppercase tracking-[0.28em] text-red-500">PropertySerch</p>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 md:text-6xl">{title}</h1>

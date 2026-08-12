@@ -9,25 +9,15 @@ const navItems = [
   { label: "News & Guide", to: "/news-guide", widthClass: "w-[117px]" },
 ];
 
-function linkClass({ isActive }) {
-  return [
-    "inline-flex items-center gap-1.5 transition hover:text-slate-950",
-    isActive ? "text-slate-950" : "text-slate-900",
-  ].join(" ");
-}
+const cityOptions = ["Mumbai", "Delhi", "Bengaluru", "Pune", "Hyderabad"];
 
-function Chevron() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 12 12"
-      className="h-3 w-3 shrink-0 text-[#374151]"
-      fill="none"
-    >
-      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+const navDropdowns = {
+  Buy: ["Apartments", "Villas", "Plots", "New Projects"],
+  Rent: ["Family Homes", "Studio Homes", "PG & Co-living", "Furnished Flats"],
+  Sell: ["List Property", "Property Valuation", "Owner Services", "Broker Tools"],
+  Services: ["Home Loans", "Legal Help", "Interior Design", "Property Management"],
+  "News & Guide": ["Market Insights", "Buying Guide", "Legal Guide", "Investment Tips"],
+};
 
 const tickerItems = [
   {
@@ -53,6 +43,25 @@ const tickerItems = [
   },
 ];
 
+function Chevron() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 12 12"
+      className="h-3 w-3 shrink-0 text-[#374151]"
+      fill="none"
+    >
+      <path
+        d="M3 4.5L6 7.5L9 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function TickerBadge({ children, className }) {
   return (
     <span
@@ -70,7 +79,7 @@ function ScrollingTicker() {
   const track = [...tickerItems, ...tickerItems];
 
   return (
-    <div className="ticker-bar h-10 w-full overflow-hidden bg-[#111827] px-[50px] py-[10px]">
+    <div className="ticker-bar h-10 w-full overflow-hidden bg-[#111827] px-12 py-[10px]">
       <div className="ticker-track flex w-max items-center gap-6">
         {track.map((item, index) => (
           <React.Fragment key={`${item.badge}-${item.text}-${index}`}>
@@ -95,9 +104,97 @@ function ScrollingTicker() {
   );
 }
 
+function DropdownPanel({ items, className = "", isOpen, onSelect }) {
+  return (
+    <div
+      className={[
+        "absolute left-1/2 top-full z-50 mt-0 min-w-[220px] -translate-x-1/2 rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150",
+        isOpen
+          ? "pointer-events-auto translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-1 opacity-0",
+        className,
+      ].join(" ")}
+    >
+      <div className="grid gap-1">
+        {items.map((item) => {
+          const label = typeof item === "string" ? item : item.label;
+
+          return (
+            <button
+              key={label}
+              type="button"
+              onMouseDown={(event) => {
+                event.preventDefault();
+                onSelect(label);
+              }}
+              className="rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
+  return (
+    <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <button
+        type="button"
+        className="inline-flex h-8 items-center gap-1 rounded-[10px] px-2 py-1 transition hover:bg-slate-50 hover:text-slate-950"
+      >
+        <span className="flex min-w-[55px] items-center font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 tracking-[0.088em] text-[#374151]">
+          {selectedCity}
+        </span>
+        <Chevron />
+      </button>
+
+      <DropdownPanel
+        items={cityOptions}
+        className="min-w-[240px]"
+        isOpen={isOpen}
+        onSelect={onSelect}
+      />
+    </div>
+  );
+}
+
+function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
+  const dropdownItems = navDropdowns[item.label] || [];
+
+  return (
+    <div className="relative flex items-center gap-1" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <NavLink
+        to={item.to}
+        className={({ isActive }) =>
+          [
+            "inline-flex h-5 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 transition hover:text-slate-950",
+            item.widthClass,
+            isActive ? "text-slate-950" : "text-[#374151]",
+          ].join(" ")
+        }
+      >
+        <span className="leading-5">{item.label}</span>
+        <Chevron />
+      </NavLink>
+
+      <DropdownPanel
+        items={dropdownItems}
+        className="min-w-[280px]"
+        isOpen={isOpen}
+        onSelect={onSelect}
+      />
+    </div>
+  );
+}
+
 function SiteHeader() {
   const location = useLocation();
   const showTicker = location.pathname === "/";
+  const [openMenu, setOpenMenu] = React.useState(null);
+  const [selectedCity, setSelectedCity] = React.useState("Mumbai");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#F3F4F6] bg-white">
@@ -112,33 +209,38 @@ function SiteHeader() {
             PropertySerch
           </NavLink>
 
-          <button
-            type="button"
-            className="inline-flex h-8  items-center gap-3 transition hover:text-slate-950"
-          >
-            <span className="flex h-5  w-[55px] items-center font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 tracking-[0.088em] text-[#374151]">
-              Mumbai
-            </span>
-            <Chevron />
-          </button>
+          <CitySelector
+            selectedCity={selectedCity}
+            isOpen={openMenu === "city"}
+            onEnter={() => {
+              setOpenMenu("city");
+            }}
+            onLeave={() => {
+              setOpenMenu(null);
+            }}
+            onSelect={(label) => {
+              setSelectedCity(label);
+              setOpenMenu(null);
+            }}
+          />
         </div>
 
         <nav className="flex w-[436px] flex-1 items-center justify-center gap-6 text-base font-semibold">
           {navItems.map((item) => (
-            <NavLink
+            <HeaderNavItem
               key={item.label}
-              to={item.to}
-              className={({ isActive }) =>
-                [
-                  "inline-flex h-5 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950",
-                  item.widthClass,
-                  isActive ? "text-slate-950" : "",
-                ].join(" ")
-              }
-            >
-              <span className="leading-5">{item.label}</span>
-              <Chevron />
-            </NavLink>
+              item={item}
+              isOpen={openMenu === item.label}
+              onEnter={() => {
+                setOpenMenu(item.label);
+              }}
+              onLeave={() => {
+                setOpenMenu(null);
+              }}
+              onSelect={() => {
+                setOpenMenu(null);
+              }}
+            />
           ))}
         </nav>
 
