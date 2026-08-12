@@ -2,14 +2,16 @@ import React from "react";
 
 function HomeHeroSection() {
   return (
-    <section className="max-w-full h-[548px] lg:pt-[96px] lg:pb-[112px] lg:px-[48px] flex justify-center items-center flex-col">
+    <section className="flex h-[548px] max-w-full flex-col items-center justify-center lg:px-[48px] lg:py-[96px]">
+      <div className="mx-auto flex h-[48px] w-full max-w-[1184px] items-center justify-center">
+        <h1
+          className="h-[48px] text-center font-['Plus_Jakarta_Sans'] text-[48px] font-extrabold leading-[48px] tracking-[0] text-[#111827]"
+          style={{ width: "1020.3092041015625px" }}
+        >
+          Beyond listings. Built for the entire deal
+        </h1>
+      </div>
 
-      {/* Heading */}
-      <h1 className="mx-auto max-w-5xl text-[48px] font-black leading-[1.15] tracking-tight text-slate-950 md:text-[44px]">
-        Beyond listings. Built for the entire deal
-      </h1>
-
-      {/* Subtitle */}
       <p className="mx-auto mt-3 max-w-4xl text-[16px] leading-6 text-slate-500">
         Verified properties, legal facilitation, financing, and closure tracked end-to-end on one platform
       </p>
