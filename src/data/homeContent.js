@@ -171,14 +171,14 @@ export const whyItems = [
 export const footerColumns = [
   {
     title: "Platform",
-    items: ["Post Property", "Post Requirements", "Broker CRM", "Property Management", "Institutional Marketplace"],
+    items: ["Post a Property", "Broker CRM", "NRI Dashboard", "Institutional Marketplace"],
   },
   {
     title: "Services",
-    items: ["Home Loans & Financing", "Legal Assistance", "Special Situation Properties", "Fractional Ownership", "Investment Intelligence"],
+    items: ["Legal Facilitation", "Loans & Financing", "Special Situation Properties", "Investment Intelligence"],
   },
   {
-    title: "Partner with us",
-    items: ["Become a Broker Partner", "Become a Builder Partner", "Become a Franchise Partner", "Institutional Partnerships", "Media & Press"],
+    title: "Company",
+    items: ["A R Buildwel", "Rajouri Garden, New Delhi", "Terms of Service", "Privacy Policy"],
   },
 ];

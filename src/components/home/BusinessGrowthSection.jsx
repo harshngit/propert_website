@@ -10,15 +10,17 @@ function BusinessGrowthSection() {
             <div className="inline-flex rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white/75">
               First in India
             </div>
-            <h2 className="mt-4 max-w-[520px] text-[34px] font-black leading-[1.06] tracking-tight md:text-[44px]">
-              Buy or sell a school, college, or university. Confidentially
+            <h2 className="mt-4 max-w-[520px] text-[36px] font-black leading-[1.06] tracking-tight">
+              ll a school, college, or university. Confidentially
             </h2>
-            <p className="mt-5 max-w-[520px] text-[16px] leading-7 text-white/65 md:text-[18px]">
-              Secure 9-stage deal process with NDA-gated access to institutional details
+            <p className="mt-5 max-w-[520px] text-[14px] leading-7 text-white/65 md:text-[18px]">
+              A nine-stage structured pipeline - Intent, Buyer Qualification, NDA, Data Room,
+              Site Visit, Valuation, Legal Due Diligence, Offer, Closure. Institution identity
+              and financials stay masked until a signed NDA unlocks access.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-[14px] bg-red-500 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-red-600">
+              <button className="rounded-[14px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
                 Contact Institutional Desk
               </button>
               <button className="rounded-[14px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">

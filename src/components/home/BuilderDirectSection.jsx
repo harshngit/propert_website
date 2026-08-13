@@ -15,13 +15,13 @@ function BuilderDirectSection() {
           </div>
           <h3 className="mt-6 h-[96px] w-[544px] font-['Plus_Jakarta_Sans'] text-[30px] font-extrabold leading-[48px] tracking-[0]">
             The West Delhi Collection,
-            <span className="block text-red-500">by A R Buildwel</span>
+            <span className="block text-[#E51C23]">by A R Buildwel</span>
           </h3>
           <p className="mt-4 h-[48px] w-[544px] font-['Lato'] text-[16px] font-normal leading-6 tracking-[0] text-[#E5E7EB]">
             RERA registered residences with construction progress you can track in real time.
             No middlemen, direct from the builder, backed end-to-end.
           </p>
-          <button className="mt-5 inline-flex h-[48px] w-[153px] items-center justify-center rounded-[12px] bg-[#E51C23] px-8 py-3 text-white transition hover:bg-red-600">
+          <button className="mt-5 inline-flex h-[48px] w-[153px] items-center justify-center rounded-[12px] bg-[#E51C23] px-8 py-3 text-white transition hover:bg-[#cc1820]">
             <span className="inline-flex h-[24px] w-[89px] items-center justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0068em] text-white">
               Know More
             </span>

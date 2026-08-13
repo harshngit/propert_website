@@ -91,7 +91,7 @@ function HomeHeroSection() {
               className={[
                 "flex h-[44px] items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-6 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)]",
                 index === 0
-                  ? "w-[75px] bg-[#E51C23] tracking-[0.0283em] text-white"
+                  ? "w-[75px] bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#cc1820]"
                   : tab === "Rent"
                     ? "w-[80px] bg-[#F9FAFB] tracking-[0.0117em] text-[#4B5563]"
                     : tab === "Commercial"
@@ -132,7 +132,7 @@ function HomeHeroSection() {
             </div>
           </div>
 
-          <button className="ml-auto inline-flex h-[56px] w-[159px] items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-10 py-4 text-white">
+          <button className="ml-auto inline-flex h-[56px] w-[159px] items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] hover:bg-[#cc1820] px-10 py-4 text-white">
             <SearchIcon />
             <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0049em]">
               Search

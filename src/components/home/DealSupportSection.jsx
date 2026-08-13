@@ -11,8 +11,8 @@ function DealSupportSection() {
             Investment Score - 74/100 - Liquidity: Moderate
           </div>
 
-          <h3 className="mt-4 text-[26px] font-black text-slate-900">Special Situation Properties</h3>
-          <p className="mt-2 max-w-[650px] leading-6 text-slate-500">
+          <h3 className="mt-4 text-[24px] font-black text-slate-900">Special Situation Properties</h3>
+          <p className="mt-2 text-[14px] max-w-[650px] leading-6 text-slate-500">
             Curated bank auction, NBFC, and ARC-sourced deals, each carrying an Investment
             Score and clear risk indicators. Access limited to verified brokers, NRI, and HNI
             users.
@@ -24,18 +24,18 @@ function DealSupportSection() {
               </span>
             ))}
           </div>
-          <button className="mt-4 rounded-[14px] bg-red-500 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-red-600">
+          <button className="mt-4 rounded-[14px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
             View Curated Deals
           </button>
-          <p className="mt-4 border-t border-slate-100 pt-4 text-[13px] leading-6 text-slate-500">
+          <p className="mt-4 text-[14px] border-t border-slate-100 pt-4  leading-6 text-slate-500">
             Special situation property. Independent legal and financial due diligence required
             before proceeding.
           </p>
         </div>
 
-        <div className="rounded-[18px] bg-red-500 px-6 py-6 text-white shadow-[0_10px_24px_rgba(239,68,68,0.18)]">
+        <div className="rounded-[18px] bg-[#E51C23] px-6 py-6 text-white shadow-[0_10px_24px_rgba(239,68,68,0.18)]">
           <h3 className="text-[28px] font-black">Need financing?</h3>
-          <p className="mt-3 leading-6 text-white/90">
+          <p className="mt-3 text-[14px] leading-6 text-white/90">
             Home loan, construction finance, loan against property, and NRI mortgage across
             leading banks and NBFCs.
           </p>
@@ -45,7 +45,7 @@ function DealSupportSection() {
           <button className="mt-6 w-full rounded-[14px] bg-white px-6 py-3.5 text-[16px] font-extrabold text-red-500 transition hover:bg-slate-50">
             Check Eligibility
           </button>
-          <p className="mt-4 border-t border-white/20 pt-4 text-[13px] leading-6 text-white/85">
+          <p className="mt-4 text-[14px] border-t border-white/20 pt-4 leading-6 text-white/85">
             Loan eligibility subject to lender assessment and applicable terms and conditions.
           </p>
         </div>

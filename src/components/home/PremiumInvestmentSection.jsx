@@ -10,10 +10,11 @@ function PremiumInvestmentSection() {
   ];
 
   return (
-    <>
-      <div className="h-10" />
+  <>
+    <div className="h-10" />
 
-      <div className="rounded-[22px] bg-[linear-gradient(180deg,rgba(9,20,40,0.45),rgba(9,20,40,0.75)),linear-gradient(135deg,#2b3d4f_0%,#0f172a_45%,#334155_100%)] px-9 py-9 text-white shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
+    <div className="relative left-1/2 w-screen -translate-x-1/2 bg-[linear-gradient(180deg,rgba(9,20,40,0.45),rgba(9,20,40,0.75)),linear-gradient(135deg,#2b3d4f_0%,#0f172a_45%,#334155_100%)] px-9 py-16 text-white shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
+      <div className="mx-auto max-w-[1780px]">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-[544px]">
             <div className="inline-flex h-[32px] items-center rounded-full border border-[#FFFFFF33] bg-[#FFFFFF33] px-4 backdrop-blur-[12px]">
@@ -22,21 +23,22 @@ function PremiumInvestmentSection() {
               </span>
             </div>
 
-            <h3 className="mt-6 font-['Plus_Jakarta_Sans'] text-[30px] font-extrabold leading-[48px] tracking-[0] text-white">
+            <h3 className="mt-6 font-['Plus_Jakarta_Sans'] text-[36px] font-extrabold leading-[48px] tracking-[0] text-white">
               Buy or sell a school, college, or
               <span className="block">university. Confidentially.</span>
             </h3>
 
-            <p className="mt-4 max-w-[544px] font-['Lato'] text-[16px] font-normal leading-6 tracking-[0] text-[#E5E7EB]">
+            <p className="mt-4 max-w-[544px] font-['Lato'] text-[18px] font-normal leading-6 tracking-[0] text-[#9CA3AF]">
               A nine-stage structured pipeline - Intent, Buyer Qualification, NDA, Data Room, Site
               Visit, Valuation, Legal Due Diligence, Offer, Closure. Institution identity and
               financials stay masked until a signed NDA unlocks access.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <button className="rounded-[12px] bg-[#C99A2E] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#b88b25]">
+              <button className="rounded-[12px] bg-red-500 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-red-600">
                 Contact Institutional Desk
               </button>
+
               <button className="rounded-[12px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">
                 Sample Data Room
               </button>
@@ -57,6 +59,7 @@ function PremiumInvestmentSection() {
                   <span className="font-['Plus_Jakarta_Sans'] text-[16px] font-normal text-[#94A3B8]">
                     {label}
                   </span>
+
                   <span className="font-['Plus_Jakarta_Sans'] text-[16px] font-semibold text-white">
                     {value}
                   </span>
@@ -78,8 +81,9 @@ function PremiumInvestmentSection() {
           </div>
         </div>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
 }
 
 export default PremiumInvestmentSection;

@@ -4,11 +4,15 @@ import HomeHeroSection from "../components/home/HomeHeroSection";
 import VerifiedListingsSection from "../components/home/VerifiedListingsSection";
 import ExclusiveCitySection from "../components/home/ExclusiveCitySection";
 import BuilderDirectSection from "../components/home/BuilderDirectSection";
-import DealSupportSection from "../components/home/DealSupportSection";
-import BusinessGrowthSection from "../components/home/BusinessGrowthSection";
+import PremiumRealEstateSection from "../components/home/PremiumRealEstateSection";
 import PremiumInvestmentSection from "../components/home/PremiumInvestmentSection";
-import TestimonialsSection from "../components/home/TestimonialsSection";
-import ResourcesFooterSection from "../components/home/ResourcesFooterSection";
+import PropertyManagementSection from "../components/home/PropertyManagementSection";
+import FractionalOwnershipSection from "../components/home/FractionalOwnershipSection";
+import PartnerGrowthSection from "../components/home/PartnerGrowthSection";
+import PremiumOwnershipSection from "../components/home/PremiumOwnershipSection";
+import DealSupportSection from "../components/home/DealSupportSection";
+import TrustSection from "../components/home/TrustSection";
+import CompanyFooterSection from "../components/home/CompanyFooterSection";
 
 function HomePage() {
   return (
@@ -21,11 +25,14 @@ function HomePage() {
           <VerifiedListingsSection />
           <ExclusiveCitySection />
           <BuilderDirectSection />
-          <PremiumInvestmentSection />
           <DealSupportSection />
-          <BusinessGrowthSection />
-          <TestimonialsSection />
-          <ResourcesFooterSection />
+          <PremiumInvestmentSection />
+          <PropertyManagementSection />
+          <FractionalOwnershipSection />
+          <PartnerGrowthSection />
+          <PremiumRealEstateSection />
+          <TrustSection />
+          <CompanyFooterSection />
         </section>
       </div>
     </main>

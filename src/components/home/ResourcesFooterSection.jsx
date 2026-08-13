@@ -50,7 +50,7 @@ function ResourcesFooterSection() {
         <div className="mt-11 border-t border-slate-100 pt-8">
           <div className="grid gap-8 xl:grid-cols-[1.2fr_repeat(3,1fr)]">
             <div>
-              <div className="text-[28px] font-black text-red-500">PropertySerch</div>
+              <div className="text-[28px] font-black text-red-500">PropertySerch.com</div>
               <div className="mt-2 text-sm text-slate-500">Wholly owned by A R Buildwel</div>
               <p className="mt-4 max-w-[340px] leading-7 text-slate-500">
                 Beyond Listings. Built for Deals. A Real Estate Transaction Operating System,
@@ -72,7 +72,7 @@ function ResourcesFooterSection() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4 text-xs tracking-[0.04em] text-slate-400">
-            <div>(c) 2026 PROPERTYSERCH. ALL RIGHTS RESERVED.</div>
+            <div>(c) 2026 A R Buildwel · PropertySerch.com · G-53, Vardhman Location Plaza-II, Rajouri Garden, New Delhi - 110027</div>
             <div className="flex flex-wrap gap-5">
               <span>TERMS OF SERVICE</span>
               <span>PRIVACY POLICY</span>
