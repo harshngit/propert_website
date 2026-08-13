@@ -21,9 +21,9 @@ function HomePage() {
           <VerifiedListingsSection />
           <ExclusiveCitySection />
           <BuilderDirectSection />
+          <PremiumInvestmentSection />
           <DealSupportSection />
           <BusinessGrowthSection />
-          <PremiumInvestmentSection />
           <TestimonialsSection />
           <ResourcesFooterSection />
         </section>

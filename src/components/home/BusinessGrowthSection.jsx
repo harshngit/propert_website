@@ -4,7 +4,7 @@ import { partnerCards } from "../../data/homeContent";
 function BusinessGrowthSection() {
   return (
     <>
-      <div className="mt-8 overflow-hidden rounded-[24px] bg-[#111827] px-6 py-8 text-white md:px-10 md:py-10">
+      <div className="mt-12 overflow-hidden rounded-[24px] bg-[#111827] px-6 py-8 text-white md:px-10 md:py-10">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
           <div className="max-w-[560px]">
             <div className="inline-flex rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white/75">

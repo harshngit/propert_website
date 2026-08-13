@@ -1,7 +1,7 @@
 import React from "react";
 import SectionHeading from "../SectionHeading";
 import PropertyCard from "../PropertyCard";
-import { verifiedListings } from "../../data/homeContent";
+import { exclusiveListings } from "../../data/homeContent";
 
 function ExclusiveCitySection() {
   return (
@@ -15,13 +15,13 @@ function ExclusiveCitySection() {
       </div>
 
       <SectionHeading
-        title="Exclusive Properties in"
-        accent="Mumbai"
-        subtitle="Curated properties with verified details in your city"
+        title="Exclusive in Delhi NCR"
+        
+        subtitle="Curated properties, verified and matched to your requirement"
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {verifiedListings.map((item) => (
+      <div className="grid mt-3 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {exclusiveListings.map((item) => (
           <PropertyCard key={item.title + item.rate} item={item} />
         ))}
       </div>
