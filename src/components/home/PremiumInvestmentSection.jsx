@@ -13,7 +13,7 @@ function PremiumInvestmentSection() {
   <>
     <div className="h-10" />
 
-    <div className="relative left-1/2 w-screen -translate-x-1/2 bg-[linear-gradient(180deg,rgba(9,20,40,0.45),rgba(9,20,40,0.75)),linear-gradient(135deg,#2b3d4f_0%,#0f172a_45%,#334155_100%)] px-9 py-16 text-white shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
+    <div className="relative left-1/2 w-screen -translate-x-1/2 bg-[linear-gradient(180deg,rgba(9,20,40,0.45),rgba(9,20,40,0.75)),linear-gradient(135deg,#2b3d4f_0%,#0f172a_45%,#334155_100%)] px-16 py-16 text-white shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
       <div className="mx-auto max-w-[1780px]">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-[544px]">

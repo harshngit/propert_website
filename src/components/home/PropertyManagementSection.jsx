@@ -40,7 +40,7 @@ function PropertyManagementSection() {
       </div>
 
       <div className="rounded-[20px] bg-[#0f1f3a] px-6 py-7 text-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] md:px-8 md:py-8">
-        <div className="inline-flex rounded-full bg-[#20385f] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#67d9ff]">
+        <div className="inline-flex rounded-full bg-[#FFFFFF1A] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#FFFFFF]">
           Dedicated Manager · One Point of Contact
         </div>
 

@@ -9,28 +9,28 @@ function TrustSection() {
         "Every document was already verified before I visited. What normally takes three months closed in exactly two weeks.",
       name: "Priya Nair",
       role: "VP, Digital at HDFC Bank",
-      avatarClass: "bg-gradient-to-br from-slate-300 to-slate-500",
+      avatarImage: "/images/avatar-1.jpg.png",
     },
     {
       quote:
         "The market insight panels are the only reason I&apos;m moving my whole portfolio tracking to PropertySerch.",
       name: "Karthik Menon",
       role: "Independent Investor",
-      avatarClass: "bg-gradient-to-br from-sky-400 via-fuchsia-400 to-pink-400",
+      avatarImage: "/images/avatar-2.jpg.png",
     },
     {
       quote:
         "I listed on a Tuesday and had four verified, budget-matched parties by Thursday. No spam calls at all.",
       name: "Deepa Iyer",
       role: "Owner, Luxury Villa",
-      avatarClass: "bg-gradient-to-br from-pink-200 via-amber-100 to-yellow-200",
+      avatarImage: "/images/avatar-3.jpg.png",
     },
     {
       quote:
         "We leased 25,000 sq.ft through the institutional desk. The diligence pack alone saved us weeks of legal work.",
       name: "Rahul Sethi",
       role: "Director, Tech Global",
-      avatarClass: "bg-gradient-to-br from-stone-300 to-stone-500",
+      avatarImage: "/images/avatar-4.jpg.png",
     },
   ];
 
@@ -51,7 +51,16 @@ function TrustSection() {
               <div className="text-[16px] leading-none tracking-[2px] text-[#f4b400]">★★★★★</div>
               <p className="mt-4 text-[12px] min-h-[128px] italic leading-7 text-[#525b6a]">“{item.quote}”</p>
               <div className="mt-5 flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-full ${item.avatarClass}`} />
+                <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200">
+                  {item.avatarImage ? (
+                    <img
+                      src={item.avatarImage}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </div>
                 <div>
                   <div className="text-[14px] font-extrabold text-[#0f172a]">{item.name}</div>
                   <div className="text-[10px] text-slate-500">{item.role}</div>

@@ -245,13 +245,15 @@ function SiteHeader() {
         </nav>
 
         <div className="flex h-10 w-[253px] items-center gap-6">
-          <NavLink
-            to="/login"
+          <a
+            href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
+            target="_self"
+            rel="noreferrer"
             className="inline-flex h-5 w-[58px] shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
           >
             <span className="flex h-5 items-center justify-start">Login</span>
             <Chevron />
-          </NavLink>
+          </a>
 
           <button className="inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] bg-[#E51C23] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white shadow-[0_10px_22px_rgba(229,28,35,0.35)] transition hover:bg-[#cc1820]">
             <span className="inline-flex h-5 w-[95px] items-center justify-center">Post Property</span>

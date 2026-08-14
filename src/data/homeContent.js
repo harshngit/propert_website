@@ -1,6 +1,7 @@
 export const verifiedListings = [
   {
     badge: "VERIFIED",
+    image: "/images/1st,4th.png",
     price: "₹2.1 Cr",
     rate: "₹16,200/sq.ft",
     title: "3BHK Independent Floor",
@@ -11,6 +12,7 @@ export const verifiedListings = [
   },
   {
     badge: "NEW LAUNCH",
+    image: "/images/2nd.png",
     price: "₹95 Lakh",
     rate: "₹7,100/sq.ft",
     title: "2BHK Builder Flat",
@@ -21,6 +23,7 @@ export const verifiedListings = [
   },
   {
     badge: "VERIFIED",
+    image: "/images/3rd.png",
     price: "₹4.6 Cr",
     rate: "₹19,800/sq.ft",
     title: "Commercial Office Space",
@@ -31,6 +34,7 @@ export const verifiedListings = [
   },
   {
     badge: "VERIFIED",
+    image: "/images/1st,4th.png",
     price: "₹1.75 Cr",
     rate: "₹14,500/sq.ft",
     title: "3BHK Apartment",
@@ -44,6 +48,7 @@ export const verifiedListings = [
 export const exclusiveListings = [
   {
     badge: "VERIFIED",
+    image: "/images/1st,4th.png",
     price: "₹3.2 Cr",
     rate: "₹21,000/sq.ft",
     title: "4BHK Villa",
@@ -54,6 +59,7 @@ export const exclusiveListings = [
   },
   {
     badge: "NEW LAUNCH",
+    image: "/images/2nd.png",
     price: "₹1.1 Cr",
     rate: "₹9,400/sq.ft",
     title: "2BHK Floor",
@@ -64,6 +70,7 @@ export const exclusiveListings = [
   },
   {
     badge: "VERIFIED",
+    image: "/images/3rd.png",
     price: "₹58 Lakh",
     rate: "₹6,900/sq.ft",
     title: "1BHK Rental-Ready",
@@ -74,6 +81,7 @@ export const exclusiveListings = [
   },
   {
     badge: "VERIFIED",
+    image: "/images/1st,4th.png",
     price: "₹6.8 Cr",
     rate: "₹24,500/sq.ft",
     title: "Commercial Plot",
@@ -90,19 +98,19 @@ export const partnerCards = [
   {
     title: "Become a Broker Partner",
     body:
-      "Join 50,000+ verified agents. Get quality leads, premium listing tools, and exclusive market insights",
+      "Post in 60 seconds Straight from WhatsApp — auto-structured into your CRM.",
     action: "Join Network",
   },
   {
     title: "Become a Builder Partner",
     body:
-      "Showcase projects to verified buyers. Generate qualified leads, promote launches, and accelerate sales.",
+      "Free CRM workspace Every lead scored Hot, Warm, or Cold — automatically..",
     action: "Grow Your Business",
   },
   {
     title: "Become a Franchise Partner",
     body:
-      "Build your real estate business with confidence. Manage brokers, expand your network, and grow with powerful tools.",
+      "SLA-tracked pipeline See exactly where every deal stands, and what's overdue..",
     action: "Get Started",
   },
 ];
@@ -115,28 +123,28 @@ export const testimonialCards = [
       '"Every document was already verified before I visited. What normally takes three months closed in exactly two weeks."',
     name: "Priya Nair",
     role: "VP, Digital at HDFC Bank",
-    avatarClass: "bg-gradient-to-br from-slate-300 to-slate-500",
+    avatarImage: "/images/avatar-1.jpg.png",
   },
   {
     quote:
       '"The market insight panels are the only reason I\'m moving my whole portfolio tracking to PropertySerch."',
     name: "Karthik Menon",
     role: "Independent Investor",
-    avatarClass: "bg-gradient-to-br from-sky-400 via-fuchsia-400 to-pink-400",
+    avatarImage: "/images/avatar-2.jpg.png",
   },
   {
     quote:
       '"I listed on a Tuesday and had four verified, budget-matched parties by Thursday. No spam calls at all."',
     name: "Deepa Iyer",
     role: "Owner, Luxury Villa",
-    avatarClass: "bg-gradient-to-br from-pink-200 via-amber-100 to-yellow-200",
+    avatarImage: "/images/avatar-3.jpg.png",
   },
   {
     quote:
       '"We leased 25,000 sq.ft through the institutional desk. The diligence pack alone saved us weeks of legal work."',
     name: "Rahul Sethi",
     role: "Director, Tech Global",
-    avatarClass: "bg-gradient-to-br from-stone-300 to-stone-500",
+    avatarImage: "/images/avatar-4.jpg.png",
   },
 ];
 
@@ -144,12 +152,12 @@ export const guideItems = [
   {
     title: "Legal Checklist for Buying a New Flat",
     meta: "5 MIN READ",
-    thumbClass: "bg-gradient-to-br from-slate-300 to-slate-100",
+    thumbImage: "/images/person%20reading%20legal%20document%20with%20pen.png",
   },
   {
     title: "Property Taxes & Stamp Duty",
     meta: "8 MIN READ",
-    thumbClass: "bg-gradient-to-br from-slate-200 to-white",
+    thumbImage: "/images/tax%20documents%20and%20calculator.png",
   },
 ];
 

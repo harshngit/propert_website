@@ -6,7 +6,16 @@ function TestimonialCard({ item }) {
       <div className="text-[18px] tracking-[2px] text-amber-500">★★★★★</div>
       <p className="mt-4 min-h-[112px] italic leading-7 text-slate-500">{item.quote}</p>
       <div className="mt-4 flex items-center gap-3">
-        <div className={`h-[38px] w-[38px] rounded-full ${item.avatarClass}`} />
+        <div className="h-[38px] w-[38px] overflow-hidden rounded-full bg-slate-200">
+          {item.avatarImage ? (
+            <img
+              src={item.avatarImage}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+            />
+          ) : null}
+        </div>
         <div>
           <div className="text-[15px] font-extrabold text-slate-900">{item.name}</div>
           <div className="text-xs text-slate-400">{item.role}</div>

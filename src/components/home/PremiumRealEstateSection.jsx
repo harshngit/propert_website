@@ -15,7 +15,7 @@ function PremiumRealEstateSection() {
   ];
 
   return (
-  <div className="relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden bg-[#111827] px-6 py-16 text-white md:px-10 md:py-16">
+  <div className="relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden bg-[#111827] px-16 py-16 text-white md:px-16 md:py-16">
     <div className="mx-auto max-w-[1780px]">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-[560px]">
@@ -46,13 +46,15 @@ function PremiumRealEstateSection() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3]">
-            <button className="rounded-[12px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#b88b25]">
-              Register Your Interest →
-            </button>
+           <div className="flex gap-4">
+  <button className="rounded-[12px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#b88b25]">
+    Register Your Interest →
+  </button>
 
-            <button className="rounded-[12px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">
-              For NRI & HNI Investors
-            </button>
+  <button className="rounded-[12px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">
+    For NRI & HNI Investors
+  </button>
+</div>
           </div>
 
           <p className="mt-6 max-w-[540px] border-t border-white/10 pt-5 text-[13px] leading-6 text-white/55">

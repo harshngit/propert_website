@@ -1,15 +1,45 @@
 import React from "react";
 
+function VerifiedBadge() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-[12px] font-extrabold uppercase leading-none tracking-[0.02em] text-[#111827] shadow-[0_2px_6px_rgba(15,23,42,0.08)]">
+      <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#E51C23] text-white">
+        <svg aria-hidden="true" viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none">
+          <path
+            d="M2.5 6.2L4.8 8.5L9.5 3.5"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+      <span>Verified</span>
+    </span>
+  );
+}
+
 function PropertyCard({ item }) {
+  const isNewLaunch = item.badge === "NEW LAUNCH";
+
   return (
     <article className="h-[384px] overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
-      <div className={`relative h-[180px] p-3 ${item.cardClass}`}>
-        <div
-          className={`absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-[10px] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.04em] ${
-            item.badge === "NEW LAUNCH" ? "bg-[#C99A2E] text-white" : "bg-[#23B5D0] text-white"
-          }`}
-        >
-          {item.badge}
+      <div className={`relative h-[180px] overflow-hidden p-3 ${item.cardClass}`}>
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : null}
+        <div className="absolute left-4 top-4">
+          {isNewLaunch ? (
+            <span className="inline-flex items-center rounded-full bg-[#E51C23] px-4 py-2 text-[12px] font-extrabold uppercase leading-none tracking-[0.02em] text-white shadow-[0_2px_6px_rgba(15,23,42,0.12)]">
+              New Launch
+            </span>
+          ) : (
+            <VerifiedBadge />
+          )}
         </div>
       </div>
 

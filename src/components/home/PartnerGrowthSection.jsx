@@ -1,24 +1,7 @@
 import React from "react";
+import { partnerCards } from "../../data/homeContent";
 
 function PartnerGrowthSection() {
-  const cards = [
-    {
-      number: "01",
-      title: "Post in 60 seconds",
-      body: "Straight from WhatsApp - auto-structured into your CRM.",
-    },
-    {
-      number: "02",
-      title: "Free CRM workspace",
-      body: "Every lead scored Hot, Warm, or Cold - automatically.",
-    },
-    {
-      number: "03",
-      title: "SLA-tracked pipeline",
-      body: "See exactly where every deal stands, and what&apos;s overdue.",
-    },
-  ];
-
   const highlights = [
     {
       title: "Controlled Contact",
@@ -54,7 +37,7 @@ function PartnerGrowthSection() {
           message to signed closure - on one system.
         </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        {/* <div className="mt-8 flex flex-wrap justify-center gap-3">
           <button className="rounded-[12px] bg-[#0f1f3a] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#111f38]">
             Become a Broker Partner →
           </button>
@@ -64,23 +47,24 @@ function PartnerGrowthSection() {
           <button className="rounded-[12px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
             Become a Franchise Partner →
           </button>
-        </div>
+        </div> */}
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          {cards.map((card) => (
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {partnerCards.map((card) => (
             <article
-              key={card.number}
-              className="rounded-[18px] border border-[#dfe6f3] bg-[#f7f9fd] px-6 py-6 text-left"
+              key={card.title}
+              className="flex min-h-[188px] flex-col rounded-[22px] border border-[#dfe6f3] bg-white px-7 py-7 text-left shadow-[0_10px_24px_rgba(15,23,42,0.03)]"
             >
-              <div className="text-[14px] font-extrabold tracking-[0.06em] text-[#2753f1]">
-                {card.number}
-              </div>
-              <h4 className="mt-5 text-[19px] font-extrabold leading-[1.25] text-[#0f172a]">
+              <h4 className="whitespace-nowrap text-[22px] font-black leading-tight text-[#0f172a]">
                 {card.title}
               </h4>
-              <p className="mt-3 max-w-[290px] text-[16px] leading-7 text-[#5b6b86]">
+              <p className="mt-4 max-w-[320px] flex-1 text-[16px] leading-7 text-[#5b6b86]">
                 {card.body}
               </p>
+              <button className="mt-8 inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-[15px] font-extrabold text-[#E51C23] transition hover:text-[#cc1820]">
+                <span>{card.action}</span>
+                <span aria-hidden="true">→</span>
+              </button>
             </article>
           ))}
         </div>

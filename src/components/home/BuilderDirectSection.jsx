@@ -1,12 +1,21 @@
 import React from "react";
 
 function BuilderDirectSection() {
+  const heroImage =
+    "/images/super%20luxury%20contemporary%20waterfront%20mansion%20architectural%20visualization,%20cinematic%20lighting.png";
+
   return (
     <>
       <div className="h-[60px]" />
 
-      <div className="relative overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,rgba(9,20,40,0.45),rgba(9,20,40,0.75)),linear-gradient(135deg,#2b3d4f_0%,#0f172a_45%,#334155_100%)] px-9 py-9 shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.08),transparent_18%),radial-gradient(circle_at_75%_20%,rgba(255,255,255,0.06),transparent_14%),radial-gradient(circle_at_70%_80%,rgba(239,68,68,0.15),transparent_12%)]" />
+      <div className="relative mx-auto h-[380px] w-full max-w-[1440px] overflow-hidden rounded-[4px] bg-[#0f172a] px-9 py-9 shadow-[0_18px_36px_rgba(15,23,42,0.14)]">
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,#111827_0%,rgba(17,24,39,0.5)_50%,rgba(17,24,39,0)_100%)]" />
         <div className="relative w-[544px] max-w-[544px] text-white">
           <div className="inline-flex h-[32px] w-[257px] items-center justify-center gap-[10px] rounded-full border border-[#FFFFFF33] bg-[#FFFFFF33] px-4 py-2 text-center backdrop-blur-[12px]">
             <span className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16px] tracking-[0.1em] text-white">

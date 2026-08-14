@@ -73,8 +73,8 @@ function HomeHeroSection() {
       <div className="mx-auto mt-4 flex h-[56px] w-full max-w-[1184px] items-center justify-center">
         <div className="flex h-[56px] w-[747px] flex-col items-center justify-center font-['Lato'] text-[18px] font-normal leading-[28px] text-[#6B7280]">
           <p className="m-0 h-[28px] text-center">
-            Verified properties, legal facilitation, financing, and closure tracked end-to-end on one
-            platform
+            Verified properties, legal facilitation, financing, and closure
+            tracked end-to-end on one platform
           </p>
           <p className="m-0 h-[28px] text-center">
             Not a portal, an operating system for real estate transactions
@@ -108,9 +108,11 @@ function HomeHeroSection() {
           <div className="flex h-[36px] w-[305px] items-center gap-3 border-r border-[#F3F4F6] px-4 text-[#9CA3AF]">
             <PinIcon />
             <div className="flex h-[36px] w-[249px] items-center py-[9px]">
-              <span className="font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px]">
-                Search City, Locality or Landmark
-              </span>
+              <input
+                type="text"
+                placeholder="Search City, Locality or Landmark"
+                className="w-full bg-transparent font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px] outline-none placeholder:text-gray-500"
+              />
             </div>
           </div>
 
@@ -142,7 +144,9 @@ function HomeHeroSection() {
       </div>
 
       <div className="mt-6 flex h-6 w-[270px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[14px] leading-6 tracking-[0.0049em]">
-        <span className="font-normal text-[#6B7280]">Are you a Property Owner? </span>
+        <span className="font-normal text-[#6B7280]">
+          Are you a Property Owner?{" "}
+        </span>
         <span className="font-semibold text-[#E51C23]">Post for FREE</span>
       </div>
 
