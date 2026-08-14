@@ -97,9 +97,7 @@ function HomeHeroSection() {
             <button
               key={tab}
               type="button"
-              onClick={() => {
-                setActiveTab(tab);
-              }}
+              onClick={() => setActiveTab(tab)}
               className={[
                 "flex h-[44px] items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-6 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)]",
                 tabWidths[tab],
@@ -113,37 +111,41 @@ function HomeHeroSection() {
           ))}
         </div>
 
-        <div className="mx-auto mt-0 flex h-[88px] w-full items-center gap-4 rounded-bl-[16px] rounded-br-[16px] rounded-tr-[16px] border border-[#F3F4F6] bg-white p-4 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-[4px]">
-          <div className="flex h-[36px] w-[305px] items-center gap-3 border-r border-[#F3F4F6] px-4 text-[#9CA3AF]">
+        <div className="mx-auto mt-0 flex h-[88px] w-full flex-nowrap items-center gap-4 rounded-bl-[16px] rounded-br-[16px] rounded-tr-[16px] border border-[#F3F4F6] bg-white p-4 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-[4px]">
+          <div className="flex h-[36px] w-[305px] shrink-0 items-center gap-3 border-r border-[#F3F4F6] px-4 text-[#1A1A1A]">
             <PinIcon />
             <div className="flex h-[36px] w-[249px] items-center py-[9px]">
               <input
                 type="text"
                 placeholder="Search City, Locality or Landmark"
-                className="w-full bg-transparent font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px] text-[#1A1A1A] outline-none placeholder:text-gray-500"
+                className="w-full border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="flex h-[36px] w-[192px] items-center gap-3 border-r border-[#F3F4F6] px-4 text-[#1A1A1A]">
+          <div className="flex h-[36px] w-[192px] shrink-0 items-center gap-3 px-4 text-[#1A1A1A]">
             <HomeIcon />
             <div className="flex h-[36px] w-[130px] items-center py-[9px] pl-1 pr-4">
-              <span className="font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[16px]">
-                Property Type
-              </span>
+              <input
+                type="text"
+                placeholder="Property Type"
+                className="w-full border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[16px] outline-none focus:border-0 focus:outline-none"
+              />
             </div>
           </div>
 
-          <div className="flex h-[36px] w-[160px] items-center gap-3 px-4 text-[#1A1A1A]">
+          <div className="flex h-[36px] w-[160px] shrink-0 items-center gap-3 px-4 text-[#1A1A1A]">
             <RupeeIcon />
             <div className="flex h-[36px] w-[106px] items-center py-[9px] pl-1 pr-4">
-              <span className="font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[16px]">
-                Budget
-              </span>
+              <input
+                type="text"
+                placeholder="Budget"
+                className="w-full border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[16px] outline-none focus:border-0 focus:outline-none"
+              />
             </div>
           </div>
 
-          <button className="ml-auto inline-flex h-[56px] w-[159px] items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] hover:bg-[#cc1820] px-10 py-4 text-white">
+          <button className="ml-auto inline-flex h-[56px] w-[159px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-10 py-4 text-white hover:bg-[#cc1820]">
             <SearchIcon />
             <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0049em]">
               Search

@@ -47,7 +47,7 @@ function PremiumRealEstateSection() {
 
           <div className="mt-6 flex flex-wrap gap-3]">
            <div className="flex gap-4">
-  <button className="rounded-[12px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#b88b25]">
+  <button className="rounded-[12px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
     Register Your Interest →
   </button>
 
