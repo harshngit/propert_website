@@ -53,6 +53,15 @@ function SearchIcon() {
 }
 
 function HomeHeroSection() {
+  const tabs = ["Buy", "Rent", "Commercial", "Institutional"];
+  const [activeTab, setActiveTab] = React.useState("Buy");
+  const tabWidths = {
+    Buy: "w-[75px]",
+    Rent: "w-[80px]",
+    Commercial: "w-[132px]",
+    Institutional: "w-[131px]",
+  };
+
   return (
     <section className="relative flex min-h-[548px] max-w-full flex-col items-center justify-start lg:pb-10">
       <div className="relative w-full lg:pt-[96px]">
@@ -84,19 +93,19 @@ function HomeHeroSection() {
 
       <div className="mx-auto mt-12 w-full max-w-[896px]">
         <div className="mx-auto flex w-full max-w-[880px] gap-2">
-          {["Buy", "Rent", "Commercial", "Institutional"].map((tab, index) => (
+          {tabs.map((tab) => (
             <button
               key={tab}
               type="button"
+              onClick={() => {
+                setActiveTab(tab);
+              }}
               className={[
                 "flex h-[44px] items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-6 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)]",
-                index === 0
-                  ? "w-[75px] bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#cc1820]"
-                  : tab === "Rent"
-                    ? "w-[80px] bg-[#F9FAFB] tracking-[0.0117em] text-[#4B5563]"
-                    : tab === "Commercial"
-                      ? "w-[132px] bg-[#F9FAFB] tracking-[0.0059em] text-[#4B5563]"
-                      : "w-[131px] bg-[#F9FAFB] tracking-[0.0059em] text-[#4B5563]",
+                tabWidths[tab],
+                activeTab === tab
+                  ? "bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#cc1820]"
+                  : "bg-[#F9FAFB] tracking-[0.0059em] text-[#4B5563]",
               ].join(" ")}
             >
               {tab}
@@ -111,7 +120,7 @@ function HomeHeroSection() {
               <input
                 type="text"
                 placeholder="Search City, Locality or Landmark"
-                className="w-full bg-transparent font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px] outline-none placeholder:text-gray-500"
+                className="w-full bg-transparent font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[14px] text-[#1A1A1A] outline-none placeholder:text-gray-500"
               />
             </div>
           </div>
