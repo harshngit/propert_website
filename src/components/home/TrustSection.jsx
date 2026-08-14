@@ -13,7 +13,7 @@ function TrustSection() {
     },
     {
       quote:
-        "The market insight panels are the only reason I&apos;m moving my whole portfolio tracking to PropertySerch.",
+        "The market insight panels are the only reason I'm moving my whole portfolio tracking to PropertySerch.",
       name: "Karthik Menon",
       role: "Independent Investor",
       avatarImage: "/images/avatar-2.jpg.png",
@@ -36,20 +36,24 @@ function TrustSection() {
 
   return (
     <div className="mt-12 px-0">
-      <div className="mx-auto max-w-[full] ">
+      <div className="mx-auto max-w-full">
         <h3 className="text-[36px] font-black leading-tight text-[#E51C23] md:text-[34px]">
           Testimonials
         </h3>
         <p className="mt-1 text-[16px] text-slate-500">Trusted by owners, buyers and institutions</p>
 
-        <div className="mt-6 grid gap-4 xl:grid-cols-4">
+        <div className="mt-6 flex gap-4 overflow-x-auto pb-2 scroll-smooth md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-4">
           {testimonials.map((item) => (
             <article
               key={item.name}
-              className="rounded-[26px] border border-[#dfe6f3] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
+              className="min-w-[82vw] shrink-0 rounded-[26px] border border-[#dfe6f3] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:min-w-0 md:w-full"
             >
-              <div className="text-[16px] leading-none tracking-[2px] text-[#f4b400]">★★★★★</div>
-              <p className="mt-4 text-[12px] min-h-[128px] italic leading-7 text-[#525b6a]">“{item.quote}”</p>
+              <div className="text-[16px] leading-none tracking-[2px] text-[#f4b400]">
+                &#9733;&#9733;&#9733;&#9733;&#9733;
+              </div>
+              <p className="mt-4 min-h-[128px] max-w-[255px] overflow-hidden text-[12px] italic leading-7 text-[#525b6a] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3] sm:max-w-none sm:[display:block] sm:[-webkit-box-orient:initial] sm:[-webkit-line-clamp:unset] sm:overflow-visible">
+                &ldquo;{item.quote}&rdquo;
+              </p>
               <div className="mt-5 flex items-center gap-3">
                 <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200">
                   {item.avatarImage ? (
@@ -72,7 +76,7 @@ function TrustSection() {
       </div>
 
       <div className="mt-12 border-t border-slate-100 pt-12">
-        <div className="mx-auto grid max-w-[full] gap-10  xl:grid-cols-[1.1fr_1fr_1fr]">
+        <div className="mx-auto grid max-w-full gap-10 xl:grid-cols-[1.1fr_1fr_1fr]">
           <div>
             <h4 className="text-[18px] font-black text-[#0f172a]">Popular Real Estate Guides</h4>
             <div className="mt-6 grid gap-5">
@@ -84,11 +88,11 @@ function TrustSection() {
 
           <div>
             <h4 className="text-[18px] font-black text-[#0f172a]">Popular Searches</h4>
-            <div className="mt-6 flex flex-wrap gap-2.5">
+            <div className="mx-auto mt-6 grid w-full max-w-[520px] grid-cols-2 gap-x-3 gap-y-3">
               {searchTags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[#d7dfee] px-4 py-2 text-[13px] text-[#4B5563] bg-[#F3F4F6]"
+                  className="flex w-full items-center justify-center whitespace-nowrap rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-4 py-2 text-center text-[13px] leading-5 text-[#4B5563]"
                 >
                   {tag}
                 </span>
@@ -98,11 +102,11 @@ function TrustSection() {
 
           <div>
             <h4 className="text-[18px] font-black text-[#0f172a]">Why PropertySerch</h4>
-            <div className="mt-6 grid gap-3">
+            <div className="mx-auto mt-6 grid w-full max-w-[520px] gap-3">
               {whyItems.map((item) => (
                 <div
                   key={item}
-                  className="rounded-full border border-[#d7dfee] bg-white px-4 py-3 text-center text-[16px] font-semibold text-[#5b6b86]"
+                  className="flex w-full items-center justify-center rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-4 py-2 text-center text-[13px] font-normal leading-5 text-[#4B5563]"
                 >
                   {item}
                 </div>

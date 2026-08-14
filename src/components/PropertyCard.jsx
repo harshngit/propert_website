@@ -19,11 +19,16 @@ function VerifiedBadge() {
   );
 }
 
-function PropertyCard({ item }) {
+function PropertyCard({ item, className = "" }) {
   const isNewLaunch = item.badge === "NEW LAUNCH";
 
   return (
-    <article className="h-[384px] overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+    <article
+      className={[
+        "h-[384px] overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
+        className,
+      ].join(" ")}
+    >
       <div className={`relative h-[180px] overflow-hidden p-3 ${item.cardClass}`}>
         {item.image ? (
           <img

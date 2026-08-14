@@ -62,6 +62,19 @@ function Chevron() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-6 w-6 text-[#374151]"
+      fill="none"
+    >
+      <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function TickerBadge({ children, className }) {
   return (
     <span
@@ -195,37 +208,41 @@ function SiteHeader() {
   const showTicker = location.pathname === "/";
   const [openMenu, setOpenMenu] = React.useState(null);
   const [selectedCity, setSelectedCity] = React.useState("Mumbai");
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#F3F4F6] bg-white">
-      {showTicker ? <ScrollingTicker /> : null}
+      {showTicker ? <div className="hidden sm:block"><ScrollingTicker /></div> : null}
 
-      <div className="flex h-[72px] w-full items-center justify-between px-12 py-4">
-        <div className="flex items-center gap-6">
+      <div className="flex min-h-[64px] w-full items-center justify-between px-4 py-3 sm:h-[72px] sm:px-6 lg:px-12">
+        <div className="flex items-center gap-3 sm:gap-6">
           <NavLink
             to="/"
-            className="flex h-8 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-8 tracking-[-0.6px] text-[#E51C23]"
+            className="flex h-8 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-8 tracking-[-0.6px] text-[#E51C23] sm:text-[24px]"
           >
             PropertySerch
           </NavLink>
 
-          <CitySelector
-            selectedCity={selectedCity}
-            isOpen={openMenu === "city"}
-            onEnter={() => {
-              setOpenMenu("city");
-            }}
-            onLeave={() => {
-              setOpenMenu(null);
-            }}
-            onSelect={(label) => {
-              setSelectedCity(label);
-              setOpenMenu(null);
-            }}
-          />
+          <div className="hidden sm:block">
+            <CitySelector
+              selectedCity={selectedCity}
+              isOpen={openMenu === "city"}
+              onEnter={() => {
+                setOpenMenu("city");
+              }}
+              onLeave={() => {
+                setOpenMenu(null);
+              }}
+              onSelect={(label) => {
+                setSelectedCity(label);
+                setOpenMenu(null);
+              }}
+            />
+          </div>
         </div>
 
-        <nav className="flex w-[436px] flex-1 items-center justify-center gap-6 text-base font-semibold">
+        <nav className="hidden flex-1 items-center justify-center gap-6 text-base font-semibold lg:flex">
           {navItems.map((item) => (
             <HeaderNavItem
               key={item.label}
@@ -244,7 +261,7 @@ function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex h-10 w-[253px] items-center gap-6">
+        <div className="hidden h-10 w-[253px] items-center gap-6 lg:flex">
           <a
             href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
             target="_self"
@@ -258,6 +275,86 @@ function SiteHeader() {
           <button className="inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] bg-[#E51C23] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white shadow-[0_10px_22px_rgba(229,28,35,0.35)] transition hover:bg-[#cc1820]">
             <span className="inline-flex h-5 w-[95px] items-center justify-center">Post Property</span>
             <span className="inline-flex h-4 w-10 items-center justify-center rounded-[2px] bg-[#F4B400] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-5 tracking-[0.0107em] text-[#111827]">
+              FREE
+            </span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border border-slate-200 lg:hidden"
+          onClick={() => {
+            setMobileMenuOpen((value) => !value);
+          }}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          <MenuIcon />
+        </button>
+      </div>
+
+      <div className={mobileMenuOpen ? "border-t border-[#F3F4F6] px-4 py-4 sm:hidden" : "hidden"}>
+        <div className="grid gap-3">
+          <div className="rounded-[16px] bg-slate-50 px-4 py-4">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between text-left"
+              onClick={() => setMobileCityOpen((value) => !value)}
+              aria-expanded={mobileCityOpen}
+            >
+              <span className="text-[14px] font-semibold text-[#374151]">City</span>
+              <span className={mobileCityOpen ? "rotate-180 transition-transform" : "transition-transform"}>
+                <Chevron />
+              </span>
+            </button>
+
+            {mobileCityOpen ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {cityOptions.map((city) => (
+                  <button
+                    key={city}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={[
+                      "rounded-full px-3.5 py-2 text-[13px] font-semibold leading-4",
+                      selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
+                    ].join(" ")}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {navItems.map((item) => (
+            <NavLink
+              key={item.label}
+              to={item.to}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+            >
+              <span>{item.label}</span>
+              <Chevron />
+            </NavLink>
+          ))}
+
+          <a
+            href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
+            target="_self"
+            rel="noreferrer"
+            className="flex items-center justify-between rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+          >
+            <span>Login</span>
+            <Chevron />
+          </a>
+
+          <button className="inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-4 text-[14px] font-bold text-white">
+            Post Property
+            <span className="rounded-[2px] bg-[#F4B400] px-2 py-1 text-[10px] font-bold uppercase text-[#111827]">
               FREE
             </span>
           </button>

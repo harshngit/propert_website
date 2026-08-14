@@ -20,7 +20,7 @@ function HomePage() {
       <div className="min-h-screen w-full bg-white">
         <SiteHeader />
 
-        <section className="bg-white px-12">
+        <section className="bg-white px-4 sm:px-6 lg:px-12">
           <HomeHeroSection />
           <VerifiedListingsSection />
           <ExclusiveCitySection />

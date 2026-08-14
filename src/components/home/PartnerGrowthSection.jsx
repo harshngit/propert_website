@@ -49,11 +49,11 @@ function PartnerGrowthSection() {
           </button>
         </div> */}
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+        <div className="mt-10 flex gap-5 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0">
           {partnerCards.map((card) => (
             <article
               key={card.title}
-              className="flex min-h-[188px] flex-col rounded-[22px] border border-[#dfe6f3] bg-white px-7 py-7 text-left shadow-[0_10px_24px_rgba(15,23,42,0.03)]"
+              className="flex min-h-[188px] min-w-[82vw] shrink-0 snap-start flex-col rounded-[22px] border border-[#dfe6f3] bg-white px-7 py-7 text-left shadow-[0_10px_24px_rgba(15,23,42,0.03)] lg:min-w-0 lg:w-auto"
             >
               <h4 className="whitespace-nowrap text-[22px] font-black leading-tight text-[#0f172a]">
                 {card.title}

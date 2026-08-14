@@ -25,17 +25,17 @@ function CompanyFooterSection() {
 
   return (
     <div className="mt-12 border-t border-slate-100 pt-10">
-      <div className="grid gap-8 xl:grid-cols-[1.2fr_repeat(3,1fr)]">
+      <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_repeat(3,1fr)]">
         <div>
-          <div className="text-[28px] font-black text-[#E51C23]">PropertySerch</div>
+          <div className="text-[24px] font-black text-[#E51C23] sm:text-[28px]">PropertySerch</div>
           <div className="mt-2 text-[14px] text-slate-500">Wholly owned by A R Buildwel</div>
-          <p className="mt-5 text-[14px] max-w-[340px] leading-7 text-slate-500">
+          <p className="mt-5 max-w-[340px] text-[14px] leading-7 text-slate-500">
             Beyond Listings. Built for Deals. A Real Estate Transaction Operating System, wholly
             owned by A R Buildwel, G-53, Vardhman Location Plaza-II, Rajouri Garden, New Delhi -
             110027
           </p>
 
-          <div className="mt-8 flex items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             {socials.map((item) => (
               <img
                 key={item.alt}
@@ -49,8 +49,8 @@ function CompanyFooterSection() {
 
         {columns.map((column) => (
           <div key={column.title}>
-            <div className="text-[14px] font-black text-slate-900">{column.title}</div>
-            <div className="mt-4 text-[14px] grid gap-3 text-slate-500">
+            <div className="text-[14px] font-black text-slate-900 sm:text-[16px]">{column.title}</div>
+            <div className="mt-4 grid gap-3 text-[14px] text-slate-500">
               {column.items.map((item) => (
                 <div key={item}>{item}</div>
               ))}
@@ -59,13 +59,16 @@ function CompanyFooterSection() {
         ))}
       </div>
 
-      <div className="mt-11 mb-11 text-[10px] border-t border-slate-100 pt-5">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-xs tracking-[0.04em] text-slate-400">
-          <div>(c) 2026 A R Buildwel · PropertySerch.com · G-53, Vardhman Location Plaza-II, Rajouri Garden, New Delhi - 110027</div>
-          <div className="flex flex-wrap gap-5">
-            <span>TERMS OF SERVICE</span>
-            <span>PRIVACY POLICY</span>
-            <span>RERA COMPLIANCE</span>
+      <div className="mt-11 mb-11 border-t border-slate-100 pt-5 text-[10px]">
+        <div className="flex flex-col gap-4 text-[10px] tracking-[0.04em] text-slate-400 sm:text-xs md:flex-row md:items-center md:justify-between">
+          <div className="max-w-[760px]">
+            (c) 2026 A R Buildwel &middot; PropertySerch.com &middot; G-53, Vardhman Location Plaza-II,
+            Rajouri Garden, New Delhi - 110027
+          </div>
+          <div className="grid grid-cols-2 gap-x-5 gap-y-2 md:flex md:flex-wrap">
+            <span className="whitespace-nowrap">TERMS OF SERVICE</span>
+            <span className="whitespace-nowrap">PRIVACY POLICY</span>
+            <span className="col-span-2 whitespace-nowrap md:col-span-1">RERA COMPLIANCE</span>
           </div>
         </div>
       </div>
