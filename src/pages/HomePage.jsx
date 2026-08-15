@@ -32,8 +32,9 @@ function HomePage() {
           <PartnerGrowthSection />
           <PremiumRealEstateSection />
           <TrustSection />
-          <CompanyFooterSection />
         </section>
+
+        <CompanyFooterSection />
       </div>
     </main>
   );

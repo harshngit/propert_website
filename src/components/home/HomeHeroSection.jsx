@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { buildPropertiesPath } from "../../utils/propertySearch";
 
 function PinIcon() {
   return (
@@ -53,8 +55,13 @@ function SearchIcon() {
 }
 
 function HomeHeroSection() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const tabs = ["Buy", "Rent", "Commercial", "Institutional"];
   const [activeTab, setActiveTab] = React.useState("Buy");
+  const [searchLocation, setSearchLocation] = React.useState("");
+  const [propertyType, setPropertyType] = React.useState("");
+  const [budget, setBudget] = React.useState("");
   const tabWidths = {
     Buy: "w-[75px]",
     Rent: "w-[80px]",
@@ -66,6 +73,21 @@ function HomeHeroSection() {
     Rent: "sm:w-[80px]",
     Commercial: "sm:w-[132px]",
     Institutional: "sm:w-[131px]",
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+
+    const currentCity = searchParams.get("city");
+    const nextPath = buildPropertiesPath(searchParams, {
+      city: currentCity || undefined,
+      location: searchLocation,
+      propertyType,
+      budget,
+      type: activeTab.toLowerCase(),
+    });
+
+    navigate(nextPath);
   };
 
   return (
@@ -97,7 +119,7 @@ function HomeHeroSection() {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 w-full max-w-[896px] px-0 sm:mt-12">
+      <form className="mx-auto mt-8 w-full max-w-[896px] px-0 sm:mt-12" onSubmit={handleSearch}>
         <div className="mx-auto grid w-full max-w-[880px] grid-cols-2 gap-2 sm:flex sm:overflow-visible">
           {tabs.map((tab) => (
             <button
@@ -125,6 +147,8 @@ function HomeHeroSection() {
               <input
                 type="text"
                 placeholder="Search City, Locality or Landmark"
+                value={searchLocation}
+                onChange={(event) => setSearchLocation(event.target.value)}
                 className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
               />
             </div>
@@ -136,6 +160,8 @@ function HomeHeroSection() {
               <input
                 type="text"
                 placeholder="Property Type"
+                value={propertyType}
+                onChange={(event) => setPropertyType(event.target.value)}
                 className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
               />
             </div>
@@ -147,19 +173,21 @@ function HomeHeroSection() {
               <input
                 type="text"
                 placeholder="Budget"
+                value={budget}
+                onChange={(event) => setBudget(event.target.value)}
                 className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
               />
             </div>
           </div>
 
-          <button className="ml-0 inline-flex h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-10 py-4 text-white hover:bg-[#cc1820] lg:ml-auto lg:w-[159px]">
+          <button type="submit" className="ml-0 inline-flex h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-10 py-4 text-white hover:bg-[#cc1820] lg:ml-auto lg:w-[159px]">
             <SearchIcon />
             <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0049em]">
               Search
             </span>
           </button>
         </div>
-      </div>
+      </form>
 
       <div className="mt-5 flex h-6 w-full items-center justify-center px-4 text-center font-['Plus_Jakarta_Sans'] text-[13px] leading-6 tracking-[0.0049em] sm:mt-6 sm:text-[14px]">
         <span className="font-normal text-[#6B7280]">
@@ -176,4 +204,3 @@ function HomeHeroSection() {
 }
 
 export default HomeHeroSection;
-

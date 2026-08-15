@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { buildPropertiesPath } from "../utils/propertySearch";
 
 const navItems = [
   { label: "Buy", to: "/buy", widthClass: "w-[47px]" },
@@ -203,13 +204,28 @@ function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
   );
 }
 
-function SiteHeader() {
+function SiteHeader({ userLabel = "Login", userAvatarSrc = "" }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const showTicker = location.pathname === "/";
   const [openMenu, setOpenMenu] = React.useState(null);
-  const [selectedCity, setSelectedCity] = React.useState("Mumbai");
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
+  const selectedCity = searchParams.get("city") || "Mumbai";
+
+  const handleCitySelect = (label) => {
+    setOpenMenu(null);
+    setMobileCityOpen(false);
+    setMobileMenuOpen(false);
+
+    if (location.pathname === "/properties") {
+      navigate(buildPropertiesPath(searchParams, { city: label }));
+      return;
+    }
+
+    navigate(`/properties?city=${encodeURIComponent(label)}&view=list`);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#F3F4F6] bg-white">
@@ -234,10 +250,7 @@ function SiteHeader() {
               onLeave={() => {
                 setOpenMenu(null);
               }}
-              onSelect={(label) => {
-                setSelectedCity(label);
-                setOpenMenu(null);
-              }}
+              onSelect={handleCitySelect}
             />
           </div>
         </div>
@@ -261,15 +274,23 @@ function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden h-10 w-[253px] items-center gap-6 lg:flex">
+        <div className="hidden h-10  items-center gap-3 lg:flex">
           <a
             href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
             target="_self"
             rel="noreferrer"
-            className="inline-flex h-5 w-[58px] shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
+            className="inline-flex h-10 shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
           >
-            <span className="flex h-5 items-center justify-start">Login</span>
-            <Chevron />
+            {userAvatarSrc ? (
+              <img
+                src={userAvatarSrc}
+                alt={userLabel}
+                className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-200"
+              />
+            ) : (
+              <span className="flex h-5 items-center justify-start">{userLabel}</span>
+            )}
+            {!userAvatarSrc ? <Chevron /> : null}
           </a>
 
           <button className="inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] bg-[#E51C23] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white shadow-[0_10px_22px_rgba(229,28,35,0.35)] transition hover:bg-[#cc1820]">
@@ -314,10 +335,7 @@ function SiteHeader() {
                   <button
                     key={city}
                     type="button"
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setMobileMenuOpen(false);
-                    }}
+                    onClick={() => handleCitySelect(city)}
                     className={[
                       "rounded-full px-3.5 py-2 text-[13px] font-semibold leading-4",
                       selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
@@ -346,9 +364,16 @@ function SiteHeader() {
             href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
             target="_self"
             rel="noreferrer"
-            className="flex items-center rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+            className="flex items-center gap-2 rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
           >
-            <span>Login</span>
+            {userAvatarSrc ? (
+              <img
+                src={userAvatarSrc}
+                alt={userLabel}
+                className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-200"
+              />
+            ) : null}
+            {!userAvatarSrc ? <span>{userLabel}</span> : null}
           </a>
 
           <button className="inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-4 text-[14px] font-bold text-white">
