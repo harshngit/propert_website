@@ -346,10 +346,9 @@ function SiteHeader() {
             href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
             target="_self"
             rel="noreferrer"
-            className="flex items-center justify-between rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+            className="flex items-center rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
           >
             <span>Login</span>
-            <Chevron />
           </a>
 
           <button className="inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-4 text-[14px] font-bold text-white">

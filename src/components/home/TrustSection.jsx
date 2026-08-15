@@ -42,11 +42,11 @@ function TrustSection() {
         </h3>
         <p className="mt-1 text-[16px] text-slate-500">Trusted by owners, buyers and institutions</p>
 
-        <div className="mt-6 flex gap-4 overflow-x-auto pb-2 scroll-smooth md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-4">
+        <div className="mt-6 flex gap-4 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-4">
           {testimonials.map((item) => (
             <article
               key={item.name}
-              className="min-w-[82vw] shrink-0 rounded-[26px] border border-[#dfe6f3] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:min-w-0 md:w-full"
+              className="min-w-full shrink-0 snap-start rounded-[26px] border border-[#dfe6f3] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:min-w-0 md:w-full"
             >
               <div className="text-[16px] leading-none tracking-[2px] text-[#f4b400]">
                 &#9733;&#9733;&#9733;&#9733;&#9733;

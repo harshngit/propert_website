@@ -20,12 +20,12 @@ function ExclusiveCitySection() {
         subtitle="Curated properties, verified and matched to your requirement"
       />
 
-      <div className="mt-3 flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 xl:grid-cols-4">
+      <div className="mt-3 flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 xl:grid-cols-4">
         {exclusiveListings.map((item) => (
           <PropertyCard
             key={item.title + item.rate}
             item={item}
-            className="min-w-[82vw] shrink-0 snap-start md:min-w-0 md:w-full"
+            className="min-w-full shrink-0 snap-start md:min-w-0 md:w-full"
           />
         ))}
       </div>

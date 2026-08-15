@@ -29,8 +29,9 @@ function PropertyManagementSection() {
           ))}
         </div>
 
-        <button className="mt-7 inline-flex items-center justify-center rounded-[10px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
-          Talk to a Relationship Manager →
+        <button className="mt-7 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[10px] bg-[#E51C23] px-4 py-3.5 text-[14px] font-extrabold text-white transition hover:bg-[#cc1820] sm:w-auto sm:px-6 sm:text-[16px]">
+          <span>Talk to a Relationship Manager</span>
+          <span aria-hidden="true">→</span>
         </button>
 
         <p className="mt-5 border-t border-[#d7e2ff] pt-5 font-['Lato'] text-[13px] leading-6 text-[#64748b]">
@@ -54,8 +55,9 @@ function PropertyManagementSection() {
           never left wondering.
         </p>
 
-        <button className="mt-8 bg-[#E51C23] inline-flex rounded-[10px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
-          View NRI Property Management →
+        <button className="mt-8 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[10px] border border-white/15 bg-[#E51C23] px-4 py-3.5 text-[14px] font-extrabold text-white transition hover:bg-[#cc1820] sm:w-auto sm:px-6 sm:text-[16px]">
+          <span>View NRI Property Management</span>
+          <span aria-hidden="true">&rarr;</span>
         </button>
       </div>
     </div>
