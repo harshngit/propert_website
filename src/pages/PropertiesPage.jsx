@@ -93,19 +93,19 @@ function AreaIcon() {
   );
 }
 
-function HeartIcon({ filled = false }) {
+function HeartIcon({ active = false }) {
   return (
     <svg
+      viewBox="0 0 16 14"
       aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-[16px] w-[16px]"
-      fill={filled ? "#E51C23" : "none"}
+      className="relative top-[1px] h-[13.665px] w-[16px] shrink-0"
+      fill={active ? "#E51C23" : "none"}
     >
       <path
-        d="M12 21s-7-4.4-9.2-8.9C1 9.2 2.4 5.9 5.8 5.1c1.8-.4 3.5.3 4.6 1.7 1.1-1.4 2.8-2.1 4.6-1.7 3.4.8 4.8 4.1 3 7-.1.2-.2.4-.3.6"
-        stroke={filled ? "#E51C23" : "#6B7280"}
-        strokeWidth="1.8"
-        strokeLinecap="round"
+        d="M14.4 2.8c-.4-.9-1-1.5-1.8-1.9-.8-.4-1.7-.5-2.6-.3-.9.2-1.7.8-2.4 1.6-.7-.8-1.5-1.4-2.4-1.6-.9-.2-1.8-.1-2.6.3-.8.4-1.4 1-1.8 1.9-.4.8-.5 1.8-.3 2.7.2 1 .8 1.9 1.6 2.8l5.5 5.5 5.5-5.5c.8-.8 1.4-1.8 1.6-2.8.2-.9.1-1.9-.3-2.7Z"
+        fill={active ? "#E51C23" : "none"}
+        stroke={active ? "#E51C23" : "#6B7280"}
+        strokeWidth="1.4"
         strokeLinejoin="round"
       />
     </svg>
@@ -328,7 +328,13 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
   );
 }
 
-function ResultCard({ item, selected = false, onClick }) {
+function ResultCard({
+  item,
+  selected = false,
+  favorite = false,
+  onClick,
+  onFavoriteToggle,
+}) {
   return (
     <article
       onClick={onClick}
@@ -398,9 +404,13 @@ function ResultCard({ item, selected = false, onClick }) {
         <button
           type="button"
           aria-label="Save property"
-          className="absolute right-[8px] top-[8px] flex h-[24px] w-[24px] items-center justify-center rounded-full bg-white shadow-sm"
+          onClick={(event) => {
+            event.stopPropagation();
+            onFavoriteToggle?.();
+          }}
+          className="absolute right-[8px] top-[8px] flex h-[32px] w-[32px] items-center justify-center rounded-full bg-white shadow-sm"
         >
-          <HeartIcon filled={item.favorite} />
+          <HeartIcon active={favorite} />
         </button>
       </div>
 
@@ -514,19 +524,25 @@ function ResultCard({ item, selected = false, onClick }) {
   );
 }
 
-function ResultTileCard({ item, selected = false, onClick }) {
+function ResultTileCard({
+  item,
+  selected = false,
+  favorite = false,
+  onClick,
+  onFavoriteToggle,
+}) {
   return (
     <article
       onClick={onClick}
       className={[
-        "flex h-full flex-col overflow-hidden rounded-[14px] border shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
+        "flex h-[503.5px] flex-col overflow-hidden rounded-[16px] border shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
         selected
           ? "border-[#FFEBEB] bg-[#FFF9F9]"
           : "border-[#E5E7EB] bg-white",
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
     >
-      <div className="relative h-[180px] w-full">
+      <div className="relative h-[206px] w-full">
         <img
           src={item.image}
           alt={item.title}
@@ -580,9 +596,13 @@ function ResultTileCard({ item, selected = false, onClick }) {
         <button
           type="button"
           aria-label="Save property"
-          className="absolute right-[8px] top-[8px] flex h-[24px] w-[24px] items-center justify-center rounded-full bg-white shadow-sm"
+          onClick={(event) => {
+            event.stopPropagation();
+            onFavoriteToggle?.();
+          }}
+          className="absolute right-[8px] top-[8px] flex h-[32px] w-[32px] items-center justify-center rounded-full bg-white shadow-sm"
         >
-          <HeartIcon filled={item.favorite} />
+          <HeartIcon active={favorite} />
         </button>
       </div>
 
@@ -843,6 +863,9 @@ function PropertiesPage() {
   const sortMenuRef = React.useRef(null);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
+  const [favoriteIds, setFavoriteIds] = React.useState(
+    () => new Set(results.filter((item) => item.favorite).map((item) => item.id)),
+  );
   const [selectedBhk, setSelectedBhk] = React.useState(["2 BHK", "3 BHK"]);
   const [selectedPropertyTypes, setSelectedPropertyTypes] = React.useState([
     "Apartment",
@@ -872,6 +895,7 @@ function PropertiesPage() {
     setSortOpen(false);
     setCurrentPage(1);
     setSelectedPropertyId(null);
+    setFavoriteIds(new Set(results.filter((item) => item.favorite).map((item) => item.id)));
     setSelectedBhk(["2 BHK", "3 BHK"]);
     setSelectedPropertyTypes(["Apartment"]);
     setSelectedPropertyStatus(["Under Construction"]);
@@ -935,6 +959,20 @@ function PropertiesPage() {
     setCurrentPage(nextPage);
     setSelectedPropertyId(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const toggleFavorite = (propertyId) => {
+    setFavoriteIds((current) => {
+      const next = new Set(current);
+
+      if (next.has(propertyId)) {
+        next.delete(propertyId);
+      } else {
+        next.add(propertyId);
+      }
+
+      return next;
+    });
   };
 
   const sortLabel =
@@ -1335,6 +1373,12 @@ function PropertiesPage() {
                           alt=""
                           aria-hidden="true"
                           className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
+                          style={{
+                            filter:
+                              viewMode === "list"
+                                ? "none"
+                                : "grayscale(1) brightness(0.55)",
+                          }}
                         />
                       </ViewModeButton>
 
@@ -1350,6 +1394,12 @@ function PropertiesPage() {
                           alt=""
                           aria-hidden="true"
                           className="h-[14px] w-[16px] object-contain"
+                          style={{
+                            filter:
+                              viewMode === "tile"
+                                ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                : "none",
+                          }}
                         />
                       </ViewModeButton>
 
@@ -1365,6 +1415,12 @@ function PropertiesPage() {
                           alt=""
                           aria-hidden="true"
                           className="h-[15.763724327087402px] w-[18px] object-contain"
+                          style={{
+                            filter:
+                              viewMode === "map"
+                                ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                : "none",
+                          }}
                         />
                       </ViewModeButton>
 
@@ -1381,11 +1437,13 @@ function PropertiesPage() {
                           key={item.id}
                           item={item}
                           selected={selectedPropertyId === item.id}
+                          favorite={favoriteIds.has(item.id)}
                           onClick={() =>
                             setSelectedPropertyId((current) =>
                               current === item.id ? null : item.id,
                             )
                           }
+                          onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
                       ))}
                     </div>
@@ -1395,20 +1453,41 @@ function PropertiesPage() {
                 {viewMode === "tile" && (
                   <>
                     {/* PROPERTY TILES */}
-                    <div className="mt-[24px] grid w-full grid-cols-1 gap-[12px] sm:grid-cols-2 xl:grid-cols-3">
-                      {pagedResults.map((item) => (
+                    <div className="mt-[24px] grid w-full grid-cols-1 gap-[16px] lg:grid-cols-2">
+                      {pagedResults.slice(0, 2).map((item) => (
                         <ResultTileCard
                           key={item.id}
                           item={item}
                           selected={selectedPropertyId === item.id}
+                          favorite={favoriteIds.has(item.id)}
                           onClick={() =>
                             setSelectedPropertyId((current) =>
                               current === item.id ? null : item.id,
                             )
                           }
+                          onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
                       ))}
                     </div>
+
+                    {pagedResults.length > 2 && (
+                      <div className="mt-[16px] grid w-full grid-cols-1 gap-[16px] sm:grid-cols-2 xl:grid-cols-3">
+                        {pagedResults.slice(2).map((item) => (
+                          <ResultTileCard
+                            key={item.id}
+                            item={item}
+                            selected={selectedPropertyId === item.id}
+                            favorite={favoriteIds.has(item.id)}
+                            onClick={() =>
+                              setSelectedPropertyId((current) =>
+                                current === item.id ? null : item.id,
+                              )
+                            }
+                            onFavoriteToggle={() => toggleFavorite(item.id)}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -1424,11 +1503,13 @@ function PropertiesPage() {
                             key={item.id}
                             item={item}
                             selected={selectedPropertyId === item.id}
+                            favorite={favoriteIds.has(item.id)}
                             onClick={() =>
                               setSelectedPropertyId((current) =>
                                 current === item.id ? null : item.id,
                               )
                             }
+                            onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
                       </div>
