@@ -62,18 +62,12 @@ function LocationIcon() {
 
 function ResultPinIcon() {
   return (
-    <svg
+    <img
+      src="/images/pin%20icon.png"
+      alt=""
       aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="h-[12px] w-[12px] shrink-0 text-[#94A3B8]"
-      fill="none"
-    >
-      <path
-        d="M8 14s4.5-4.2 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 9.8 8 14 8 14Z"
-        fill="currentColor"
-      />
-      <circle cx="8" cy="6.5" r="1.6" fill="white" />
-    </svg>
+      className="h-[12px] w-[9px] shrink-0 object-contain"
+    />
   );
 }
 
@@ -334,28 +328,73 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
   );
 }
 
-function ResultCard({ item }) {
+function ResultCard({ item, selected = false, onClick }) {
   return (
-    <article className="flex w-full flex-col overflow-hidden rounded-[14px] border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] lg:flex-row">
-      <div className="relative h-[168px] w-full shrink-0 lg:h-[168px] lg:w-[240px] xl:w-[250px]">
+    <article
+      onClick={onClick}
+      className={[
+        "flex h-[203px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
+        selected
+          ? "border-[#FFEBEB] bg-[#FFF9F9]"
+          : "border-[#E5E7EB] bg-[#FFFFFF]",
+        onClick ? "cursor-pointer" : "",
+      ].join(" ")}
+    >
+
+      {/* PROPERTY IMAGE */}
+      <div className="relative h-full w-[265px] shrink-0">
         <img
           src={item.image}
           alt={item.title}
           className="h-full w-full object-cover"
         />
 
+        {/* BADGES */}
         <div className="absolute left-[8px] top-[8px] flex items-center gap-[6px]">
-          <span className="rounded-[6px] bg-[#E51C23] px-[8px] py-[4px] text-[10px] font-bold leading-none text-white">
-            {item.badge}
-          </span>
+          {item.badge === "NEW LISTING" ? (
+            <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 8.5 6.5 11 12 5.5"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <span className="max-w-[38px] whitespace-normal text-center leading-[15px]">
+                NEW LISTING
+              </span>
+            </span>
+          ) : (
+            <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+              {item.badge}
+            </span>
+          )}
 
           {item.verified && (
-            <span className="rounded-[6px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-none text-[#111827] shadow-sm">
-              VERIFIED
+            <span className="inline-flex h-[23px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 8.5 6.5 11 12 5.5"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <span>VERIFIED</span>
             </span>
           )}
         </div>
 
+        {/* FAVOURITE BUTTON */}
         <button
           type="button"
           aria-label="Save property"
@@ -365,91 +404,128 @@ function ResultCard({ item }) {
         </button>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-[14px] p-[16px] lg:p-[18px]">
-        <div className="flex flex-col gap-[12px] xl:flex-row xl:items-start xl:justify-between xl:gap-[16px]">
+      {/* PROPERTY CONTENT */}
+      <div className="flex min-w-0 flex-1 justify-between p-[24px]">
+
+        {/* ================================================================ */}
+        {/* LEFT SIDE                                                        */}
+        {/* ================================================================ */}
+
+      <div className="flex min-w-0 flex-1 flex-col justify-between">
+
+          {/* PRICE / TITLE / LOCATION */}
           <div className="min-w-0">
-            <div className="flex flex-wrap items-baseline gap-x-[8px] gap-y-[4px]">
-              <h3 className="text-[18px] font-extrabold leading-[22px] text-[#111827]">
+
+            <div className="flex items-baseline gap-[8px]">
+              <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[22px] text-[#111827]">
                 ₹{item.price}
               </h3>
 
-              <span className="text-[12px] leading-[18px] text-[#6B7280]">
+              <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
                 ₹{item.rate}
               </span>
             </div>
 
-            <h4 className="mt-[6px] text-[16px] font-bold leading-[20px] text-[#111827]">
+            <h4 className="mt-[9px] text-[18px] font-bold leading-[20px] text-[#111827]">
               {item.title}
             </h4>
 
-            <div className="mt-[6px] flex items-center gap-[6px] text-[12px] leading-[18px] text-[#6B7280]">
+            <div className="mt-[6px] flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[19.5px] tracking-normal text-[#6B7280]">
               <ResultPinIcon />
-              <span className="truncate">{item.location}</span>
+
+              <span className="whitespace-nowrap">
+                {item.location}
+              </span>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-start gap-[10px]">
-            <div className="rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
+          {/* PROPERTY TAGS */}
+          <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[8px]">
+            {item.tags.map((tag) => (
+              <span
+                key={tag}
+                className={[
+                  "whitespace-nowrap rounded-[6px] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-[16px]",
+                  "bg-[#F9FAFB] text-[#6B7280]",
+                ].join(" ")}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* ================================================================ */}
+        {/* RIGHT SIDE                                                       */}
+        {/* ================================================================ */}
+
+        <div className="ml-[24px] flex shrink-0 flex-col items-end justify-between">
+
+          {/* BHK / AREA / MATCH */}
+          <div className="flex h-[43px] items-center gap-[16px] border-b border-[#F3F4F6] pb-[12px]">
+
+            {/* BHK */}
+            <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
+              <BedIcon />
+
+              {item.details}
+            </span>
+
+            {/* AREA */}
+            <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
+              <AreaIcon />
+
+              {item.area}
+            </span>
+
+            {/* MATCH */}
+            <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
               {item.match}
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[10px] text-[12px] font-semibold uppercase leading-[16px] text-[#6B7280]">
-          <span className="inline-flex items-center gap-[6px]">
-            <BedIcon />
-            {item.details}
-          </span>
+          {/* ENQUIRE + PHONE BUTTON */}
+          <div className="flex items-center gap-[12px]">
 
-          <span className="inline-flex items-center gap-[6px]">
-            <AreaIcon />
-            {item.area}
-          </span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-[8px]">
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-[6px] bg-[#F8FAFC] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-none text-[#6B7280]"
+            <button
+              type="button"
+              className="inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
             >
-              {tag}
-            </span>
-          ))}
-        </div>
+              Enquire Now
+            </button>
 
-        <div className="mt-auto flex flex-col gap-[12px] sm:flex-row sm:items-center sm:justify-between">
-          <button
-            type="button"
-            className="inline-flex h-[42px] items-center justify-center rounded-[10px] bg-[#E51C23] px-[22px] text-[14px] font-bold text-white"
-          >
-            Enquire Now
-          </button>
-
-          <button
-            type="button"
-            aria-label="Call"
-            className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-[10px] border border-[#FCA5A5] bg-white text-[#E51C23]"
-          >
-            <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none">
-              <path
-                d="M8.5 5.5 10 8c.3.6.2 1.3-.2 1.8l-1.2 1.2c1.2 2.3 2.9 4 5.2 5.2l1.2-1.2c.5-.4 1.2-.5 1.8-.2l2.5 1.5c.7.4 1 1.3.7 2-1.1 2.5-4 3.6-6.4 2.6-4.2-1.7-7.6-5.1-9.3-9.3-1-2.4.1-5.3 2.6-6.4.7-.3 1.6 0 2 .7Z"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            <button
+              type="button"
+              aria-label="Call"
+              className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-[12px] border border-[#E51C23] bg-white text-[#E51C23]"
+            >
+              <img
+                src="/images/phone.png"
+                alt=""
+                aria-hidden="true"
+                className="h-[16px] w-[16px] object-contain"
               />
-            </svg>
-          </button>
+            </button>
+
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
-function ResultTileCard({ item }) {
+function ResultTileCard({ item, selected = false, onClick }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-[14px] border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+    <article
+      onClick={onClick}
+      className={[
+        "flex h-full flex-col overflow-hidden rounded-[14px] border shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
+        selected
+          ? "border-[#FFEBEB] bg-[#FFF9F9]"
+          : "border-[#E5E7EB] bg-white",
+        onClick ? "cursor-pointer" : "",
+      ].join(" ")}
+    >
       <div className="relative h-[180px] w-full">
         <img
           src={item.image}
@@ -458,13 +534,45 @@ function ResultTileCard({ item }) {
         />
 
         <div className="absolute left-[8px] top-[8px] flex items-center gap-[6px]">
-          <span className="rounded-[6px] bg-[#E51C23] px-[8px] py-[4px] text-[10px] font-bold leading-none text-white">
-            {item.badge}
-          </span>
+          {item.badge === "NEW LISTING" ? (
+            <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 8.5 6.5 11 12 5.5"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <span className="max-w-[38px] whitespace-normal text-center leading-[15px]">
+                NEW LISTING
+              </span>
+            </span>
+          ) : (
+            <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+              {item.badge}
+            </span>
+          )}
 
           {item.verified && (
-            <span className="rounded-[6px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-none text-[#111827] shadow-sm">
-              VERIFIED
+            <span className="inline-flex h-[23px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 8.5 6.5 11 12 5.5"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <span>VERIFIED</span>
             </span>
           )}
         </div>
@@ -481,11 +589,11 @@ function ResultTileCard({ item }) {
       <div className="flex flex-1 flex-col gap-[12px] p-[16px]">
         <div>
           <div className="flex items-baseline gap-[8px]">
-            <h3 className="text-[17px] font-extrabold leading-[22px] text-[#111827]">
+            <h3 className="whitespace-nowrap text-[17px] font-extrabold leading-[22px] text-[#111827]">
               ₹{item.price}
             </h3>
 
-            <span className="text-[12px] leading-[18px] text-[#6B7280]">
+            <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
               ₹{item.rate}
             </span>
           </div>
@@ -494,13 +602,13 @@ function ResultTileCard({ item }) {
             {item.title}
           </h4>
 
-          <div className="mt-[6px] flex items-center gap-[6px] text-[12px] leading-[18px] text-[#6B7280]">
+          <div className="mt-[6px] flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[19.5px] tracking-normal text-[#6B7280]">
             <ResultPinIcon />
-            <span className="truncate">{item.location}</span>
+            <span className="whitespace-nowrap">{item.location}</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-[14px] gap-y-[8px] text-[11px] font-semibold uppercase leading-[16px] text-[#6B7280]">
+        <div className="flex flex-wrap items-center gap-x-[14px] gap-y-[8px] text-[11px] font-semibold uppercase leading-[16px] text-[#111827]">
           <span className="inline-flex items-center gap-[6px]">
             <BedIcon />
             {item.details}
@@ -516,7 +624,10 @@ function ResultTileCard({ item }) {
           {item.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-[6px] bg-[#F8FAFC] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-none text-[#6B7280]"
+              className={[
+                "rounded-[6px] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-none text-[#6B7280]",
+                "bg-[#F9FAFB]",
+              ].join(" ")}
             >
               {tag}
             </span>
@@ -526,7 +637,7 @@ function ResultTileCard({ item }) {
         <div className="mt-auto flex items-center gap-[10px]">
           <button
             type="button"
-            className="inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] bg-[#E51C23] px-[20px] text-[14px] font-bold text-white"
+            className="inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white whitespace-nowrap"
           >
             Enquire Now
           </button>
@@ -534,17 +645,14 @@ function ResultTileCard({ item }) {
           <button
             type="button"
             aria-label="Call"
-            className="inline-flex h-[40px] w-[40px] items-center justify-center rounded-[10px] border border-[#FCA5A5] bg-white text-[#E51C23]"
+            className="inline-flex h-[48px] w-[48px] items-center justify-center rounded-[12px] border-2 border-[#E51C23] bg-white text-[#E51C23]"
           >
-            <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none">
-              <path
-                d="M8.5 5.5 10 8c.3.6.2 1.3-.2 1.8l-1.2 1.2c1.2 2.3 2.9 4 5.2 5.2l1.2-1.2c.5-.4 1.2-.5 1.8-.2l2.5 1.5c.7.4 1 1.3.7 2-1.1 2.5-4 3.6-6.4 2.6-4.2-1.7-7.6-5.1-9.3-9.3-1-2.4.1-5.3 2.6-6.4.7-.3 1.6 0 2 .7Z"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <img
+              src="/images/phone.png"
+              alt=""
+              aria-hidden="true"
+              className="h-[16px] w-[16px] object-contain"
+            />
           </button>
         </div>
       </div>
@@ -552,16 +660,22 @@ function ResultTileCard({ item }) {
   );
 }
 
-function PaginationButton({ children, active = false, disabled = false }) {
+function PaginationButton({
+  children,
+  active = false,
+  disabled = false,
+  onClick,
+}) {
   return (
     <button
       type="button"
       disabled={disabled}
+      onClick={onClick}
       className={[
-        "inline-flex h-10 min-w-10 items-center justify-center rounded-[8px] border px-3 text-[14px] font-semibold transition",
+        "inline-flex h-[40px] min-w-[40px] items-center justify-center rounded-[8px] border px-[12px] text-[14px] font-medium leading-none transition",
         active
           ? "border-[#E51C23] bg-[#E51C23] text-white"
-          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+          : "border-[#E5E7EB] bg-white text-[#111827] hover:border-slate-300 hover:bg-slate-50",
         disabled ? "cursor-not-allowed opacity-50" : "",
       ].join(" ")}
     >
@@ -570,7 +684,13 @@ function PaginationButton({ children, active = false, disabled = false }) {
   );
 }
 
-function ViewModeButton({ active = false, onClick, children, label }) {
+function ViewModeButton({
+  active = false,
+  onClick,
+  children,
+  label,
+  sizeClass = "w-[32px]",
+}) {
   return (
     <button
       type="button"
@@ -578,8 +698,11 @@ function ViewModeButton({ active = false, onClick, children, label }) {
       aria-label={label}
       onClick={onClick}
       className={[
-        "flex h-[32px] w-[32px] items-center justify-center rounded-[6px] transition",
-        active ? "bg-[#FFF5F5] text-[#E51C23]" : "text-[#64748B] hover:bg-slate-100",
+        "flex h-[32px] items-center justify-center rounded-[6px] transition",
+        sizeClass,
+        active
+          ? "bg-white text-[#E51C23] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+          : "text-[#64748B] hover:bg-slate-100",
       ].join(" ")}
     >
       {children}
@@ -603,6 +726,25 @@ function MapPlaceholder() {
       </div>
     </div>
   );
+}
+
+function parsePriceValue(label) {
+  const normalized = label.toLowerCase().replace(/₹|,/g, "").trim();
+  const numeric = Number.parseFloat(normalized);
+
+  if (Number.isNaN(numeric)) {
+    return 0;
+  }
+
+  if (normalized.includes("cr")) {
+    return numeric * 10000000;
+  }
+
+  if (normalized.includes("lakh")) {
+    return numeric * 100000;
+  }
+
+  return numeric;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -696,6 +838,11 @@ function PropertiesPage() {
   const [minPrice, setMinPrice] = React.useState(18);
   const [maxPrice, setMaxPrice] = React.useState(82);
   const [viewMode, setViewMode] = React.useState("list");
+  const [sortValue, setSortValue] = React.useState("relevance");
+  const [sortOpen, setSortOpen] = React.useState(false);
+  const sortMenuRef = React.useRef(null);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
   const [selectedBhk, setSelectedBhk] = React.useState(["2 BHK", "3 BHK"]);
   const [selectedPropertyTypes, setSelectedPropertyTypes] = React.useState([
     "Apartment",
@@ -721,6 +868,10 @@ function PropertiesPage() {
     setMinPrice(18);
     setMaxPrice(82);
     setViewMode("list");
+    setSortValue("relevance");
+    setSortOpen(false);
+    setCurrentPage(1);
+    setSelectedPropertyId(null);
     setSelectedBhk(["2 BHK", "3 BHK"]);
     setSelectedPropertyTypes(["Apartment"]);
     setSelectedPropertyStatus(["Under Construction"]);
@@ -730,6 +881,69 @@ function PropertiesPage() {
     setReraApproved(false);
     setSelectedAmenities([]);
   };
+
+  React.useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (
+        sortMenuRef.current &&
+        !sortMenuRef.current.contains(event.target)
+      ) {
+        setSortOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocumentClick);
+    return () => document.removeEventListener("mousedown", handleDocumentClick);
+  }, []);
+
+  const sortedResults = React.useMemo(() => {
+    const nextResults = [...results];
+
+    if (sortValue === "price-low") {
+      nextResults.sort((a, b) => parsePriceValue(a.price) - parsePriceValue(b.price));
+    } else if (sortValue === "price-high") {
+      nextResults.sort((a, b) => parsePriceValue(b.price) - parsePriceValue(a.price));
+    }
+
+    return nextResults;
+  }, [sortValue]);
+
+  const totalPages = 42;
+  const itemsPerPage = 5;
+
+  const pagedResults = React.useMemo(() => {
+    if (sortedResults.length === 0) {
+      return [];
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+
+    return Array.from({ length: itemsPerPage }, (_, index) => {
+      const absoluteIndex = startIndex + index;
+      const source = sortedResults[absoluteIndex % sortedResults.length];
+      const cycle = Math.floor(absoluteIndex / sortedResults.length);
+
+      return {
+        ...source,
+        id: `${source.id}-${currentPage}-${cycle}-${index}`,
+      };
+    });
+  }, [currentPage, sortedResults]);
+
+  const goToPage = (pageNumber) => {
+    const nextPage = Math.min(Math.max(pageNumber, 1), totalPages);
+    setCurrentPage(nextPage);
+    setSelectedPropertyId(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const sortLabel =
+    sortValue === "price-low"
+      ? "Price: Low to High"
+      : sortValue === "price-high"
+        ? "Price: High to Low"
+        : "Relevance";
+  const isPriceSort = sortValue === "price-low" || sortValue === "price-high";
 
   return (
     <main className="min-h-screen w-full bg-white text-[#0F172A]">
@@ -1029,33 +1243,81 @@ function PropertiesPage() {
                     </p>
                   </div>
 
-                  <div className="flex h-10 w-[300.5px] shrink-0 items-center gap-4">
+                  <div className={[
+                    "flex h-10 shrink-0 items-center gap-4",
+                    isPriceSort ? "w-[325.5px]" : "w-[300.5px]",
+                  ].join(" ")}>
 
                     {/* SORT */}
-                    <div className="flex h-[38px] w-[170.5px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1">
-                      <span className="text-[9px] text-[#64748B]">
+                    <div
+                      ref={sortMenuRef}
+                      className={[
+                        "relative flex h-[38px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1",
+                        isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
+                      ].join(" ")}
+                    >
+                      <span className="inline-flex h-[18px] w-[54px] items-center justify-center font-['Lato'] text-[12px] font-bold leading-[18px] text-[#475569]">
                         Sort By:
                       </span>
 
                       <button
                         type="button"
-                        className="flex items-center gap-[7px] text-[9px] font-semibold text-[#111827]"
+                        aria-haspopup="listbox"
+                        aria-expanded={sortOpen}
+                        onClick={() => setSortOpen((current) => !current)}
+                        className={[
+                          "flex h-[30px] items-center justify-between rounded-[6px] bg-white px-[10px] py-[6px] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
+                          isPriceSort ? "w-[129.5px]" : "w-[104.5px]",
+                        ].join(" ")}
                       >
-                        Relevance
+                        <span className="whitespace-nowrap font-['Lato'] text-[12px] font-bold leading-[18px] text-[#111827]">
+                          {sortLabel}
+                        </span>
 
-                        <svg
-                          viewBox="0 0 12 12"
-                          className="h-[10px] w-[10px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M3 4.5 6 7.5 9 4.5"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                        </svg>
+                        <span className="flex h-[10px] w-[12.5px] items-center justify-center px-[1px] py-[2px]">
+                          <svg
+                            viewBox="0 0 11 7"
+                            className="h-[6px] w-[10.5px]"
+                            fill="none"
+                          >
+                            <path
+                              d="M1 1.25 5.5 5.75 10 1.25"
+                              stroke="#111827"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
                       </button>
+
+                      {sortOpen && (
+                        <div className={[
+                          "absolute right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white shadow-lg",
+                          isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
+                        ].join(" ")}>
+                          {[
+                            { label: "Relevance", value: "relevance" },
+                            { label: "Price: Low to High", value: "price-low" },
+                            { label: "Price: High to Low", value: "price-high" },
+                          ].map((option) => (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() => {
+                                setSortValue(option.value);
+                                setSortOpen(false);
+                              }}
+                              className={[
+                                "flex w-full items-center px-[12px] py-[10px] text-left text-[12px] font-semibold text-[#111827] hover:bg-slate-50",
+                                sortValue === option.value ? "bg-[#FFF5F5] text-[#E51C23]" : "",
+                              ].join(" ")}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* VIEW SWITCHER */}
@@ -1066,23 +1328,14 @@ function PropertiesPage() {
                         label="List view"
                         active={viewMode === "list"}
                         onClick={() => setViewMode("list")}
+                        sizeClass="w-[32px]"
                       >
-                        <svg
-                          viewBox="0 0 16 16"
-                          className="h-[13px] w-[13px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M5 4h9M5 8h9M5 12h9"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-
-                          <circle cx="2" cy="4" r="1" fill="currentColor" />
-                          <circle cx="2" cy="8" r="1" fill="currentColor" />
-                          <circle cx="2" cy="12" r="1" fill="currentColor" />
-                        </svg>
+                        <img
+                          src="/images/SVG%20(2).png"
+                          alt=""
+                          aria-hidden="true"
+                          className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
+                        />
                       </ViewModeButton>
 
                       {/* TILE */}
@@ -1090,18 +1343,14 @@ function PropertiesPage() {
                         label="Tile view"
                         active={viewMode === "tile"}
                         onClick={() => setViewMode("tile")}
+                        sizeClass="w-[32px]"
                       >
-                        <svg
-                          viewBox="0 0 16 16"
-                          className="h-[13px] w-[13px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"
-                            stroke="currentColor"
-                            strokeWidth="1.4"
-                          />
-                        </svg>
+                        <img
+                          src="/images/SVG%20(1).png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-[14px] w-[16px] object-contain"
+                        />
                       </ViewModeButton>
 
                       {/* MAP */}
@@ -1109,18 +1358,14 @@ function PropertiesPage() {
                         label="Map view"
                         active={viewMode === "map"}
                         onClick={() => setViewMode("map")}
+                        sizeClass="w-[34px]"
                       >
-                        <svg
-                          viewBox="0 0 16 16"
-                          className="h-[13px] w-[13px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M8 2 2 5v6l6 3 6-3V5L8 2Z"
-                            stroke="currentColor"
-                            strokeWidth="1.4"
-                          />
-                        </svg>
+                        <img
+                          src="/images/SVG.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-[15.763724327087402px] w-[18px] object-contain"
+                        />
                       </ViewModeButton>
 
                     </div>
@@ -1131,10 +1376,16 @@ function PropertiesPage() {
                   <>
                     {/* PROPERTY LIST */}
                     <div className="mt-[24px] flex w-full flex-col gap-[12px]">
-                      {results.map((item) => (
+                      {pagedResults.map((item) => (
                         <ResultCard
                           key={item.id}
                           item={item}
+                          selected={selectedPropertyId === item.id}
+                          onClick={() =>
+                            setSelectedPropertyId((current) =>
+                              current === item.id ? null : item.id,
+                            )
+                          }
                         />
                       ))}
                     </div>
@@ -1145,10 +1396,16 @@ function PropertiesPage() {
                   <>
                     {/* PROPERTY TILES */}
                     <div className="mt-[24px] grid w-full grid-cols-1 gap-[12px] sm:grid-cols-2 xl:grid-cols-3">
-                      {results.map((item) => (
+                      {pagedResults.map((item) => (
                         <ResultTileCard
                           key={item.id}
                           item={item}
+                          selected={selectedPropertyId === item.id}
+                          onClick={() =>
+                            setSelectedPropertyId((current) =>
+                              current === item.id ? null : item.id,
+                            )
+                          }
                         />
                       ))}
                     </div>
@@ -1162,10 +1419,16 @@ function PropertiesPage() {
                       <MapPlaceholder />
 
                       <div className="flex min-w-0 flex-col gap-[12px]">
-                        {results.map((item) => (
+                        {pagedResults.map((item) => (
                           <ResultTileCard
                             key={item.id}
                             item={item}
+                            selected={selectedPropertyId === item.id}
+                            onClick={() =>
+                              setSelectedPropertyId((current) =>
+                                current === item.id ? null : item.id,
+                              )
+                            }
                           />
                         ))}
                       </div>
@@ -1175,34 +1438,68 @@ function PropertiesPage() {
 
                 {/* PAGINATION */}
                 <div className="mt-[32px] flex justify-center">
-                  <div className="flex flex-wrap items-center justify-center gap-[7px]">
+                  <div className="flex flex-wrap items-center justify-center gap-[8px]">
 
-                    <PaginationButton disabled>
-                      â€¹
+                    <PaginationButton
+                      disabled={currentPage === 1}
+                      onClick={() => goToPage(currentPage - 1)}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                        <path
+                          d="M12.5 4.75 7.25 10l5.25 5.25"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </PaginationButton>
 
-                    <PaginationButton active>
+                    <PaginationButton
+                      active={currentPage === 1}
+                      onClick={() => goToPage(1)}
+                    >
                       1
                     </PaginationButton>
 
-                    <PaginationButton>
+                    <PaginationButton
+                      active={currentPage === 2}
+                      onClick={() => goToPage(2)}
+                    >
                       2
                     </PaginationButton>
 
-                    <PaginationButton>
+                    <PaginationButton
+                      active={currentPage === 3}
+                      onClick={() => goToPage(3)}
+                    >
                       3
                     </PaginationButton>
 
-                    <span className="px-[3px] text-[10px] text-[#94A3B8]">
+                    <span className="inline-flex h-[24px] min-w-[29.34px] items-center justify-center px-[8px] text-[14px] leading-none text-[#94A3B8]">
                       ...
                     </span>
 
-                    <PaginationButton>
+                    <PaginationButton
+                      active={currentPage === 42}
+                      onClick={() => goToPage(42)}
+                    >
                       42
                     </PaginationButton>
 
-                    <PaginationButton>
-                      â€º
+                    <PaginationButton
+                      disabled={currentPage === totalPages}
+                      onClick={() => goToPage(currentPage + 1)}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                        <path
+                          d="M7.5 4.75 12.75 10l-5.25 5.25"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </PaginationButton>
 
                   </div>
