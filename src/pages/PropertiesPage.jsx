@@ -38,6 +38,19 @@ function FiltersIcon() {
   );
 }
 
+function CloseIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
+      <path
+        d="M4 4l8 8M12 4l-8 8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function LocationIcon() {
   return (
     <svg
@@ -492,7 +505,7 @@ function ResultCard({
           <div className="flex items-center gap-[12px]">
             <button
               type="button"
-              className="inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
+              className="cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
             >
               Enquire Now
             </button>
@@ -759,7 +772,7 @@ function ResultTileCard({
     <button
       type="button"
       className={[
-        "inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
+        "cta-red inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
         featuredLayout
           ? "h-[48px] text-[14px]"
           : "h-[40px] text-[14px]",
@@ -988,7 +1001,7 @@ function MapResultCard({
         <div className="mt-auto flex items-center gap-[8px] pt-[2px]">
           <button
             type="button"
-            className="inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
+            className="cta-red inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
           >
             Enquire Now
           </button>
@@ -1215,6 +1228,45 @@ function PropertiesPage() {
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortMenuRef = React.useRef(null);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
+  const [filtersMounted, setFiltersMounted] = React.useState(false);
+  const [filtersEntered, setFiltersEntered] = React.useState(false);
+
+  // Keep the drawer mounted for the duration of the exit transition instead
+  // of yanking it out of the DOM the instant filtersOpen flips false.
+  React.useEffect(() => {
+    if (filtersOpen) {
+      setFiltersMounted(true);
+      return undefined;
+    }
+    setFiltersEntered(false);
+    if (!filtersMounted) return undefined;
+    const timeout = setTimeout(() => setFiltersMounted(false), 300);
+    return () => clearTimeout(timeout);
+  }, [filtersOpen, filtersMounted]);
+
+  // Mounting straight into the "open" position skips the enter transition
+  // entirely (the browser has no "before" frame to animate from). Flipping
+  // to the open classes one frame after mount gives it one.
+  React.useEffect(() => {
+    if (!filtersMounted || !filtersOpen) return undefined;
+    const raf = requestAnimationFrame(() => setFiltersEntered(true));
+    return () => cancelAnimationFrame(raf);
+  }, [filtersMounted, filtersOpen]);
+
+  // Lock page scroll and allow Escape to close while the drawer is open.
+  React.useEffect(() => {
+    if (!filtersOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setFiltersOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [filtersOpen]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
   const [favoriteIds, setFavoriteIds] = React.useState(
@@ -1345,7 +1397,7 @@ function PropertiesPage() {
     <main className="min-h-screen w-full bg-white text-[#0F172A]">
       <div className="flex min-h-screen w-full flex-col bg-white">
         {/* HEADER */}
-        <SiteHeader userLabel="User" userAvatarSrc="/images/avatar-1.jpg.png" />
+        <SiteHeader />
 
         {/* ------------------------------------------------------------------ */}
         {/* TOP SEARCH BAR                                                     */}
@@ -1382,7 +1434,7 @@ function PropertiesPage() {
                   onClick={() => setFiltersOpen((current) => !current)}
                   aria-expanded={filtersOpen}
                   aria-controls="results-filters"
-                  className="inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#111827] px-5 text-[14px] font-bold text-white"
+                  className="cta-navy inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] px-5 text-[14px] font-bold text-white"
                 >
                   <FiltersIcon />
                   <span>More Filters</span>
@@ -1391,7 +1443,7 @@ function PropertiesPage() {
                 <button
                   type="button"
                   aria-label="Search"
-                  className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+                  className="cta-red inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] text-white"
                 >
                   <SearchIcon />
                 </button>
@@ -1413,28 +1465,39 @@ function PropertiesPage() {
                 : "mx-auto max-w-[1440px] px-4 pt-[32px] sm:px-6 lg:px-8 xl:px-[9px]",
             ].join(" ")}
           >
-            <div
-              className={[
-                "flex w-full flex-col gap-6",
-                filtersOpen
-                  ? "lg:flex-row lg:items-start lg:gap-6 xl:gap-[32px]"
-                  : "",
-              ].join(" ")}
-            >
+            <div className="flex w-full flex-col gap-6">
               {/* ============================================================ */}
-              {/* LEFT SIDEBAR                                                 */}
+              {/* FILTERS DRAWER                                               */}
               {/* ============================================================ */}
 
-              {filtersOpen && (
-                <aside
-                  id="results-filters"
-                  className="w-full shrink-0 lg:w-[240px] xl:w-[280px]"
-                >
-                <div className="flex w-full items-center justify-between">
-                  <h2 className="text-[16px] font-bold leading-[20px]">
+              {filtersMounted && (
+                <div className="fixed inset-0 z-[100]">
+                  <button
+                    type="button"
+                    aria-label="Close filters"
+                    onClick={() => setFiltersOpen(false)}
+                    className={[
+                      "absolute inset-0 bg-slate-900/50 transition-opacity duration-300 ease-out",
+                      filtersOpen && filtersEntered ? "opacity-100" : "opacity-0",
+                    ].join(" ")}
+                  />
+
+                  <aside
+                    id="results-filters"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="results-filters-title"
+                    className={[
+                      "fixed inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-[#E5E7EB] bg-white shadow-[-20px_0_60px_-24px_rgba(15,23,42,0.35)] transition-transform duration-300 ease-out",
+                      filtersOpen && filtersEntered ? "translate-x-0" : "translate-x-full",
+                    ].join(" ")}
+                  >
+                <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
+                  <h2 id="results-filters-title" className="text-[16px] font-bold leading-[20px]">
                     Filters
                   </h2>
 
+                  <div className="flex items-center gap-4">
                   <button
                     type="button"
                     onClick={resetFilters}
@@ -1442,9 +1505,20 @@ function PropertiesPage() {
                   >
                     Reset All
                   </button>
+
+                  <button
+                    type="button"
+                    aria-label="Close filters"
+                    onClick={() => setFiltersOpen(false)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+                  >
+                    <CloseIcon />
+                  </button>
+                  </div>
                 </div>
 
-                <div className="mt-[24px] flex flex-col gap-[24px]">
+                <div className="flex-1 overflow-y-auto px-5 py-5">
+                <div className="flex flex-col gap-[24px]">
                   {/* PRICE */}
                   <SidebarSection title="Price Range">
                     <PriceRangeSlider
@@ -1631,19 +1705,26 @@ function PropertiesPage() {
                     </div>
                   </SidebarSection>
                 </div>
-                </aside>
+                </div>
+
+                <div className="shrink-0 border-t border-[#F3F4F6] px-5 py-4">
+                  <button
+                    type="button"
+                    onClick={() => setFiltersOpen(false)}
+                    className="cta-red inline-flex h-[46px] w-full items-center justify-center rounded-[12px] text-[14px] font-bold text-white"
+                  >
+                    Show Results
+                  </button>
+                </div>
+                  </aside>
+                </div>
               )}
 
               {/* ============================================================ */}
               {/* RIGHT PROPERTY RESULTS                                       */}
               {/* ============================================================ */}
 
-              <section
-                className={[
-                  "min-w-0 w-full",
-                  filtersOpen ? "lg:flex-1" : "",
-                ].join(" ")}
-              >
+              <section className="min-w-0 w-full">
                 {/* RESULTS HEADER */}
                 <div className="flex w-full items-start justify-between gap-6">
                   {viewMode !== "map" && (

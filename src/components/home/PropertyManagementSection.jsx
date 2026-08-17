@@ -29,7 +29,7 @@ function PropertyManagementSection() {
           ))}
         </div>
 
-        <button className="mt-7 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[10px] bg-[#E51C23] px-4 py-3.5 text-[14px] font-extrabold text-white transition hover:bg-[#cc1820] sm:w-auto sm:px-6 sm:text-[16px]">
+        <button className="cta-red mt-7 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[10px] px-4 py-3.5 text-[14px] font-extrabold text-white sm:w-auto sm:px-6 sm:text-[16px]">
           <span>Talk to a Relationship Manager</span>
           <span aria-hidden="true">→</span>
         </button>

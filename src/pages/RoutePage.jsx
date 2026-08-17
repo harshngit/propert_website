@@ -25,7 +25,7 @@ function RoutePage({ title, description }) {
           </div>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link to="/" className="rounded-2xl bg-red-500 px-5 py-3.5 text-sm font-extrabold text-white">
+            <Link to="/" className="cta-red rounded-2xl px-5 py-3.5 text-sm font-extrabold text-white">
               Back to Home
             </Link>
             <Link to="/buy" className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-extrabold text-slate-700">

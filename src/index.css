@@ -80,3 +80,46 @@ button {
     transform: none;
   }
 }
+
+/* Shared CTA hover language: red buttons swap to navy on hover and vice
+   versa, with a small lift + shadow. Reserved for genuine call-to-action
+   buttons (submit, enquire, post, search) - not filter chips/badges, whose
+   color already carries selected/unselected meaning. */
+.cta-red,
+.cta-navy {
+  transition: background-color 220ms ease, box-shadow 220ms ease, transform 160ms ease;
+}
+
+.cta-red {
+  background-color: #e51c23;
+}
+.cta-red:hover {
+  background-color: #111827;
+  box-shadow: 0 14px 28px -10px rgba(17, 24, 39, 0.55);
+  transform: translateY(-1px);
+}
+
+.cta-navy {
+  background-color: #111827;
+}
+.cta-navy:hover {
+  background-color: #e51c23;
+  box-shadow: 0 14px 28px -10px rgba(229, 28, 35, 0.55);
+  transform: translateY(-1px);
+}
+
+.cta-red:active,
+.cta-navy:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-red,
+  .cta-navy {
+    transition: background-color 220ms ease;
+  }
+  .cta-red:hover,
+  .cta-navy:hover {
+    transform: none;
+  }
+}

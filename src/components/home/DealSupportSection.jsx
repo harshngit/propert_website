@@ -24,7 +24,7 @@ function DealSupportSection() {
               </span>
             ))}
           </div>
-          <button className="mt-4 rounded-[14px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
+          <button className="cta-red mt-4 rounded-[14px] px-6 py-3.5 text-[16px] font-extrabold text-white">
             View Curated Deals
           </button>
           <p className="mt-4 text-[14px] border-t border-slate-100 pt-4  leading-6 text-slate-500">

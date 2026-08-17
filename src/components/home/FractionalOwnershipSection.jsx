@@ -16,7 +16,7 @@ function FractionalOwnershipSection() {
             Cr and ₹10 Cr - structured through its own dedicated vehicle.
           </p>
 
-          <button className="mt-8 inline-flex items-center bg-[#E51C23] justify-center rounded-[12px] border border-[#d7dfee]  px-8 py-3.5 text-[16px] font-extrabold text-[#ffffff] shadow-[0_8px_18px_rgba(15,23,42,0.03)] transition hover:bg-[#cc1820]">
+          <button className="cta-red mt-8 inline-flex items-center justify-center rounded-[12px] border border-[#d7dfee] px-8 py-3.5 text-[16px] font-extrabold text-[#ffffff] shadow-[0_8px_18px_rgba(15,23,42,0.03)]">
             Register Your Interest →
           </button>
 

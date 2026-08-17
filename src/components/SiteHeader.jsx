@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { buildPropertiesPath } from "../utils/propertySearch";
+import { useAuth } from "../context/AuthContext";
 
 const navItems = [
   { label: "Buy", to: "/buy", widthClass: "w-[47px]" },
@@ -204,7 +205,67 @@ function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
   );
 }
 
-function SiteHeader({ userLabel = "Login", userAvatarSrc = "" }) {
+function initialOf(name) {
+  return (name || "").trim().charAt(0).toUpperCase() || "U";
+}
+
+// Right-anchored on purpose (not DropdownPanel, which centers under its
+// trigger) - this sits at the far right edge of the header, so a centered
+// panel would spill off the viewport.
+function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
+  const { user, logout } = useAuth();
+  const firstName = (user?.fullName || "").split(" ")[0] || "Account";
+
+  const handleLogout = async (event) => {
+    event.preventDefault();
+    await logout();
+    onLoggedOut();
+  };
+
+  return (
+    <div className="relative flex items-center" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <button
+        type="button"
+        className="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
+      >
+        {user?.profilePictureUrl ? (
+          <img
+            src={user.profilePictureUrl}
+            alt={firstName}
+            className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-200"
+          />
+        ) : (
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FDE8E8] text-[13px] font-extrabold text-[#E51C23]">
+            {initialOf(user?.fullName)}
+          </span>
+        )}
+        <span className="max-w-[110px] truncate">{firstName}</span>
+        <Chevron />
+      </button>
+
+      <div
+        className={[
+          "absolute right-0 top-full z-50 mt-0 min-w-[200px] rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150",
+          isOpen ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0",
+        ].join(" ")}
+      >
+        <p className="truncate px-3 pb-1 pt-1.5 text-[12px] font-semibold text-slate-400">
+          Signed in as {user?.email || user?.mobile}
+        </p>
+        <button
+          type="button"
+          onMouseDown={handleLogout}
+          className="w-full rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SiteHeader() {
+  const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -275,25 +336,28 @@ function SiteHeader({ userLabel = "Login", userAvatarSrc = "" }) {
         </nav>
 
         <div className="hidden h-10  items-center gap-3 lg:flex">
-          <a
-            href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
-            target="_self"
-            rel="noreferrer"
-            className="inline-flex h-10 shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
-          >
-            {userAvatarSrc ? (
-              <img
-                src={userAvatarSrc}
-                alt={userLabel}
-                className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-200"
-              />
-            ) : (
-              <span className="flex h-5 items-center justify-start">{userLabel}</span>
-            )}
-            {!userAvatarSrc ? <Chevron /> : null}
-          </a>
+          {isAuthenticated ? (
+            <AccountMenu
+              isOpen={openMenu === "account"}
+              onEnter={() => setOpenMenu("account")}
+              onLeave={() => setOpenMenu(null)}
+              onLoggedOut={() => {
+                setOpenMenu(null);
+                navigate("/");
+              }}
+            />
+          ) : (
+            <NavLink
+              to="/login"
+              state={{ from: location }}
+              className="inline-flex h-10 shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
+            >
+              <span className="flex h-5 items-center justify-start">Login</span>
+              <Chevron />
+            </NavLink>
+          )}
 
-          <button className="inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] bg-[#E51C23] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white shadow-[0_10px_22px_rgba(229,28,35,0.35)] transition hover:bg-[#cc1820]">
+          <button className="cta-red inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white">
             <span className="inline-flex h-5 w-[95px] items-center justify-center">Post Property</span>
             <span className="inline-flex h-4 w-10 items-center justify-center rounded-[2px] bg-[#F4B400] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-5 tracking-[0.0107em] text-[#111827]">
               FREE
@@ -360,23 +424,49 @@ function SiteHeader({ userLabel = "Login", userAvatarSrc = "" }) {
             </NavLink>
           ))}
 
-          <a
-            href="https://property-dashboard-one-navy.vercel.app/app/dashboard"
-            target="_self"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
-          >
-            {userAvatarSrc ? (
-              <img
-                src={userAvatarSrc}
-                alt={userLabel}
-                className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-200"
-              />
-            ) : null}
-            {!userAvatarSrc ? <span>{userLabel}</span> : null}
-          </a>
+          {isAuthenticated ? (
+            <div className="flex items-center justify-between gap-2 rounded-[12px] border border-slate-200 px-4 py-3">
+              <div className="flex min-w-0 items-center gap-2">
+                {user?.profilePictureUrl ? (
+                  <img
+                    src={user.profilePictureUrl}
+                    alt={user?.fullName || "Account"}
+                    className="h-7 w-7 shrink-0 rounded-full object-cover ring-1 ring-slate-200"
+                  />
+                ) : (
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FDE8E8] text-[12px] font-extrabold text-[#E51C23]">
+                    {initialOf(user?.fullName)}
+                  </span>
+                )}
+                <span className="truncate text-[14px] font-semibold text-[#374151]">
+                  {(user?.fullName || "Account").split(" ")[0]}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  setMobileMenuOpen(false);
+                  await logout();
+                  navigate("/");
+                }}
+                className="shrink-0 text-[13px] font-bold text-red-500"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <NavLink
+              to="/login"
+              state={{ from: location }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+            >
+              <span>Login</span>
+              <Chevron />
+            </NavLink>
+          )}
 
-          <button className="inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-4 text-[14px] font-bold text-white">
+          <button className="cta-red inline-flex h-11 items-center justify-center gap-2 rounded-[12px] px-4 text-[14px] font-bold text-white">
             Post Property
             <span className="rounded-[2px] bg-[#F4B400] px-2 py-1 text-[10px] font-bold uppercase text-[#111827]">
               FREE

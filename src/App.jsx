@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PropertiesPage from "./pages/PropertiesPage";
 import RoutePage from "./pages/RoutePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -36,15 +38,8 @@ function App() {
           />
         }
       />
-      <Route
-        path="/login"
-        element={
-          <RoutePage
-            title="Login"
-            description="Sign in to manage your searches, saved listings, and property workflows in one place."
-          />
-        }
-      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/services"
         element={

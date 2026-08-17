@@ -180,7 +180,7 @@ function HomeHeroSection() {
             </div>
           </div>
 
-          <button type="submit" className="ml-0 inline-flex h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#E51C23] px-10 py-4 text-white hover:bg-[#cc1820] lg:ml-auto lg:w-[159px]">
+          <button type="submit" className="cta-red ml-0 inline-flex h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-[12px] px-10 py-4 text-white lg:ml-auto lg:w-[159px]">
             <SearchIcon />
             <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0049em]">
               Search
