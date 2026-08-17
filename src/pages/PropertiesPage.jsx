@@ -8,12 +8,7 @@ import SiteHeader from "../components/SiteHeader";
 
 function SearchIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="h-4 w-4"
-      fill="none"
-    >
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
       <path
         d="M7.25 12.5a5.25 5.25 0 1 1 0-10.5 5.25 5.25 0 0 1 0 10.5Zm3.9-.9L15 15.45"
         stroke="currentColor"
@@ -178,11 +173,7 @@ function CheckboxItem({ label, checked = false, onClick }) {
         ].join(" ")}
       >
         {checked && (
-          <svg
-            viewBox="0 0 12 12"
-            className="h-[10px] w-[10px]"
-            fill="none"
-          >
+          <svg viewBox="0 0 12 12" className="h-[10px] w-[10px]" fill="none">
             <path
               d="M2.5 6.2 4.8 8.5 9.5 3.5"
               stroke="currentColor"
@@ -346,7 +337,6 @@ function ResultCard({
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
     >
-
       {/* PROPERTY IMAGE */}
       <div className="relative h-full w-[265px] shrink-0">
         <img
@@ -360,7 +350,12 @@ function ResultCard({
           {item.badge === "NEW LISTING" ? (
             <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
               <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
-                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                <svg
+                  viewBox="0 0 16 16"
+                  className="h-[10px] w-[10px]"
+                  fill="none"
+                  aria-hidden="true"
+                >
                   <path
                     d="M4 8.5 6.5 11 12 5.5"
                     stroke="#FFFFFF"
@@ -375,16 +370,21 @@ function ResultCard({
                 NEW LISTING
               </span>
             </span>
-          ) : (
+          ) : item.badge !== "VERIFIED" ? (
             <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
               {item.badge}
             </span>
-          )}
+          ) : null}
 
           {item.verified && (
             <span className="inline-flex h-[23px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
               <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
-                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
+                <svg
+                  viewBox="0 0 16 16"
+                  className="h-[10px] w-[10px]"
+                  fill="none"
+                  aria-hidden="true"
+                >
                   <path
                     d="M4 8.5 6.5 11 12 5.5"
                     stroke="#FFFFFF"
@@ -398,6 +398,7 @@ function ResultCard({
               <span>VERIFIED</span>
             </span>
           )}
+
         </div>
 
         {/* FAVOURITE BUTTON */}
@@ -416,17 +417,14 @@ function ResultCard({
 
       {/* PROPERTY CONTENT */}
       <div className="flex min-w-0 flex-1 justify-between p-[24px]">
-
         {/* ================================================================ */}
         {/* LEFT SIDE                                                        */}
         {/* ================================================================ */}
 
-      <div className="flex min-w-0 flex-1 flex-col justify-between">
-
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
           {/* PRICE / TITLE / LOCATION */}
           <div className="min-w-0">
-
-            <div className="flex items-baseline gap-[8px]">
+            <div className="">
               <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[22px] text-[#111827]">
                 ₹{item.price}
               </h3>
@@ -443,9 +441,7 @@ function ResultCard({
             <div className="mt-[6px] flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[19.5px] tracking-normal text-[#6B7280]">
               <ResultPinIcon />
 
-              <span className="whitespace-nowrap">
-                {item.location}
-              </span>
+              <span className="whitespace-nowrap">{item.location}</span>
             </div>
           </div>
 
@@ -470,10 +466,8 @@ function ResultCard({
         {/* ================================================================ */}
 
         <div className="ml-[24px] flex shrink-0 flex-col items-end justify-between">
-
           {/* BHK / AREA / MATCH */}
           <div className="flex h-[43px] items-center gap-[16px] border-b border-[#F3F4F6] pb-[12px]">
-
             {/* BHK */}
             <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
               <BedIcon />
@@ -496,7 +490,6 @@ function ResultCard({
 
           {/* ENQUIRE + PHONE BUTTON */}
           <div className="flex items-center gap-[12px]">
-
             <button
               type="button"
               className="inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
@@ -516,7 +509,6 @@ function ResultCard({
                 className="h-[16px] w-[16px] object-contain"
               />
             </button>
-
           </div>
         </div>
       </div>
@@ -528,16 +520,23 @@ function ResultTileCard({
   item,
   selected = false,
   favorite = false,
+  featuredLayout = false,
+  hidePrimaryBadgeWhenVerified = false,
+  showVerifiedBadge = true,
+  showMatchBadge = true,
   onClick,
   onFavoriteToggle,
 }) {
   return (
     <article
-      onClick={onClick}
-      className={[
-        "flex h-[503.5px] flex-col overflow-hidden rounded-[16px] border shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
-        selected
-          ? "border-[#FFEBEB] bg-[#FFF9F9]"
+        onClick={onClick}
+        className={[
+          "flex flex-col overflow-hidden border",
+          featuredLayout
+            ? "h-[500.5px] w-full min-w-0 flex-1 rounded-[16px] shadow-[0_4px_20px_0_rgba(0,0,0,0.05)]"
+            : "h-[500.5px] rounded-[16px] shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
+          selected
+            ? "border-[#FFEBEB] bg-[#FFF9F9]"
           : "border-[#E5E7EB] bg-white",
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
@@ -549,46 +548,68 @@ function ResultTileCard({
           className="h-full w-full object-cover"
         />
 
-        <div className="absolute left-[8px] top-[8px] flex items-center gap-[6px]">
-          {item.badge === "NEW LISTING" ? (
-            <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
-              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
-                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
-                  <path
-                    d="M4 8.5 6.5 11 12 5.5"
-                    stroke="#FFFFFF"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+        <div className="absolute left-[8px] top-[8px] flex w-fit flex-col items-start gap-[6px]">
+          <div className="flex items-center gap-[6px]">
+            {item.badge === "NEW LISTING" ? (
+              <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+                <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                  <svg
+                    viewBox="0 0 16 16"
+                    className="h-[10px] w-[10px]"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 8.5 6.5 11 12 5.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
 
-              <span className="max-w-[38px] whitespace-normal text-center leading-[15px]">
-                NEW LISTING
+                <span className="max-w-[38px] whitespace-normal text-center leading-[15px]">
+                  NEW LISTING
+                </span>
               </span>
-            </span>
-          ) : (
-            <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
-              {item.badge}
-            </span>
-          )}
-
-          {item.verified && (
-            <span className="inline-flex h-[23px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
-              <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
-                <svg viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none" aria-hidden="true">
-                  <path
-                    d="M4 8.5 6.5 11 12 5.5"
-                    stroke="#FFFFFF"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+            ) : featuredLayout ? (
+              <span className="inline-flex h-[23px] w-[79px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+                FEATURED
               </span>
+            ) : !hidePrimaryBadgeWhenVerified || !item.verified ? (
+              <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+                {item.badge}
+              </span>
+            ) : null}
 
-              <span>VERIFIED</span>
+            {item.verified && showVerifiedBadge && (
+              <span className="inline-flex h-[23px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+                <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                  <svg
+                    viewBox="0 0 16 16"
+                    className="h-[10px] w-[10px]"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 8.5 6.5 11 12 5.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+
+                <span>VERIFIED</span>
+              </span>
+            )}
+          </div>
+
+          {showMatchBadge && !featuredLayout && (
+            <span className="inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px]  text-[10px] font-bold leading-[15px] text-white shadow-sm">
+              {item.match}
             </span>
           )}
         </div>
@@ -606,76 +627,167 @@ function ResultTileCard({
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col gap-[12px] p-[16px]">
-        <div>
-          <div className="flex items-baseline gap-[8px]">
-            <h3 className="whitespace-nowrap text-[17px] font-extrabold leading-[22px] text-[#111827]">
-              ₹{item.price}
-            </h3>
+    <div
+  className={[
+    "flex flex-1 flex-col",
+    featuredLayout ? "p-[20px]" : "gap-[12px] p-[16px]",
+  ].join(" ")}
+>
+  {/* PRICE / TITLE / LOCATION */}
+  <div
+    className={
+      featuredLayout
+        ? "flex flex-col justify-start"
+        : ""
+    }
+  >
+    {/* PRICE + RATE */}
+    <div className="flex w-full items-baseline">
+      <h3
+        className={[
+          "whitespace-nowrap font-extrabold text-[#111827]",
+          featuredLayout
+            ? "text-[22px] leading-[32px]"
+            : "text-[17px] leading-[22px]",
+        ].join(" ")}
+      >
+        ₹{item.price}
+      </h3>
 
-            <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
-              ₹{item.rate}
-            </span>
-          </div>
+      <span
+        className={[
+          "ml-auto whitespace-nowrap text-[#6B7280]",
+          featuredLayout
+            ? "text-[12px] leading-[18px]"
+            : "text-[12px] leading-[18px]",
+        ].join(" ")}
+      >
+        ₹{item.rate}
+      </span>
+    </div>
 
-          <h4 className="mt-[6px] text-[15px] font-bold leading-[20px] text-[#111827]">
-            {item.title}
-          </h4>
+    {/* TITLE */}
+    <h4
+      className={[
+        "font-bold text-[#111827]",
+        featuredLayout
+          ? "mt-[2px] text-[16px] leading-[24px]"
+          : "mt-[6px] text-[15px] leading-[20px]",
+      ].join(" ")}
+    >
+      {item.title}
+    </h4>
 
-          <div className="mt-[6px] flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[19.5px] tracking-normal text-[#6B7280]">
-            <ResultPinIcon />
-            <span className="whitespace-nowrap">{item.location}</span>
-          </div>
-        </div>
+    {/* LOCATION */}
+    <div
+      className={[
+        "flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] font-normal tracking-normal text-[#6B7280]",
+        featuredLayout
+          ? "mt-[4px] text-[13px] leading-[19.5px]"
+          : "mt-[6px] text-[13px] leading-[19.5px]",
+      ].join(" ")}
+    >
+      <ResultPinIcon />
 
-        <div className="flex flex-wrap items-center gap-x-[14px] gap-y-[8px] text-[11px] font-semibold uppercase leading-[16px] text-[#111827]">
-          <span className="inline-flex items-center gap-[6px]">
-            <BedIcon />
-            {item.details}
-          </span>
+      <span className="truncate">
+        {item.location}
+      </span>
+    </div>
+  </div>
 
-          <span className="inline-flex items-center gap-[6px]">
-            <AreaIcon />
-            {item.area}
-          </span>
-        </div>
+  {/* BHK / AREA / MATCH */}
+  <div
+    className={[
+      "flex flex-wrap items-center uppercase text-[#111827]",
+      featuredLayout
+        ? "mt-[16px] min-h-[52px] gap-[16px] border-y border-[#F3F4F6] py-[10px] text-[14px] font-semibold leading-[16px]"
+        : "gap-x-[14px] gap-y-[8px] border-y border-[#F3F4F6] py-[8px] text-[11px] font-semibold leading-[16px]",
+    ].join(" ")}
+  >
+    {/* BHK */}
+    <span className="inline-flex items-center text-[12px] gap-[6px] whitespace-nowrap">
+      <BedIcon />
+      {item.details}
+    </span>
 
-        <div className="flex flex-wrap items-center gap-[8px]">
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className={[
-                "rounded-[6px] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-none text-[#6B7280]",
-                "bg-[#F9FAFB]",
-              ].join(" ")}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+    {/* AREA */}
+    <span className="inline-flex items-center text-[12px] gap-[6px] whitespace-nowrap">
+      <AreaIcon />
+      {item.area}
+    </span>
 
-        <div className="mt-auto flex items-center gap-[10px]">
-          <button
-            type="button"
-            className="inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white whitespace-nowrap"
-          >
-            Enquire Now
-          </button>
+    {/* MATCH BADGE */}
+    <span
+      className={[
+        "whitespace-nowrap rounded-[8px] bg-[#111827] font-bold normal-case text-white",
+        featuredLayout
+          ? "px-[10px] py-[8px] text-[10px]"
+          : "px-[8px] py-[6px] text-[9px]",
+      ].join(" ")}
+    >
+      {item.match}
+    </span>
+  </div>
 
-          <button
-            type="button"
-            aria-label="Call"
-            className="inline-flex h-[48px] w-[48px] items-center justify-center rounded-[12px] border-2 border-[#E51C23] bg-white text-[#E51C23]"
-          >
-            <img
-              src="/images/phone.png"
-              alt=""
-              aria-hidden="true"
-              className="h-[16px] w-[16px] object-contain"
-            />
-          </button>
-        </div>
-      </div>
+  {/* TAGS */}
+  <div
+    className={[
+      "flex w-full flex-wrap items-start content-start gap-x-[8px] gap-y-[8px]",
+      featuredLayout ? "mt-[12px]" : "mt-[4px] min-h-[64px]",
+    ].join(" ")}
+  >
+    {item.tags.map((tag) => (
+      <span
+        key={tag}
+        className="inline-flex h-[30px] items-center rounded-[6px] bg-[#F9FAFB] px-[12px] text-[10px] font-semibold uppercase leading-[16px] text-[#6B7280]"
+      >
+        {tag}
+      </span>
+    ))}
+  </div>
+
+  {/* ACTION BUTTONS */}
+  <div
+    className={[
+      "mt-auto flex items-center gap-[10px]",
+      featuredLayout
+        ? "pt-[16px]"
+        : "",
+    ].join(" ")}
+  >
+    {/* ENQUIRE NOW */}
+    <button
+      type="button"
+      className={[
+        "inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
+        featuredLayout
+          ? "h-[48px] text-[14px]"
+          : "h-[40px] text-[14px]",
+      ].join(" ")}
+    >
+      Enquire Now
+    </button>
+
+    {/* PHONE */}
+    <button
+      type="button"
+      aria-label="Call"
+      className={[
+        "inline-flex shrink-0 items-center justify-center border-2 border-[#E51C23] bg-white text-[#E51C23]",
+        featuredLayout
+          ? "h-[48px] w-[48px] rounded-[12px]"
+          : "h-[40px] w-[40px] rounded-[10px]",
+      ].join(" ")}
+    >
+      <img
+        src="/images/phone.png"
+        alt=""
+        aria-hidden="true"
+        className="h-[16px] w-[16px] object-contain"
+      />
+    </button>
+  </div>
+</div>
     </article>
   );
 }
@@ -730,19 +842,260 @@ function ViewModeButton({
   );
 }
 
+function MapResultCard({
+  item,
+  favorite = false,
+  onClick,
+  onFavoriteToggle,
+}) {
+  return (
+    <article
+      onClick={onClick}
+      className="flex min-w-0 flex-col overflow-hidden rounded-[14px] border border-[#E5E7EB] bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+    >
+      <div className="relative h-[112px] w-full">
+        <img
+          src={item.image}
+          alt={item.title}
+          className="h-full w-full object-cover"
+        />
+
+        <div className="absolute left-[8px] top-[8px] flex w-fit flex-col items-start gap-[4px]">
+          <div className="flex items-center gap-[6px]">
+            {item.badge === "NEW LISTING" ? (
+              <span className="inline-flex h-[34px] w-[78px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+                <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                  <svg
+                    viewBox="0 0 16 16"
+                    className="h-[10px] w-[10px]"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 8.5 6.5 11 12 5.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+
+                <span className="max-w-[38px] whitespace-normal text-center leading-[15px]">
+                  NEW LISTING
+                </span>
+              </span>
+            ) : item.badge === "FEATURED" ? (
+              <span className="inline-flex h-[23px] w-[79px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+                FEATURED
+              </span>
+            ) : item.badge !== "VERIFIED" ? (
+              <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
+                {item.badge}
+              </span>
+            ) : null}
+
+            {item.verified && (
+              <span className="inline-flex h-[23px] w-[78px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
+                <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                  <svg
+                    viewBox="0 0 16 16"
+                    className="h-[10px] w-[10px]"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 8.5 6.5 11 12 5.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+
+                <span>VERIFIED</span>
+              </span>
+            )}
+          </div>
+
+          <span className="inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[10px] py-[4px] text-[10px] font-bold leading-[15px] text-white shadow-sm">
+            {item.match}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Save property"
+          onClick={(event) => {
+            event.stopPropagation();
+            onFavoriteToggle?.();
+          }}
+          className="absolute right-[8px] top-[8px] flex h-[32px] w-[32px] items-center justify-center rounded-full bg-white shadow-sm"
+        >
+          <HeartIcon active={favorite} />
+        </button>
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col gap-[8px] p-[12px]">
+        <div className="flex items-baseline justify-between gap-[8px]">
+          <h3 className="whitespace-nowrap text-[18px] font-extrabold leading-[24px] text-[#111827]">
+            ₹{item.price}
+          </h3>
+
+          <span className="whitespace-nowrap text-[11px] leading-[18px] text-[#6B7280]">
+            ₹{item.rate}
+          </span>
+        </div>
+
+        <h4 className="truncate text-[15px] font-bold leading-[20px] text-[#111827]">
+          {item.title}
+        </h4>
+
+        <div className="flex items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[18px] tracking-normal text-[#6B7280]">
+          <ResultPinIcon />
+
+          <span className="truncate">{item.location}</span>
+        </div>
+
+        <div className="flex items-center gap-[10px] border-y border-[#F3F4F6] py-[8px] text-[11px] font-semibold uppercase leading-[16px] text-[#111827]">
+          <span className="inline-flex items-center gap-[6px] whitespace-nowrap">
+            <BedIcon />
+            {item.details}
+          </span>
+
+          <span className="inline-flex items-center gap-[6px] whitespace-nowrap">
+            <AreaIcon />
+            {item.area}
+          </span>
+
+          <span className="ml-auto inline-flex h-[23px] items-center justify-center whitespace-nowrap rounded-[9999px] bg-[#111827] px-[10px] text-[10px] font-bold normal-case leading-[15px] text-white shadow-sm">
+            {item.match}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-[8px]">
+          {item.tags.slice(0, 2).map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex h-[24px] items-center rounded-[6px] bg-[#F9FAFB] px-[8px] text-[9px] font-semibold uppercase leading-[16px] text-[#6B7280]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto flex items-center gap-[8px] pt-[2px]">
+          <button
+            type="button"
+            className="inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] bg-[#E51C23] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
+          >
+            Enquire Now
+          </button>
+
+          <button
+            type="button"
+            aria-label="Call"
+            className="inline-flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"
+          >
+            <img
+              src="/images/phone.png"
+              alt=""
+              aria-hidden="true"
+              className="h-[16px] w-[16px] object-contain"
+            />
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function MapPlaceholder() {
   return (
-    <div className="flex h-full min-h-[540px] w-full items-center justify-center rounded-[16px] border border-dashed border-[#CBD5E1] bg-[linear-gradient(135deg,#F8FAFC_0%,#EEF2FF_100%)] px-6 text-center">
-      <div>
-        <div className="text-[12px] font-bold uppercase tracking-[0.24em] text-[#94A3B8]">
-          Map View
+    <div className="relative min-h-[821px] w-full overflow-hidden">
+      <div className="relative h-full w-full">
+        <img
+          src="/images/map image.png"
+          alt="Mumbai map"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+
+        <div className="absolute left-[18%] top-[24%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+          ₹1.15 Cr
         </div>
-        <h3 className="mt-3 text-[28px] font-black leading-tight text-[#0F172A]">
-          Map will render here
-        </h3>
-        <p className="mt-3 text-[14px] text-[#64748B]">
-          Properties stay visible beside the map on desktop and below it on mobile.
-        </p>
+
+        <div className="absolute left-[28%] top-[42%] rounded-full bg-[#E51C23] px-[12px] py-[4px] text-[12px] font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+          ₹1.45 Cr
+        </div>
+
+        <div className="absolute left-[40%] top-[42%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+          ₹1.45 Cr
+        </div>
+
+        <div className="absolute left-[18%] top-[66%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+          ₹2.45 Cr
+        </div>
+
+        <div className="absolute left-[31%] top-[51%] w-[224px] rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_10px_25px_rgba(0,0,0,0.15)]">
+          <div className="flex gap-[8px] p-[8px]">
+            <img
+              src="/images/1st,4th.png"
+              alt=""
+              className="h-[48px] w-[56px] rounded-[8px] object-cover"
+            />
+
+            <div className="min-w-0 flex-1">
+              <div className="text-[12px] font-bold leading-[18px] text-[#111827]">
+                ₹4.20 Cr
+              </div>
+              <div className="truncate text-[11px] font-semibold leading-[16px] text-[#111827]">
+                Oberoi Sky City
+              </div>
+              <div className="truncate text-[10px] leading-[14px] text-[#6B7280]">
+                Borivali East, Mumbai
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-[#F3F4F6] px-[8px] py-[6px] text-[10px] font-semibold text-[#E51C23]">
+            <span>VIEW DETAILS</span>
+            <span className="text-[#E51C23]">&rsaquo;</span>
+          </div>
+        </div>
+
+        <div className="absolute right-[40px] bottom-[40px] flex h-[153px] w-[40px] flex-col gap-[8px]">
+          <div className="flex h-[105px] w-[40px] flex-col overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+            <button
+              type="button"
+              className="flex h-[52px] w-full items-center justify-center text-[22px] font-light leading-none text-[#64748B]"
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+            <div className="mx-auto h-px w-full bg-[#F3F4F6]" />
+            <button
+              type="button"
+              className="flex h-[52px] w-full items-center justify-center text-[22px] font-light leading-none text-[#64748B]"
+              aria-label="Zoom out"
+            >
+              −
+            </button>
+          </div>
+
+        <button
+          type="button"
+          className="flex h-[40px] w-[40px] items-center justify-center rounded-[8px] border border-[#E5E7EB] bg-white text-[#64748B] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+          aria-label="Recenter map"
+        >
+          <img
+            src="/images/nav.png"
+            alt=""
+            aria-hidden="true"
+            className="h-[16px] w-[16px] object-contain"
+          />
+        </button>
+        </div>
       </div>
     </div>
   );
@@ -861,10 +1214,12 @@ function PropertiesPage() {
   const [sortValue, setSortValue] = React.useState("relevance");
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortMenuRef = React.useRef(null);
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
   const [favoriteIds, setFavoriteIds] = React.useState(
-    () => new Set(results.filter((item) => item.favorite).map((item) => item.id)),
+    () =>
+      new Set(results.filter((item) => item.favorite).map((item) => item.id)),
   );
   const [selectedBhk, setSelectedBhk] = React.useState(["2 BHK", "3 BHK"]);
   const [selectedPropertyTypes, setSelectedPropertyTypes] = React.useState([
@@ -895,7 +1250,9 @@ function PropertiesPage() {
     setSortOpen(false);
     setCurrentPage(1);
     setSelectedPropertyId(null);
-    setFavoriteIds(new Set(results.filter((item) => item.favorite).map((item) => item.id)));
+    setFavoriteIds(
+      new Set(results.filter((item) => item.favorite).map((item) => item.id)),
+    );
     setSelectedBhk(["2 BHK", "3 BHK"]);
     setSelectedPropertyTypes(["Apartment"]);
     setSelectedPropertyStatus(["Under Construction"]);
@@ -908,10 +1265,7 @@ function PropertiesPage() {
 
   React.useEffect(() => {
     const handleDocumentClick = (event) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(event.target)
-      ) {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(event.target)) {
         setSortOpen(false);
       }
     };
@@ -924,9 +1278,13 @@ function PropertiesPage() {
     const nextResults = [...results];
 
     if (sortValue === "price-low") {
-      nextResults.sort((a, b) => parsePriceValue(a.price) - parsePriceValue(b.price));
+      nextResults.sort(
+        (a, b) => parsePriceValue(a.price) - parsePriceValue(b.price),
+      );
     } else if (sortValue === "price-high") {
-      nextResults.sort((a, b) => parsePriceValue(b.price) - parsePriceValue(a.price));
+      nextResults.sort(
+        (a, b) => parsePriceValue(b.price) - parsePriceValue(a.price),
+      );
     }
 
     return nextResults;
@@ -986,12 +1344,8 @@ function PropertiesPage() {
   return (
     <main className="min-h-screen w-full bg-white text-[#0F172A]">
       <div className="flex min-h-screen w-full flex-col bg-white">
-
         {/* HEADER */}
-        <SiteHeader
-          userLabel="User"
-          userAvatarSrc="/images/avatar-1.jpg.png"
-        />
+        <SiteHeader userLabel="User" userAvatarSrc="/images/avatar-1.jpg.png" />
 
         {/* ------------------------------------------------------------------ */}
         {/* TOP SEARCH BAR                                                     */}
@@ -1000,43 +1354,34 @@ function PropertiesPage() {
         <section className="w-full border-b border-[#E5E7EB] bg-white">
           <div className="flex min-h-[77px] w-full items-center px-4 py-4 sm:px-6 lg:px-8 xl:px-12">
             <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
-
               {/* SEARCH FIELDS */}
               <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
                 <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
                   <LocationIcon />
 
-                  <span className="font-semibold">
-                    {areaLabel}
-                  </span>
+                  <span className="font-semibold">{areaLabel}</span>
                 </div>
 
                 <Divider />
 
-                <FilterField
-                  label="Type:"
-                  value="Buy"
-                />
+                <FilterField label="Type:" value="Buy" />
 
                 <Divider />
 
-                <FilterField
-                  label="Property:"
-                  value="Flat"
-                />
+                <FilterField label="Property:" value="Flat" />
 
                 <Divider />
 
-                <FilterField
-                  label="Budget:"
-                  value="₹1 Cr - ₹5 Cr"
-                />
+                <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
               </div>
 
               {/* ACTION BUTTONS */}
               <div className="flex shrink-0 items-center gap-3 md:gap-4">
                 <button
                   type="button"
+                  onClick={() => setFiltersOpen((current) => !current)}
+                  aria-expanded={filtersOpen}
+                  aria-controls="results-filters"
                   className="inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-[#111827] px-5 text-[14px] font-bold text-white"
                 >
                   <FiltersIcon />
@@ -1051,7 +1396,6 @@ function PropertiesPage() {
                   <SearchIcon />
                 </button>
               </div>
-
             </div>
           </div>
         </section>
@@ -1061,16 +1405,31 @@ function PropertiesPage() {
         {/* ------------------------------------------------------------------ */}
 
         <div className="w-full flex-1 bg-white">
-          <div className="mx-auto w-full max-w-[1520px] px-4 pb-[40px] pt-[32px] sm:px-6 lg:px-8 xl:px-[48px]">
-
-            <div className="flex w-full flex-col gap-6 lg:flex-row lg:items-start lg:gap-6 xl:gap-[32px]">
-
+          <div
+            className={[
+              "w-full pb-[40px]",
+              viewMode === "map"
+                ? "mx-0 max-w-none pl-0 pr-4 pt-[0px] sm:pr-6 lg:pr-8 xl:pr-[9px]"
+                : "mx-auto max-w-[1440px] px-4 pt-[32px] sm:px-6 lg:px-8 xl:px-[9px]",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "flex w-full flex-col gap-6",
+                filtersOpen
+                  ? "lg:flex-row lg:items-start lg:gap-6 xl:gap-[32px]"
+                  : "",
+              ].join(" ")}
+            >
               {/* ============================================================ */}
               {/* LEFT SIDEBAR                                                 */}
               {/* ============================================================ */}
 
-              <aside className="w-full shrink-0 lg:w-[240px] xl:w-[280px]">
-
+              {filtersOpen && (
+                <aside
+                  id="results-filters"
+                  className="w-full shrink-0 lg:w-[240px] xl:w-[280px]"
+                >
                 <div className="flex w-full items-center justify-between">
                   <h2 className="text-[16px] font-bold leading-[20px]">
                     Filters
@@ -1086,9 +1445,8 @@ function PropertiesPage() {
                 </div>
 
                 <div className="mt-[24px] flex flex-col gap-[24px]">
-
                   {/* PRICE */}
-                                    <SidebarSection title="Price Range">
+                  <SidebarSection title="Price Range">
                     <PriceRangeSlider
                       minValue={minPrice}
                       maxValue={maxPrice}
@@ -1100,20 +1458,18 @@ function PropertiesPage() {
                   {/* BHK */}
                   <SidebarSection title="BHK Type">
                     <div className="flex flex-wrap gap-[8px]">
-                      {[
-                        "1 BHK",
-                        "2 BHK",
-                        "3 BHK",
-                        "4 BHK",
-                        "5+ BHK",
-                      ].map((label) => (
-                        <PillButton
-                          key={label}
-                          label={label}
-                          active={selectedBhk.includes(label)}
-                          onClick={() => toggleSelection(label, setSelectedBhk)}
-                        />
-                      ))}
+                      {["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK"].map(
+                        (label) => (
+                          <PillButton
+                            key={label}
+                            label={label}
+                            active={selectedBhk.includes(label)}
+                            onClick={() =>
+                              toggleSelection(label, setSelectedBhk)
+                            }
+                          />
+                        ),
+                      )}
                     </div>
                   </SidebarSection>
 
@@ -1144,7 +1500,9 @@ function PropertiesPage() {
                       <CheckboxItem
                         label="Plots"
                         checked={selectedPropertyTypes.includes("Plots")}
-                        onClick={() => toggleSelection("Plots", setSelectedPropertyTypes)}
+                        onClick={() =>
+                          toggleSelection("Plots", setSelectedPropertyTypes)
+                        }
                       />
                     </div>
                   </SidebarSection>
@@ -1154,7 +1512,9 @@ function PropertiesPage() {
                     <div className="flex flex-col gap-[8px]">
                       <CheckboxItem
                         label="Under Construction"
-                        checked={selectedPropertyStatus.includes("Under Construction")}
+                        checked={selectedPropertyStatus.includes(
+                          "Under Construction",
+                        )}
                         onClick={() =>
                           toggleSelection(
                             "Under Construction",
@@ -1166,7 +1526,9 @@ function PropertiesPage() {
                       <CheckboxItem
                         label="Ready"
                         checked={selectedPropertyStatus.includes("Ready")}
-                        onClick={() => toggleSelection("Ready", setSelectedPropertyStatus)}
+                        onClick={() =>
+                          toggleSelection("Ready", setSelectedPropertyStatus)
+                        }
                       />
                     </div>
                   </SidebarSection>
@@ -1177,19 +1539,25 @@ function PropertiesPage() {
                       <CheckboxItem
                         label="Full"
                         checked={selectedFurnishing.includes("Full")}
-                        onClick={() => toggleSelection("Full", setSelectedFurnishing)}
+                        onClick={() =>
+                          toggleSelection("Full", setSelectedFurnishing)
+                        }
                       />
 
                       <CheckboxItem
                         label="Semi"
                         checked={selectedFurnishing.includes("Semi")}
-                        onClick={() => toggleSelection("Semi", setSelectedFurnishing)}
+                        onClick={() =>
+                          toggleSelection("Semi", setSelectedFurnishing)
+                        }
                       />
 
                       <CheckboxItem
                         label="None"
                         checked={selectedFurnishing.includes("None")}
-                        onClick={() => toggleSelection("None", setSelectedFurnishing)}
+                        onClick={() =>
+                          toggleSelection("None", setSelectedFurnishing)
+                        }
                       />
                     </div>
                   </SidebarSection>
@@ -1200,19 +1568,25 @@ function PropertiesPage() {
                       <CheckboxItem
                         label="2 Wheeler"
                         checked={selectedParking.includes("2 Wheeler")}
-                        onClick={() => toggleSelection("2 Wheeler", setSelectedParking)}
+                        onClick={() =>
+                          toggleSelection("2 Wheeler", setSelectedParking)
+                        }
                       />
 
                       <CheckboxItem
                         label="4 Wheeler"
                         checked={selectedParking.includes("4 Wheeler")}
-                        onClick={() => toggleSelection("4 Wheeler", setSelectedParking)}
+                        onClick={() =>
+                          toggleSelection("4 Wheeler", setSelectedParking)
+                        }
                       />
 
                       <CheckboxItem
                         label="None"
                         checked={selectedParking.includes("None")}
-                        onClick={() => toggleSelection("None", setSelectedParking)}
+                        onClick={() =>
+                          toggleSelection("None", setSelectedParking)
+                        }
                       />
                     </div>
                   </SidebarSection>
@@ -1244,188 +1618,199 @@ function PropertiesPage() {
                   {/* AMENITIES */}
                   <SidebarSection title="Amenities">
                     <div className="flex flex-wrap gap-[8px]">
-                      {[
-                        "Gym",
-                        "Pool",
-                        "Park",
-                        "Clubhouse",
-                      ].map((item) => (
+                      {["Gym", "Pool", "Park", "Clubhouse"].map((item) => (
                         <AmenityChip
                           key={item}
                           label={item}
                           active={selectedAmenities.includes(item)}
-                          onClick={() => toggleSelection(item, setSelectedAmenities)}
+                          onClick={() =>
+                            toggleSelection(item, setSelectedAmenities)
+                          }
                         />
                       ))}
                     </div>
                   </SidebarSection>
-
                 </div>
-              </aside>
+                </aside>
+              )}
 
               {/* ============================================================ */}
               {/* RIGHT PROPERTY RESULTS                                       */}
               {/* ============================================================ */}
 
-              <section className="min-w-0 w-full lg:flex-1 2xl:max-w-[1112px]">
-
+              <section
+                className={[
+                  "min-w-0 w-full",
+                  filtersOpen ? "lg:flex-1" : "",
+                ].join(" ")}
+              >
                 {/* RESULTS HEADER */}
                 <div className="flex w-full items-start justify-between gap-6">
-                  <div className="w-[258.98px] shrink-0">
-                    <h1 className="text-[20px] font-semibold leading-[30px] text-[#111827]">
-                      1,245 Properties in Mumbai
-                    </h1>
+                  {viewMode !== "map" && (
+                    <div className="w-[258.98px] shrink-0">
+                      <h1 className="text-[20px] font-semibold leading-[30px] text-[#111827]">
+                        1,245 Properties in Mumbai
+                      </h1>
 
-                    <p className="font-['Lato'] text-[14px] font-normal leading-[21px] tracking-[-0.49%] text-[#6B7280]">
-                      Properties for Sale in Andheri West
-                    </p>
-                  </div>
+                      <p className="font-['Lato'] text-[14px] font-normal leading-[21px] tracking-[-0.49%] text-[#6B7280]">
+                        Properties for Sale in Andheri West
+                      </p>
+                    </div>
+                  )}
 
-                  <div className={[
-                    "flex h-10 shrink-0 items-center gap-4",
-                    isPriceSort ? "w-[325.5px]" : "w-[300.5px]",
-                  ].join(" ")}>
-
-                    {/* SORT */}
+                  {viewMode !== "map" && (
                     <div
-                      ref={sortMenuRef}
                       className={[
-                        "relative flex h-[38px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1",
-                        isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
+                        "flex h-10 shrink-0 items-center gap-4",
+                        isPriceSort ? "w-[325.5px]" : "w-[300.5px]",
                       ].join(" ")}
                     >
-                      <span className="inline-flex h-[18px] w-[54px] items-center justify-center font-['Lato'] text-[12px] font-bold leading-[18px] text-[#475569]">
-                        Sort By:
-                      </span>
-
-                      <button
-                        type="button"
-                        aria-haspopup="listbox"
-                        aria-expanded={sortOpen}
-                        onClick={() => setSortOpen((current) => !current)}
+                      {/* SORT */}
+                      <div
+                        ref={sortMenuRef}
                         className={[
-                          "flex h-[30px] items-center justify-between rounded-[6px] bg-white px-[10px] py-[6px] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
-                          isPriceSort ? "w-[129.5px]" : "w-[104.5px]",
+                          "relative flex h-[38px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1",
+                          isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
                         ].join(" ")}
                       >
-                        <span className="whitespace-nowrap font-['Lato'] text-[12px] font-bold leading-[18px] text-[#111827]">
-                          {sortLabel}
+                        <span className="inline-flex h-[18px] w-[54px] items-center justify-center font-['Lato'] text-[12px] font-bold leading-[18px] text-[#475569]">
+                          Sort By:
                         </span>
 
-                        <span className="flex h-[10px] w-[12.5px] items-center justify-center px-[1px] py-[2px]">
-                          <svg
-                            viewBox="0 0 11 7"
-                            className="h-[6px] w-[10.5px]"
-                            fill="none"
-                          >
-                            <path
-                              d="M1 1.25 5.5 5.75 10 1.25"
-                              stroke="#111827"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </button>
+                        <button
+                          type="button"
+                          aria-haspopup="listbox"
+                          aria-expanded={sortOpen}
+                          onClick={() => setSortOpen((current) => !current)}
+                          className={[
+                            "flex h-[30px] items-center justify-between rounded-[6px] bg-white px-[10px] py-[6px] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
+                            isPriceSort ? "w-[129.5px]" : "w-[104.5px]",
+                          ].join(" ")}
+                        >
+                          <span className="whitespace-nowrap font-['Lato'] text-[12px] font-bold leading-[18px] text-[#111827]">
+                            {sortLabel}
+                          </span>
 
-                      {sortOpen && (
-                        <div className={[
-                          "absolute right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white shadow-lg",
-                          isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
-                        ].join(" ")}>
-                          {[
-                            { label: "Relevance", value: "relevance" },
-                            { label: "Price: Low to High", value: "price-low" },
-                            { label: "Price: High to Low", value: "price-high" },
-                          ].map((option) => (
-                            <button
-                              key={option.value}
-                              type="button"
-                              onClick={() => {
-                                setSortValue(option.value);
-                                setSortOpen(false);
-                              }}
-                              className={[
-                                "flex w-full items-center px-[12px] py-[10px] text-left text-[12px] font-semibold text-[#111827] hover:bg-slate-50",
-                                sortValue === option.value ? "bg-[#FFF5F5] text-[#E51C23]" : "",
-                              ].join(" ")}
+                          <span className="flex h-[10px] w-[12.5px] items-center justify-center px-[1px] py-[2px]">
+                            <svg
+                              viewBox="0 0 11 7"
+                              className="h-[6px] w-[10.5px]"
+                              fill="none"
                             >
-                              {option.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                              <path
+                                d="M1 1.25 5.5 5.75 10 1.25"
+                                stroke="#111827"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+
+                        {sortOpen && (
+                          <div
+                            className={[
+                              "absolute right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white shadow-lg",
+                              isPriceSort ? "w-[195.5px]" : "w-[170.5px]",
+                            ].join(" ")}
+                          >
+                            {[
+                              { label: "Relevance", value: "relevance" },
+                              { label: "Price: Low to High", value: "price-low" },
+                              {
+                                label: "Price: High to Low",
+                                value: "price-high",
+                              },
+                            ].map((option) => (
+                              <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => {
+                                  setSortValue(option.value);
+                                  setSortOpen(false);
+                                }}
+                                className={[
+                                  "flex w-full items-center px-[12px] py-[10px] text-left text-[12px] font-semibold text-[#111827] hover:bg-slate-50",
+                                  sortValue === option.value
+                                    ? "bg-[#FFF5F5] text-[#E51C23]"
+                                    : "",
+                                ].join(" ")}
+                              >
+                                {option.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* VIEW SWITCHER */}
+                      <div className="flex h-[40px] w-[114px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1">
+                        {/* LIST */}
+                        <ViewModeButton
+                          label="List view"
+                          active={viewMode === "list"}
+                          onClick={() => setViewMode("list")}
+                          sizeClass="w-[32px]"
+                        >
+                          <img
+                            src="/images/SVG%20(2).png"
+                            alt=""
+                            aria-hidden="true"
+                            className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
+                            style={{
+                              filter:
+                                viewMode === "list"
+                                  ? "none"
+                                  : "grayscale(1) brightness(0.55)",
+                            }}
+                          />
+                        </ViewModeButton>
+
+                        {/* TILE */}
+                        <ViewModeButton
+                          label="Tile view"
+                          active={viewMode === "tile"}
+                          onClick={() => setViewMode("tile")}
+                          sizeClass="w-[32px]"
+                        >
+                          <img
+                            src="/images/SVG%20(1).png"
+                            alt=""
+                            aria-hidden="true"
+                            className="h-[14px] w-[16px] object-contain"
+                            style={{
+                              filter:
+                                viewMode === "tile"
+                                  ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                  : "none",
+                            }}
+                          />
+                        </ViewModeButton>
+
+                        {/* MAP */}
+                        <ViewModeButton
+                          label="Map view"
+                          active={viewMode === "map"}
+                          onClick={() => setViewMode("map")}
+                          sizeClass="w-[34px]"
+                        >
+                          <img
+                            src="/images/SVG.png"
+                            alt=""
+                            aria-hidden="true"
+                            className="h-[15.763724327087402px] w-[18px] object-contain"
+                            style={{
+                              filter:
+                                viewMode === "map"
+                                  ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                  : "none",
+                            }}
+                          />
+                        </ViewModeButton>
+                      </div>
                     </div>
-
-                    {/* VIEW SWITCHER */}
-                    <div className="flex h-[40px] w-[114px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1">
-
-                      {/* LIST */}
-                      <ViewModeButton
-                        label="List view"
-                        active={viewMode === "list"}
-                        onClick={() => setViewMode("list")}
-                        sizeClass="w-[32px]"
-                      >
-                        <img
-                          src="/images/SVG%20(2).png"
-                          alt=""
-                          aria-hidden="true"
-                          className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
-                          style={{
-                            filter:
-                              viewMode === "list"
-                                ? "none"
-                                : "grayscale(1) brightness(0.55)",
-                          }}
-                        />
-                      </ViewModeButton>
-
-                      {/* TILE */}
-                      <ViewModeButton
-                        label="Tile view"
-                        active={viewMode === "tile"}
-                        onClick={() => setViewMode("tile")}
-                        sizeClass="w-[32px]"
-                      >
-                        <img
-                          src="/images/SVG%20(1).png"
-                          alt=""
-                          aria-hidden="true"
-                          className="h-[14px] w-[16px] object-contain"
-                          style={{
-                            filter:
-                              viewMode === "tile"
-                                ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
-                                : "none",
-                          }}
-                        />
-                      </ViewModeButton>
-
-                      {/* MAP */}
-                      <ViewModeButton
-                        label="Map view"
-                        active={viewMode === "map"}
-                        onClick={() => setViewMode("map")}
-                        sizeClass="w-[34px]"
-                      >
-                        <img
-                          src="/images/SVG.png"
-                          alt=""
-                          aria-hidden="true"
-                          className="h-[15.763724327087402px] w-[18px] object-contain"
-                          style={{
-                            filter:
-                              viewMode === "map"
-                                ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
-                                : "none",
-                          }}
-                        />
-                      </ViewModeButton>
-
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {viewMode === "list" && (
@@ -1453,21 +1838,25 @@ function PropertiesPage() {
                 {viewMode === "tile" && (
                   <>
                     {/* PROPERTY TILES */}
-                    <div className="mt-[24px] grid w-full grid-cols-1 gap-[16px] lg:grid-cols-2">
-                      {pagedResults.slice(0, 2).map((item) => (
-                        <ResultTileCard
-                          key={item.id}
-                          item={item}
-                          selected={selectedPropertyId === item.id}
-                          favorite={favoriteIds.has(item.id)}
-                          onClick={() =>
-                            setSelectedPropertyId((current) =>
-                              current === item.id ? null : item.id,
-                            )
-                          }
-                          onFavoriteToggle={() => toggleFavorite(item.id)}
-                        />
-                      ))}
+                    <div className="mx-auto w-full max-w-[1440px] xl:px-[9px]">
+                      <div className="mt-[24px] flex w-full gap-[16px] overflow-x-auto pb-[2px]">
+                        {pagedResults.slice(0, 2).map((item) => (
+                          <ResultTileCard
+                            key={item.id}
+                            item={item}
+                            featuredLayout
+                            hidePrimaryBadgeWhenVerified
+                            selected={selectedPropertyId === item.id}
+                            favorite={favoriteIds.has(item.id)}
+                            onClick={() =>
+                              setSelectedPropertyId((current) =>
+                                current === item.id ? null : item.id,
+                              )
+                            }
+                            onFavoriteToggle={() => toggleFavorite(item.id)}
+                          />
+                        ))}
+                      </div>
                     </div>
 
                     {pagedResults.length > 2 && (
@@ -1476,6 +1865,7 @@ function PropertiesPage() {
                           <ResultTileCard
                             key={item.id}
                             item={item}
+                            hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
                             onClick={() =>
@@ -1488,30 +1878,106 @@ function PropertiesPage() {
                         ))}
                       </div>
                     )}
+
                   </>
                 )}
 
                 {viewMode === "map" && (
                   <>
                     {/* MAP VIEW */}
-                    <div className="mt-[24px] grid w-full grid-cols-1 gap-[16px] xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
+                    <div className="grid w-full grid-cols-1 gap-[16px] xl:grid-cols-[minmax(0,1fr)_588px]">
                       <MapPlaceholder />
 
-                      <div className="flex min-w-0 flex-col gap-[12px]">
-                        {pagedResults.map((item) => (
-                          <ResultTileCard
-                            key={item.id}
-                            item={item}
-                            selected={selectedPropertyId === item.id}
-                            favorite={favoriteIds.has(item.id)}
-                            onClick={() =>
-                              setSelectedPropertyId((current) =>
-                                current === item.id ? null : item.id,
-                              )
-                            }
-                            onFavoriteToggle={() => toggleFavorite(item.id)}
-                          />
-                        ))}
+                      <div className="flex min-w-0 w-full max-w-[570px] justify-self-end flex-col gap-[16px] py-[24px] xl:pr-[9px]">
+                        <div className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] pb-[12px]">
+                          <div>
+                            <h2 className="text-[20px] font-semibold leading-[30px] text-[#111827]">
+                              1,245 Properties
+                            </h2>
+
+                            <p className="font-['Lato'] text-[14px] font-normal leading-[21px] tracking-[-0.49%] text-[#6B7280]">
+                              Showing residential flats for sale in Mumbai
+                            </p>
+                          </div>
+
+                          <div className="flex h-[40px] w-[114px] items-center gap-1 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-1">
+                            <ViewModeButton
+                              label="List view"
+                              active={viewMode === "list"}
+                              onClick={() => setViewMode("list")}
+                              sizeClass="w-[32px]"
+                            >
+                              <img
+                                src="/images/SVG%20(2).png"
+                                alt=""
+                                aria-hidden="true"
+                                className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
+                                style={{
+                                  filter:
+                                    viewMode === "list"
+                                      ? "none"
+                                      : "grayscale(1) brightness(0.55)",
+                                }}
+                              />
+                            </ViewModeButton>
+
+                            <ViewModeButton
+                              label="Tile view"
+                              active={viewMode === "tile"}
+                              onClick={() => setViewMode("tile")}
+                              sizeClass="w-[32px]"
+                            >
+                              <img
+                                src="/images/SVG%20(1).png"
+                                alt=""
+                                aria-hidden="true"
+                                className="h-[14px] w-[16px] object-contain"
+                                style={{
+                                  filter:
+                                    viewMode === "tile"
+                                      ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                      : "none",
+                                }}
+                              />
+                            </ViewModeButton>
+
+                            <ViewModeButton
+                              label="Map view"
+                              active={viewMode === "map"}
+                              onClick={() => setViewMode("map")}
+                              sizeClass="w-[34px]"
+                            >
+                              <img
+                                src="/images/SVG.png"
+                                alt=""
+                                aria-hidden="true"
+                                className="h-[15.763724327087402px] w-[18px] object-contain"
+                                style={{
+                                  filter:
+                                    viewMode === "map"
+                                      ? "brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(7342%) hue-rotate(351deg) brightness(95%) contrast(105%)"
+                                      : "none",
+                                }}
+                              />
+                            </ViewModeButton>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-2">
+                          {pagedResults.slice(0, 4).map((item) => (
+                            <MapResultCard
+                              key={item.id}
+                              item={item}
+                              favorite={favoriteIds.has(item.id)}
+                              onClick={() =>
+                                setSelectedPropertyId((current) =>
+                                  current === item.id ? null : item.id,
+                                )
+                              }
+                              onFavoriteToggle={() => toggleFavorite(item.id)}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </>
@@ -1520,12 +1986,16 @@ function PropertiesPage() {
                 {/* PAGINATION */}
                 <div className="mt-[32px] flex justify-center">
                   <div className="flex flex-wrap items-center justify-center gap-[8px]">
-
                     <PaginationButton
                       disabled={currentPage === 1}
                       onClick={() => goToPage(currentPage - 1)}
                     >
-                      <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 20 20"
+                        className="h-[18px] w-[18px]"
+                        fill="none"
+                        aria-hidden="true"
+                      >
                         <path
                           d="M12.5 4.75 7.25 10l5.25 5.25"
                           stroke="currentColor"
@@ -1572,7 +2042,12 @@ function PropertiesPage() {
                       disabled={currentPage === totalPages}
                       onClick={() => goToPage(currentPage + 1)}
                     >
-                      <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 20 20"
+                        className="h-[18px] w-[18px]"
+                        fill="none"
+                        aria-hidden="true"
+                      >
                         <path
                           d="M7.5 4.75 12.75 10l-5.25 5.25"
                           stroke="currentColor"
@@ -1582,10 +2057,8 @@ function PropertiesPage() {
                         />
                       </svg>
                     </PaginationButton>
-
                   </div>
                 </div>
-
               </section>
             </div>
           </div>
@@ -1593,12 +2066,9 @@ function PropertiesPage() {
 
         {/* FOOTER */}
         <CompanyFooterSection />
-
       </div>
     </main>
   );
 }
 
 export default PropertiesPage;
-
-
