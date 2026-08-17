@@ -1,6 +1,8 @@
 ﻿import React from "react";
+import { useNavigate } from "react-router-dom";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import SiteHeader from "../components/SiteHeader";
+import { propertyResults } from "../data/propertyResults";
 
 /* -------------------------------------------------------------------------- */
 /*                                   ICONS                                    */
@@ -505,6 +507,7 @@ function ResultCard({
           <div className="flex items-center gap-[12px]">
             <button
               type="button"
+              onClick={(event) => event.stopPropagation()}
               className="cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
             >
               Enquire Now
@@ -513,6 +516,7 @@ function ResultCard({
             <button
               type="button"
               aria-label="Call"
+              onClick={(event) => event.stopPropagation()}
               className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-[12px] border border-[#E51C23] bg-white text-[#E51C23]"
             >
               <img
@@ -771,6 +775,7 @@ function ResultTileCard({
     {/* ENQUIRE NOW */}
     <button
       type="button"
+      onClick={(event) => event.stopPropagation()}
       className={[
         "cta-red inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
         featuredLayout
@@ -785,6 +790,7 @@ function ResultTileCard({
     <button
       type="button"
       aria-label="Call"
+      onClick={(event) => event.stopPropagation()}
       className={[
         "inline-flex shrink-0 items-center justify-center border-2 border-[#E51C23] bg-white text-[#E51C23]",
         featuredLayout
@@ -1001,6 +1007,7 @@ function MapResultCard({
         <div className="mt-auto flex items-center gap-[8px] pt-[2px]">
           <button
             type="button"
+            onClick={(event) => event.stopPropagation()}
             className="cta-red inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
           >
             Enquire Now
@@ -1009,6 +1016,7 @@ function MapResultCard({
           <button
             type="button"
             aria-label="Call"
+            onClick={(event) => event.stopPropagation()}
             className="inline-flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"
           >
             <img
@@ -1137,89 +1145,14 @@ function parsePriceValue(label) {
 /*                                  DATA                                      */
 /* -------------------------------------------------------------------------- */
 
-const results = [
-  {
-    id: 1,
-    badge: "FEATURED",
-    verified: true,
-    favorite: false,
-    image: "/images/1st,4th.png",
-    price: "2.1 Cr",
-    rate: "22,400/sq.ft",
-    title: "Vardhaman Plaza",
-    location: "Rajouri Garden, New Delhi - 110027",
-    details: "3 BHK",
-    area: "1850 sq.ft",
-    match: "95% Match",
-    tags: ["READY TO MOVE", "WEST FACING", "BIKE & CAR PARKING"],
-  },
-  {
-    id: 2,
-    badge: "VERIFIED",
-    verified: true,
-    favorite: false,
-    image: "/images/2nd.png",
-    price: "1.75 Cr",
-    rate: "19,200/sq.ft",
-    title: "Sunshine Residency",
-    location: "Dwarka Sector 12, New Delhi - 110075",
-    details: "2 BHK",
-    area: "910 sq.ft",
-    match: "89% Match",
-    tags: ["UNDER CONSTRUCTION", "EAST FACING", "CAR PARKING"],
-  },
-  {
-    id: 3,
-    badge: "VERIFIED",
-    verified: true,
-    favorite: true,
-    image: "/images/3rd.png",
-    price: "2.1 Cr",
-    rate: "22,400/sq.ft",
-    title: "Vardhaman Plaza",
-    location: "Rajouri Garden, New Delhi - 110027",
-    details: "3 BHK",
-    area: "1850 sq.ft",
-    match: "95% Match",
-    tags: ["READY TO MOVE", "WEST FACING", "BIKE & CAR PARKING"],
-  },
-  {
-    id: 4,
-    badge: "NEW LISTING",
-    verified: false,
-    favorite: false,
-    image: "/images/1st,4th.png",
-    price: "3.5 Cr",
-    rate: "28,000/sq.ft",
-    title: "Greenwood Heights",
-    location: "Saket, New Delhi - 110017",
-    details: "4 BHK",
-    area: "1250 sq.ft",
-    match: "98% Match",
-    tags: ["READY TO MOVE", "NORTH FACING", "BIKE PARKING ONLY"],
-  },
-  {
-    id: 5,
-    badge: "VERIFIED",
-    verified: true,
-    favorite: false,
-    image: "/images/2nd.png",
-    price: "2.9 Cr",
-    rate: "24,500/sq.ft",
-    title: "Lotus Enclave",
-    location: "Vasant Kunj, New Delhi - 110070",
-    details: "3 BHK",
-    area: "1180 sq.ft",
-    match: "92% Match",
-    tags: ["READY TO MOVE", "SOUTH FACING", "BIKE & CAR PARKING"],
-  },
-];
+const results = propertyResults;
 
 /* -------------------------------------------------------------------------- */
 /*                                    PAGE                                    */
 /* -------------------------------------------------------------------------- */
 
 function PropertiesPage() {
+  const navigate = useNavigate();
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);
   const [maxPrice, setMaxPrice] = React.useState(82);
@@ -1360,6 +1293,10 @@ function PropertiesPage() {
       return {
         ...source,
         id: `${source.id}-${currentPage}-${cycle}-${index}`,
+        // The synthetic `id` above only exists to keep React keys/selection
+        // unique across repeated cycles of the same 5 mock records - detail
+        // page links need the real underlying property id, not that.
+        detailId: source.id,
       };
     });
   }, [currentPage, sortedResults]);
@@ -1904,11 +1841,7 @@ function PropertiesPage() {
                           item={item}
                           selected={selectedPropertyId === item.id}
                           favorite={favoriteIds.has(item.id)}
-                          onClick={() =>
-                            setSelectedPropertyId((current) =>
-                              current === item.id ? null : item.id,
-                            )
-                          }
+                          onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
                           onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
                       ))}
@@ -1929,11 +1862,7 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() =>
-                              setSelectedPropertyId((current) =>
-                                current === item.id ? null : item.id,
-                              )
-                            }
+                            onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -1949,11 +1878,7 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() =>
-                              setSelectedPropertyId((current) =>
-                                current === item.id ? null : item.id,
-                              )
-                            }
+                            onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -2050,11 +1975,7 @@ function PropertiesPage() {
                               key={item.id}
                               item={item}
                               favorite={favoriteIds.has(item.id)}
-                              onClick={() =>
-                                setSelectedPropertyId((current) =>
-                                  current === item.id ? null : item.id,
-                                )
-                              }
+                              onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
                               onFavoriteToggle={() => toggleFavorite(item.id)}
                             />
                           ))}
