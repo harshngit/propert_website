@@ -4,13 +4,13 @@ import "yet-another-react-lightbox/styles.css";
 
 const THUMB_COUNT = 3;
 
-function GridIcon() {
+function PhotoStackIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
-      <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="9" y="9" width="5.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-[#111827]" fill="none">
+      <rect x="2" y="2" width="13" height="10" rx="1.6" fill="white" stroke="currentColor" strokeWidth="1.3" />
+      <rect x="5" y="6.5" width="13" height="10" rx="1.6" fill="white" stroke="currentColor" strokeWidth="1.3" />
+      <circle cx="8.5" cy="10" r="1" fill="currentColor" />
+      <path d="m6 15 3-3.2 2.2 2 2.3-2.6L17 15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -38,12 +38,12 @@ function PropertyGallery({ images, title, heroOverlay }) {
 
   return (
     <>
-      <div className="grid w-full grid-cols-1 gap-4 sm:h-[500px] sm:grid-cols-[816px_400px]">
+      <div className="grid w-full grid-cols-1 gap-4 lg:h-[500px] lg:grid-cols-[2fr_1fr]">
         <button
           type="button"
           onClick={() => openAt(0)}
           aria-label={`View photos of ${title}`}
-          className="group relative h-[500px] overflow-hidden rounded-[16px] bg-transparent sm:row-span-2 sm:h-[500px] sm:w-[816px]"
+          className="group relative h-[260px] w-full overflow-hidden rounded-[16px] bg-transparent lg:row-span-2 lg:h-[500px]"
         >
           <img
             src={hero}
@@ -53,14 +53,14 @@ function PropertyGallery({ images, title, heroOverlay }) {
           {heroOverlay}
         </button>
 
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:col-start-2 sm:row-span-2 sm:h-[500px] sm:w-[400px]">
+        <div className="grid h-[260px] grid-cols-2 grid-rows-2 gap-4 lg:col-start-2 lg:row-span-2 lg:h-[500px] lg:w-full">
           {thumbs.map((src, i) => {
             const isLast = i === thumbs.length - 1;
             const showMore = isLast && remaining > 0;
             const tileClass =
               i === 0
-                ? "sm:col-span-2 sm:row-span-1"
-                : "sm:col-span-1 sm:row-span-1";
+                ? "col-span-2 row-span-1"
+                : "col-span-1 row-span-1";
             return (
               <button
                 key={`${src}-${i}`}
@@ -69,16 +69,18 @@ function PropertyGallery({ images, title, heroOverlay }) {
                 aria-label={showMore ? `View all ${gallery.length} photos` : `View photo ${i + 2} of ${title}`}
                 className={`group relative h-full overflow-hidden rounded-[16px] bg-[#F3F4F6] ${tileClass}`}
               >
-                <img
+                <img    
                   src={src}
                   alt=""
                   aria-hidden="true"
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
                 {showMore && (
-                  <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-slate-900/55 text-[13px] font-bold text-white">
-                    <GridIcon />
-                    {remaining}+ More
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/35">
+                    <span className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-[14px] font-bold text-[#111827] shadow-[0_8px_20px_rgba(0,0,0,0.25)]">
+                      <PhotoStackIcon />
+                      {remaining}+ More
+                    </span>
                   </span>
                 )}
               </button>

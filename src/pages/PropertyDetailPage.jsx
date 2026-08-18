@@ -307,13 +307,34 @@ function PropertyDetailPage() {
         </nav>
       </section>
 
-      <section className="mx-auto max-w-full px-4 py-[40px] sm:px-6 lg:px-12">
+      <section className="mx-auto max-w-full px-4 py-6 lg:px-12 lg:py-10">
         <PropertyGallery
           images={[
             "/images/detail%201.png",
             ...(property.images && property.images.length ? property.images : [property.image]),
           ]}
           title={property.title}
+          heroOverlay={
+            <div className="absolute left-4 top-4 flex items-center gap-2">
+              <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
+                FEATURED
+              </span>
+              <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-sm">
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                  <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
+                    <path
+                      d="M4 8.5 6.5 11 12 5.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span>VERIFIED</span>
+              </span>
+            </div>
+          }
         />
       </section>
 
@@ -569,7 +590,8 @@ function PropertyDetailPage() {
 
           {/* RIGHT */}
           <div>
-            <div className="sticky top-24 rounded-[20px] border border-[#E5E7EB] bg-white p-6 shadow-[0_18px_36px_rgba(15,23,42,0.08)]">
+            <div className="flex flex-col gap-4 lg:sticky lg:top-24">
+              <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-6 shadow-[0_18px_36px_rgba(15,23,42,0.08)]">
               <h2 className="text-[24px] font-black leading-tight text-[#111827]">
                 Interested in this property?
               </h2>
@@ -628,8 +650,7 @@ function PropertyDetailPage() {
               </div>
             </div>
 
-            <div className="mt-4 space-y-4">
-              <div className="sticky top-24  rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-[0_16px_32px_rgba(15,23,42,0.08)]">
+              <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-[0_16px_32px_rgba(15,23,42,0.08)]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] border border-[#F3F4F6] bg-[#FAFAFA] text-[11px] font-bold uppercase tracking-[0.14em] text-[#C4B5A5]">
                     OR
@@ -668,7 +689,7 @@ function PropertyDetailPage() {
                 </button>
               </div>
 
-              <div className="sticky-top 24 rounded-[16px] border border-[#FFE4E4] bg-[#FFF9F9] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <div className="rounded-[16px] border border-[#FFE4E4] bg-[#FFF9F9] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white">
                     <PromiseIcon />
