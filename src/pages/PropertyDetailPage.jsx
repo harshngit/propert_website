@@ -63,7 +63,88 @@ function BackIcon() {
   );
 }
 
-const AMENITIES = ["Gym", "Swimming Pool", "Park", "Clubhouse", "24x7 Security", "Power Backup"];
+const AMENITY_LIFESTYLE = [
+  {
+    label: "Gymnasium",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="M5 9v6M7 7v10M17 7v10M19 9v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M8 12h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    label: "Swimming Pool",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path
+          d="M4 16c1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8 1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8 1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path d="M6 11c1.5 0 2.5-1.6 3.3-3 .8 1.4 1.8 3 3.3 3 1.5 0 2.5-1.6 3.3-3 .8 1.4 1.8 3 3.3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="8.2" cy="8" r="1.1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "Grand Lawn",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="M12 4 6 10h4l-4 4h4l-2 6 4-4 4 4-2-6h4l-4-4h4L12 4Z" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "24/7 Security",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="M12 3 19 6v5c0 4.8-3 8.5-7 10-4-1.5-7-5.2-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 8v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="12" cy="15.5" r="1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "Visitor Parking",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="1.6" strokeDasharray="2 2" />
+        <path d="M12 9v6M12 9h1.5a1.5 1.5 0 0 1 0 3H12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    label: "Power Backup",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="m13 3-7 9h5l-1 9 7-10h-5l1-8Z" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "Kids Play Area",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="M12 5v10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M8 9.5c1 0 1.6.8 2 1.6.5-1 1.1-1.6 2-1.6s1.5.6 2 1.6c.4-.8 1-1.6 2-1.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="12" cy="18" r="1.4" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "Broadband",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
+        <path d="M4 9c2.2-2.2 5-3.4 8-3.4S17.8 6.8 20 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M7 12c1.4-1.4 3.2-2.1 5-2.1 1.8 0 3.6.7 5 2.1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M10 15c.6-.6 1.3-.9 2-.9s1.4.3 2 .9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="12" cy="18.5" r="1.2" fill="currentColor" />
+      </svg>
+    ),
+  },
+];
 const FAQS = [
   {
     question: "Is this project RERA registered?",
@@ -349,35 +430,45 @@ function PropertyDetailPage() {
                 </span>
               </button>
             </section>
-            <div className="mt-10">
-              <h2 className="text-[18px] font-extrabold text-[#111827]">Property Details</h2>
-              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-10 rounded-[16px] bg-[#F9FAFB] p-8">
+              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Property Details</h2>
+              <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
                 {[
                   { label: "Status", value: "Ready to Move" },
-                  { label: "Builder", value: "Oberoi Realty" },
-                  { label: "RERA No.", value: "P51800003521" },
-                  { label: "Match Score", value: "95% Match" },
+                  { label: "Floor", value: "24th of 60 Floors" },
+                  { label: "Furnishing", value: "Semi-Furnished" },
+                  { label: "Parking", value: "2 Covered" },
+                  { label: "Age of Property", value: "New Construction" },
+                  { label: "Gated Community", value: "Yes" },
                 ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-[14px] border border-[#E5E7EB] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-                  >
-                    <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">{item.label}</div>
-                    <div className="mt-2 text-[16px] font-bold text-[#111827]">{item.value}</div>
+                  <div key={item.label} className="flex items-end justify-between border-b border-[#E5E7EB] pb-4">
+                    <div className="pr-4 text-[13px] leading-tight text-[#6B7280]">{item.label}</div>
+                    <div className="whitespace-nowrap text-right text-[16px] font-bold leading-tight text-[#111827]">
+                      {item.value}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-8">
-              <h2 className="text-[16px] font-bold text-[#111827]">Amenities</h2>
-              <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                {AMENITIES.map((amenity) => (
+            <div className="mt-8 rounded-[16px] border border-[#E5E7EB] bg-white p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Amenities &amp; Lifestyle</h2>
+                <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">
+                  32 Total
+                </span>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+                {AMENITY_LIFESTYLE.map((amenity) => (
                   <div
-                    key={amenity}
-                    className="rounded-[10px] border border-[#F3F4F6] bg-[#F9FAFB] px-3 py-2.5 text-[13px] font-semibold text-[#374151]"
+                    key={amenity.label}
+                    className="flex min-h-[136px] flex-col items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-3 py-5 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
                   >
-                    {amenity}
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F9FAFB]">
+                      {amenity.icon}
+                    </div>
+                    <div className="mt-4 text-[16px] font-semibold leading-tight text-[#111827]">{amenity.label}</div>
                   </div>
                 ))}
               </div>
