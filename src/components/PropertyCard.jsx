@@ -19,13 +19,13 @@ function VerifiedBadge() {
   );
 }
 
-function PropertyCard({ item, className = "" }) {
+function PropertyCard({ item, className = "", showMessage = true }) {
   const isNewLaunch = item.badge === "NEW LAUNCH";
 
   return (
     <article
       className={[
-        "h-[384px] overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
+        "flex h-[384px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
         className,
       ].join(" ")}
     >
@@ -48,7 +48,7 @@ function PropertyCard({ item, className = "" }) {
         </div>
       </div>
 
-      <div className="p-4 pb-[14px]">
+      <div className="flex flex-1 flex-col p-4 pb-[14px]">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="font-['Plus_Jakarta_Sans'] text-[24px] font-black leading-none text-slate-900">
@@ -65,7 +65,7 @@ function PropertyCard({ item, className = "" }) {
 
         <div className="mt-2 flex items-center gap-1.5 text-sm text-slate-500">
           <img
-            src="/images/pin%20icon.png"
+            src="/icons/pin%20icon.png"
             alt=""
             aria-hidden="true"
             className="h-[16px] w-[12px] shrink-0 object-contain"
@@ -73,10 +73,10 @@ function PropertyCard({ item, className = "" }) {
           <span>{item.location}</span>
         </div>
 
-        <div className="mt-5 flex items-center gap-6 border-t border-slate-100 pt-3 text-[12px] font-bold leading-none text-slate-500">
-          <div className="inline-flex items-center gap-1">
+        <div className="mt-auto flex flex-nowrap items-center gap-6 border-t border-slate-100 py-3 text-[12px] font-bold leading-none text-slate-500">
+          <div className="inline-flex flex-nowrap items-center gap-1 whitespace-nowrap">
             <img
-              src="/images/bhk.png"
+              src="/icons/bhk.png"
               alt=""
               aria-hidden="true"
               className="h-[15px] w-[15px] shrink-0 object-contain"
@@ -84,9 +84,9 @@ function PropertyCard({ item, className = "" }) {
             <span>{item.details}</span>
           </div>
 
-          <div className="inline-flex items-center gap-1">
+          <div className="inline-flex flex-nowrap items-center gap-1 whitespace-nowrap">
             <img
-              src="/images/Vector.png"
+              src="/icons/Vector.png"
               alt=""
               aria-hidden="true"
               className="h-[12px] w-[12px] shrink-0 object-contain"
@@ -95,10 +95,12 @@ function PropertyCard({ item, className = "" }) {
           </div>
         </div>
 
-        <div className="mt-5 flex items-center gap-[5px] text-[11.5px] font-semibold leading-none text-[#2563EB]">
-          <span className="h-[6px] w-[6px] rounded-full bg-sky-500" aria-hidden="true" />
-          <span>Message via Platform</span>
-        </div>
+        {showMessage ? (
+          <div className="mt-5 flex items-center gap-[5px] text-[11.5px] font-semibold leading-none text-[#2563EB]">
+            <span className="h-[6px] w-[6px] rounded-full bg-sky-500" aria-hidden="true" />
+            <span>Message via Platform</span>
+          </div>
+        ) : null}
       </div>
     </article>
   );

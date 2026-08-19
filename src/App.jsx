@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import CityLandingPage from "./pages/CityLandingPage";
 import PropertiesPage from "./pages/PropertiesPage";
 import PropertyDetailPage from "./pages/PropertyDetailPage";
 import RoutePage from "./pages/RoutePage";
@@ -11,6 +12,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/city/:citySlug" element={<CityLandingPage />} />
       <Route path="/properties" element={<PropertiesPage />} />
       <Route path="/properties/:id" element={<PropertyDetailPage />} />
       <Route

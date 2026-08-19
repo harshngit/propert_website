@@ -1,7 +1,7 @@
 import React from "react";
-import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { buildPropertiesPath } from "../utils/propertySearch";
+import { NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { CITY_OPTIONS, buildCityPath, fromCitySlug } from "../utils/city";
 
 const navItems = [
   { label: "Buy", to: "/buy", widthClass: "w-[47px]" },
@@ -10,8 +10,6 @@ const navItems = [
   { label: "Services", to: "/services", widthClass: "w-[79px]" },
   { label: "News & Guide", to: "/news-guide", widthClass: "w-[117px]" },
 ];
-
-const cityOptions = ["Mumbai", "Delhi", "Bengaluru", "Pune", "Hyderabad"];
 
 const navDropdowns = {
   Buy: ["Apartments", "Villas", "Plots", "New Projects"],
@@ -167,7 +165,7 @@ function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
       </button>
 
       <DropdownPanel
-        items={cityOptions}
+        items={CITY_OPTIONS}
         className="min-w-[240px]"
         isOpen={isOpen}
         onSelect={onSelect}
@@ -268,24 +266,19 @@ function SiteHeader() {
   const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
   const [searchParams] = useSearchParams();
   const showTicker = location.pathname === "/";
   const [openMenu, setOpenMenu] = React.useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
-  const selectedCity = searchParams.get("city") || "Mumbai";
+  const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "Mumbai";
 
   const handleCitySelect = (label) => {
     setOpenMenu(null);
     setMobileCityOpen(false);
     setMobileMenuOpen(false);
-
-    if (location.pathname === "/properties") {
-      navigate(buildPropertiesPath(searchParams, { city: label }));
-      return;
-    }
-
-    navigate(`/properties?city=${encodeURIComponent(label)}&view=list`);
+    navigate(buildCityPath(label));
   };
 
   return (
@@ -395,14 +388,14 @@ function SiteHeader() {
 
             {mobileCityOpen ? (
               <div className="mt-3 flex flex-wrap gap-2">
-                {cityOptions.map((city) => (
+                {CITY_OPTIONS.map((city) => (
                   <button
                     key={city}
                     type="button"
                     onClick={() => handleCitySelect(city)}
                     className={[
                       "rounded-full px-3.5 py-2 text-[13px] font-semibold leading-4",
-                      selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
+                    selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
                     ].join(" ")}
                   >
                     {city}

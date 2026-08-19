@@ -520,7 +520,7 @@ function ResultCard({
               className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-[12px] border border-[#E51C23] bg-white text-[#E51C23]"
             >
               <img
-                src="/images/phone.png"
+                src="/icons/phone.png"
                 alt=""
                 aria-hidden="true"
                 className="h-[16px] w-[16px] object-contain"
@@ -799,7 +799,7 @@ function ResultTileCard({
       ].join(" ")}
     >
       <img
-        src="/images/phone.png"
+        src="/icons/phone.png"
         alt=""
         aria-hidden="true"
         className="h-[16px] w-[16px] object-contain"
@@ -1020,7 +1020,7 @@ function MapResultCard({
             className="inline-flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"
           >
             <img
-              src="/images/phone.png"
+              src="/icons/phone.png"
               alt=""
               aria-hidden="true"
               className="h-[16px] w-[16px] object-contain"
@@ -1772,7 +1772,7 @@ function PropertiesPage() {
                           sizeClass="w-[32px]"
                         >
                           <img
-                            src="/images/SVG%20(2).png"
+                            src="/icons/SVG%20(2).png"
                             alt=""
                             aria-hidden="true"
                             className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
@@ -1793,7 +1793,7 @@ function PropertiesPage() {
                           sizeClass="w-[32px]"
                         >
                           <img
-                            src="/images/SVG%20(1).png"
+                            src="/icons/SVG%20(1).png"
                             alt=""
                             aria-hidden="true"
                             className="h-[14px] w-[16px] object-contain"
@@ -1814,7 +1814,7 @@ function PropertiesPage() {
                           sizeClass="w-[34px]"
                         >
                           <img
-                            src="/images/SVG.png"
+                            src="/icons/SVG.png"
                             alt=""
                             aria-hidden="true"
                             className="h-[15.763724327087402px] w-[18px] object-contain"
@@ -1914,7 +1914,7 @@ function PropertiesPage() {
                               sizeClass="w-[32px]"
                             >
                               <img
-                                src="/images/SVG%20(2).png"
+                                src="/icons/SVG%20(2).png"
                                 alt=""
                                 aria-hidden="true"
                                 className="relative top-[0.5px] h-[13px] w-[15.5px] object-contain"
@@ -1934,7 +1934,7 @@ function PropertiesPage() {
                               sizeClass="w-[32px]"
                             >
                               <img
-                                src="/images/SVG%20(1).png"
+                                src="/icons/SVG%20(1).png"
                                 alt=""
                                 aria-hidden="true"
                                 className="h-[14px] w-[16px] object-contain"
@@ -1954,7 +1954,7 @@ function PropertiesPage() {
                               sizeClass="w-[34px]"
                             >
                               <img
-                                src="/images/SVG.png"
+                                src="/icons/SVG.png"
                                 alt=""
                                 aria-hidden="true"
                                 className="h-[15.763724327087402px] w-[18px] object-contain"

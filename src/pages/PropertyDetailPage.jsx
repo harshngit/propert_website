@@ -5,9 +5,9 @@ import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import PropertyGallery from "../components/PropertyGallery";
 import { propertyResults } from "../data/propertyResults";
 
-function LocationIcon() {
+function LocationIcon({ className = "text-[#E51C23]" }) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-[#6B7280]" fill="none">
+    <svg aria-hidden="true" viewBox="0 0 16 16" className={`h-4 w-4 shrink-0 ${className}`} fill="none">
       <path d="M8 14s4.5-4.2 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 9.8 8 14 8 14Z" fill="currentColor" />
       <circle cx="8" cy="6.5" r="1.6" fill="white" />
     </svg>
@@ -15,19 +15,33 @@ function LocationIcon() {
 }
 
 function BedIcon() {
-  return <img src="/images/bhk.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] shrink-0 object-contain" />;
+  return <img src="/icons/bhk.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] shrink-0 object-contain" />;
 }
 
 function AreaIcon() {
-  return <img src="/images/Vector.png" alt="" aria-hidden="true" className="h-[13px] w-[13px] shrink-0 object-contain" />;
+  return <img src="/icons/Vector.png" alt="" aria-hidden="true" className="h-[13px] w-[13px]  shrink-0 object-contain" />;
+}
+
+function RedBedIcon() {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-block h-[14px] w-[14px] shrink-0 bg-[#E51C23] [mask-image:url('/icons/bhk.png')] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] [-webkit-mask-image:url('/icons/bhk.png')] [-webkit-mask-position:center] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:contain]"
+    />
+  );
+}
+
+function RedAreaIcon() {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-block h-[13px] w-[13px] shrink-0 bg-[#E51C23] [mask-image:url('/icons/Vector.png')] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] [-webkit-mask-image:url('/icons/Vector.png')] [-webkit-mask-position:center] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:contain]"
+    />
+  );
 }
 
 function StarIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-[#FBBF24]" fill="currentColor">
-      <path d="m10 1.75 2.475 5.016 5.537.806-4.006 3.904.946 5.52L10 14.393l-4.952 2.603.946-5.52-4.006-3.904 5.537-.806L10 1.75Z" />
-    </svg>
-  );
+  return <img src="/icons/star.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" />;
 }
 
 function ChevronDownIcon() {
@@ -39,20 +53,7 @@ function ChevronDownIcon() {
 }
 
 function PromiseIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-8 w-8 shrink-0 text-[#E51C23]" fill="none">
-      <path
-        d="M12 20.5c4.2-2.2 7-5.8 7-9.5V6.5l-7-2.5-7 2.5V11c0 3.7 2.8 7.3 7 9.5Z"
-        fill="currentColor"
-        opacity="0.12"
-      />
-      <path
-        d="M8 12.2c1.1 0 1.8-.9 2.3-1.7.5.8 1.2 1.7 2.3 1.7 1.3 0 2.4-1 2.4-2.4 0-1.5-1.2-2.6-2.6-2.6-1 0-1.7.5-2.1 1.2-.4-.7-1.1-1.2-2.1-1.2-1.4 0-2.6 1.1-2.6 2.6 0 1.4 1.1 2.4 2.4 2.4Z"
-        fill="currentColor"
-      />
-      <path d="M12 20.5c4.2-2.2 7-5.8 7-9.5V6.5l-7-2.5-7 2.5V11c0 3.7 2.8 7.3 7 9.5Z" stroke="currentColor" strokeWidth="1.4" opacity="0.9" />
-    </svg>
-  );
+  return <img src="/icons/promise.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
 }
 
 function BackIcon() {
@@ -66,83 +67,35 @@ function BackIcon() {
 const AMENITY_LIFESTYLE = [
   {
     label: "Gymnasium",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="M5 9v6M7 7v10M17 7v10M19 9v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M8 12h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
+    icon: <img src="/icons/gym.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "Swimming Pool",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path
-          d="M4 16c1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8 1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8 1.2 0 1.8-.8 2.6-.8.8 0 1.4.8 2.6.8"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-        <path d="M6 11c1.5 0 2.5-1.6 3.3-3 .8 1.4 1.8 3 3.3 3 1.5 0 2.5-1.6 3.3-3 .8 1.4 1.8 3 3.3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <circle cx="8.2" cy="8" r="1.1" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/swimming.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "Grand Lawn",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="M12 4 6 10h4l-4 4h4l-2 6 4-4 4 4-2-6h4l-4-4h4L12 4Z" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/lawn.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "24/7 Security",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="M12 3 19 6v5c0 4.8-3 8.5-7 10-4-1.5-7-5.2-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M12 8v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <circle cx="12" cy="15.5" r="1" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/security.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "Visitor Parking",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="1.6" strokeDasharray="2 2" />
-        <path d="M12 9v6M12 9h1.5a1.5 1.5 0 0 1 0 3H12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
+    icon: <img src="/icons/car parking.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain brightness-0 invert-[46%] sepia-[7%] saturate-[363%] hue-rotate-[177deg] brightness-[94%] contrast-[92%]" />,
   },
   {
     label: "Power Backup",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="m13 3-7 9h5l-1 9 7-10h-5l1-8Z" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/power.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "Kids Play Area",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="M12 5v10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M8 9.5c1 0 1.6.8 2 1.6.5-1 1.1-1.6 2-1.6s1.5.6 2 1.6c.4-.8 1-1.6 2-1.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="12" cy="18" r="1.4" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/kids play.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
   {
     label: "Broadband",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-7 w-7 text-[#6B7280]" fill="none">
-        <path d="M4 9c2.2-2.2 5-3.4 8-3.4S17.8 6.8 20 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M7 12c1.4-1.4 3.2-2.1 5-2.1 1.8 0 3.6.7 5 2.1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M10 15c.6-.6 1.3-.9 2-.9s1.4.3 2 .9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <circle cx="12" cy="18.5" r="1.2" fill="currentColor" />
-      </svg>
-    ),
+    icon: <img src="/icons/wifi.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
   },
 ];
 const FAQS = [
@@ -170,7 +123,10 @@ const SIMILAR_PROPERTIES = [
     price: "₹1.45 Cr",
     rate: "₹12,400/sq.ft",
     details: "3 BHK",
-    image: "/images/detail%201.png",
+    sqft: "1850 sqft",
+    image: "/images/1st,4th.png",
+    featured: true,
+    verified: true,
   },
   {
     title: "Godrej Woodscapes",
@@ -178,7 +134,9 @@ const SIMILAR_PROPERTIES = [
     price: "₹85 Lakh",
     rate: "₹6,200/sq.ft",
     details: "2 BHK",
-    image: "/images/detail%201.png",
+    sqft: "1245 sqft",
+    image: "/images/2nd.png",
+    badge: "NEW LAUNCH",
   },
   {
     title: "Oberoi Sky City",
@@ -186,7 +144,9 @@ const SIMILAR_PROPERTIES = [
     price: "₹4.2 Cr",
     rate: "₹18,500/sq.ft",
     details: "4 BHK",
-    image: "/images/detail%201.png",
+    sqft: "2600 sqft",
+    image: "/images/3rd.png",
+    verified: true,
   },
   {
     title: "Emaar Palm Heights",
@@ -194,52 +154,64 @@ const SIMILAR_PROPERTIES = [
     price: "₹1.45 Cr",
     rate: "₹12,400/sq.ft",
     details: "3 BHK",
-    image: "/images/detail%201.png",
+    sqft: "1850 sqft",
+    image: "/images/1st,4th.png",
+    featured: true,
+    verified: true,
   },
 ];
 
 function SimilarPropertyCard({ item }) {
   return (
-    <article className="overflow-hidden rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.08)]">
-      <div className="relative aspect-[1.08] overflow-hidden">
+    <article className="overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+      <div className="relative aspect-[1.18] overflow-hidden">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
-          <span className="rounded-full bg-[#F04444] px-3 py-1 text-[11px] font-bold text-white">VERIFIED</span>
+          {item.featured ? (
+            <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
+              FEATURED
+            </span>
+          ) : null}
+          {item.badge === "NEW LAUNCH" ? (
+            <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#F04444] px-3 text-[10px] font-bold leading-[15px] text-white">
+              NEW LAUNCH
+            </span>
+          ) : item.verified ? (
+            <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-[0_1px_2px_rgba(15,23,42,0.12)]">
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
+                  <path
+                    d="M4 8.5 6.5 11 12 5.5"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span>VERIFIED</span>
+            </span>
+          ) : null}
         </div>
-        <button
-          type="button"
-          aria-label="Save property"
-          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#6B7280] shadow-[0_4px_10px_rgba(15,23,42,0.12)]"
-        >
-          <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5" fill="none">
-            <path
-              d="M10 17.2 4.7 11.8a4.2 4.2 0 0 1 0-5.9 4.2 4.2 0 0 1 5.9 0l.4.4.4-.4a4.2 4.2 0 0 1 5.9 5.9L10 17.2Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </div>
 
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-[22px] font-black leading-tight text-[#111827]">{item.price}</div>
-            <div className="mt-1 text-[12px] leading-tight text-[#9CA3AF]">{item.rate}</div>
-          </div>
+      <div className="px-4 py-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-[24px] font-black leading-tight text-[#111827]">{item.price}</div>
+          <div className="whitespace-nowrap text-[12px] leading-tight text-[#6B7280]">{item.rate}</div>
         </div>
 
-        <div className="mt-3 text-[16px] font-bold text-[#111827]">{item.title}</div>
+        <div className="mt-3 text-[16px] font-bold leading-tight text-[#111827]">{item.title}</div>
         <p className="mt-1 flex items-center gap-1.5 text-[13px] text-[#6B7280]">
-          <LocationIcon />
+          <LocationIcon className="text-[#6B7280]" />
           {item.location}
         </p>
 
-        <div className="mt-4 flex items-center gap-2 text-[13px] font-semibold text-[#111827]">
+        <div className="mt-4 flex items-center gap-2 border-t border-[#F3F4F6] pt-3 text-[13px] font-semibold text-[#111827]">
           <BedIcon />
           <span>{item.details}</span>
+          <AreaIcon />
+          <span className="whitespace-nowrap">{item.sqft}</span>
         </div>
       </div>
     </article>
@@ -389,17 +361,12 @@ function PropertyDetailPage() {
 
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { label: "Configuration", value: "3 BHK Apartment", icon: <BedIcon /> },
-                { label: "Carpet Area", value: "1850 sqft", icon: <AreaIcon /> },
+                { label: "Configuration", value: "3 BHK Apartment", icon: <RedBedIcon /> },
+                { label: "Carpet Area", value: "1850 sqft", icon: <RedAreaIcon /> },
                 {
                   label: "Facing",
                   value: "East Facing",
-                  icon: (
-                    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[14px] w-[14px] shrink-0" fill="none">
-                      <circle cx="8" cy="8" r="6" stroke="#E51C23" strokeWidth="1.4" />
-                      <path d="M8 4.5 10 8 8 11.5 6 8 8 4.5Z" fill="#E51C23" />
-                    </svg>
-                  ),
+                  icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" />,
                 },
                 ].map((item) => (
                 <div key={item.label} className="rounded-[14px] border border-[#E5E7EB] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -495,66 +462,97 @@ function PropertyDetailPage() {
               </div>
             </div>
 
-            <div className="mt-10 rounded-[18px] border border-[#E5E7EB] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="mt-10 rounded-[18px] border border-[#E5E7EB] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Market Trends & Insights</h2>
-              <p className="mt-1 text-[14px] text-[#9CA3AF]">How has {property.location.split(",")[0]} performed over the last 3 years?</p>
+              <p className="mt-1 text-[14px] text-[#6B7280]">
+                How has {property.location.split(",")[0]} performed over the last 3 years?
+              </p>
 
-              <div className="mt-5 rounded-[14px] bg-[#FFF9F9] p-4">
-                <svg viewBox="0 0 640 240" className="h-auto w-full" fill="none" aria-hidden="true">
+              <div className="mt-8 overflow-hidden rounded-[12px] bg-white">
+                <svg viewBox="0 0 880 320" className="h-auto w-full" fill="none" aria-hidden="true">
                   <defs>
                     <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#FDE8E8" stopOpacity="0.75" />
-                      <stop offset="100%" stopColor="#FDE8E8" stopOpacity="0.08" />
+                      <stop offset="0%" stopColor="#FDECEC" stopOpacity="0.7" />
+                      <stop offset="100%" stopColor="#FDECEC" stopOpacity="0.08" />
                     </linearGradient>
                   </defs>
-                  <rect x="0" y="0" width="640" height="240" rx="12" fill="white" />
+                  <rect x="0" y="0" width="880" height="320" rx="12" fill="#FFFFFF" />
+                  <g stroke="#F3F4F6" strokeWidth="1">
+                    <line x1="80" y1="40" x2="80" y2="250" />
+                    <line x1="240" y1="40" x2="240" y2="250" />
+                    <line x1="400" y1="40" x2="400" y2="250" />
+                    <line x1="560" y1="40" x2="560" y2="250" />
+                    <line x1="720" y1="40" x2="720" y2="250" />
+                    <line x1="80" y1="250" x2="840" y2="250" />
+                    <line x1="80" y1="200" x2="840" y2="200" />
+                    <line x1="80" y1="150" x2="840" y2="150" />
+                    <line x1="80" y1="100" x2="840" y2="100" />
+                    <line x1="80" y1="50" x2="840" y2="50" />
+                  </g>
                   <path
-                    d="M36 188 L150 178 L260 165 L372 158 L486 145 L604 132 L604 220 L36 220 Z"
+                    d="M80 188 L240 180 L400 164 L560 154 L720 138 L840 126 L840 250 L80 250 Z"
                     fill="url(#trendFill)"
                   />
                   <path
-                    d="M36 188 L150 178 L260 165 L372 158 L486 145 L604 132"
+                    d="M80 188 L240 180 L400 164 L560 154 L720 138 L840 126"
                     stroke="#E51C23"
                     strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   {[
-                    [36, 188],
-                    [150, 178],
-                    [260, 165],
-                    [372, 158],
-                    [486, 145],
-                    [604, 132],
+                    [80, 188],
+                    [240, 180],
+                    [400, 164],
+                    [560, 154],
+                    [720, 138],
+                    [840, 126],
                   ].map(([x, y]) => (
                     <circle key={`${x}-${y}`} cx={x} cy={y} r="4.5" fill="#E51C23" />
                   ))}
                   {[
-                    ["₹0", 12, 222],
-                    ["₹5k", 12, 185],
-                    ["₹10k", 12, 148],
-                    ["₹15k", 12, 111],
-                    ["₹20k", 12, 74],
+                    ["₹0", 40, 254],
+                    ["₹5k", 40, 204],
+                    ["₹10k", 34, 154],
+                    ["₹15k", 34, 104],
+                    ["₹20k", 34, 54],
+                    ["Jan 2022", 80, 276],
+                    ["Jul 2022", 240, 276],
+                    ["Jan 2023", 400, 276],
+                    ["Jul 2023", 560, 276],
+                    ["Jan 2024", 720, 276],
+                    ["Presents", 840, 276],
                   ].map(([label, x, y]) => (
-                    <text key={label} x={x} y={y} fill="#94A3B8" fontSize="11" fontFamily="Lato, sans-serif">
+                    <text
+                      key={label}
+                      x={x}
+                      y={y}
+                      fill="#6B7280"
+                      fontSize="12"
+                      fontFamily="Lato, sans-serif"
+                      textAnchor={label.startsWith("Jan") || label.startsWith("Jul") || label === "Presents" ? "middle" : "start"}
+                    >
                       {label}
                     </text>
                   ))}
                 </svg>
               </div>
 
-              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-[12px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] text-[#9CA3AF]">Annual Appreciation</div>
-                  <div className="mt-1 text-[22px] font-black text-[#16A34A]">+8.4%</div>
+              <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
+                  <div className="text-[12px] font-semibold text-[#6B7280]">Annual Appreciation</div>
+                  <div className="mt-2 text-[26px] font-black leading-tight text-[#16A34A]">+8.4%</div>
                 </div>
-                <div className="rounded-[12px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] text-[#9CA3AF]">Estimated Rent</div>
-                  <div className="mt-1 text-[22px] font-black text-[#111827]">₹1.2L / mo</div>
+                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
+                  <div className="text-[12px] font-semibold text-[#6B7280]">Estimated Rent</div>
+                  <div className="mt-2 text-[26px] font-black leading-tight text-[#111827]">₹1.2L / mo</div>
                 </div>
-                <div className="rounded-[12px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] text-[#9CA3AF]">Locality Rating</div>
-                  <div className="mt-1 text-[22px] font-black text-[#111827]">4.5 ★</div>
+                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
+                  <div className="text-[12px] font-semibold text-[#6B7280]">Locality Rating</div>
+                  <div className="mt-2 flex items-center gap-1 text-[26px] font-black leading-tight text-[#111827]">
+                    <span>4.5</span>
+                    <img src="/icons/star.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -611,36 +609,24 @@ function PropertyDetailPage() {
                   aria-label="Call"
                   className="inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[12px] border-2 border-[#E51C23] bg-white text-[#E51C23]"
                 >
-                  <img src="/images/phone.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" />
+                  <img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" />
                 </button>
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] font-bold text-[#374151]"
+                  className="inline-flex h-[68px] items-center justify-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[18px] font-semibold text-[#374151]"
                 >
-                  <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
-                    <path
-                      d="M8 2.5a3.5 3.5 0 0 0-3.5 3.5c0 2.75 3.5 7 3.5 7s3.5-4.25 3.5-7A3.5 3.5 0 0 0 8 2.5Z"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    />
-                    <circle cx="8" cy="6" r="1.2" fill="currentColor" />
-                  </svg>
+                  <img src="/icons/fav%20icon.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
                   Save
                 </button>
 
                 <button
                   type="button"
-                  className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] font-bold text-[#374151]"
+                  className="inline-flex h-[68px] items-center justify-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[18px] font-semibold text-[#374151]"
                 >
-                  <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
-                    <path d="M5.5 8.5 10.5 5.5M5.5 7.5 10.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="4" cy="8" r="1.5" fill="currentColor" />
-                    <circle cx="12" cy="5.5" r="1.5" fill="currentColor" />
-                    <circle cx="12" cy="10.5" r="1.5" fill="currentColor" />
-                  </svg>
+                  <img src="/icons/share.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
                   Share
                 </button>
               </div>
@@ -719,8 +705,8 @@ function PropertyDetailPage() {
           </Link>
         </div>
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {SIMILAR_PROPERTIES.map((item) => (
-            <SimilarPropertyCard key={`${item.title}-${item.location}`} item={item} />
+          {SIMILAR_PROPERTIES.map((item, index) => (
+            <SimilarPropertyCard key={`${item.title}-${item.location}-${index}`} item={item} />
           ))}
         </div>
       </section>

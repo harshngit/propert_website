@@ -5,7 +5,7 @@ import { buildPropertiesPath } from "../../utils/propertySearch";
 function PinIcon() {
   return (
     <img
-      src="/images/pin%20icon.png"
+      src="/icons/pin%20icon.png"
       alt=""
       aria-hidden="true"
       className="h-[16px] w-[12px] shrink-0 object-contain"
@@ -16,7 +16,7 @@ function PinIcon() {
 function HomeIcon() {
   return (
     <img
-      src="/images/home%20icon.png"
+      src="/icons/home%20icon.png"
       alt=""
       aria-hidden="true"
       className="h-[16px] w-[18px] shrink-0 object-contain"
@@ -27,7 +27,7 @@ function HomeIcon() {
 function RupeeIcon() {
   return (
     <img
-      src="/images/rupay%20icon.png"
+      src="/icons/rupay%20icon.png"
       alt=""
       aria-hidden="true"
       className="h-[16px] w-[10px] shrink-0 object-contain"
@@ -54,7 +54,17 @@ function SearchIcon() {
   );
 }
 
-function HomeHeroSection() {
+function HomeHeroSection({
+  currentCity,
+  showBadge = true,
+  titlePrefix = "",
+  titleHighlight = "",
+  titleText = "Beyond listings. Built for the entire deal",
+  descriptionLines = [
+    "Verified properties, legal facilitation, financing, and closure tracked end-to-end on one platform",
+    "Not a portal, an operating system for real estate transactions",
+  ],
+}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabs = ["Buy", "Rent", "Commercial", "Institutional"];
@@ -78,9 +88,9 @@ function HomeHeroSection() {
   const handleSearch = (event) => {
     event.preventDefault();
 
-    const currentCity = searchParams.get("city");
+    const activeCity = currentCity || searchParams.get("city");
     const nextPath = buildPropertiesPath(searchParams, {
-      city: currentCity || undefined,
+      city: activeCity || undefined,
       location: searchLocation,
       propertyType,
       budget,
@@ -93,29 +103,35 @@ function HomeHeroSection() {
   return (
     <section className="relative flex min-h-[548px] max-w-full flex-col items-center justify-start pb-8 lg:pb-10">
       <div className="relative w-full pt-16 sm:pt-8 lg:pt-[96px]">
-        <div className="absolute left-1/2 top-0 inline-flex -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F6E8C8] px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#C08C2C] sm:top-[44px] sm:px-5 sm:text-[10px]">
-          Real Estate Transaction Operating System
-        </div>
+        {showBadge ? (
+          <div className="absolute left-1/2 top-0 inline-flex -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F6E8C8] px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#C08C2C] sm:top-[44px] sm:px-5 sm:text-[10px]">
+            Real Estate Transaction Operating System
+          </div>
+        ) : null}
 
         <div className="mx-auto flex w-full max-w-[1184px] items-center justify-center px-2 sm:px-0">
           <h1
             className="text-center font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[34px] tracking-[0] text-[#111827] sm:text-[36px] sm:leading-[42px] lg:text-[48px] lg:leading-[48px]"
             style={{ width: "100%", maxWidth: "1020px" }}
           >
-            Beyond listings. Built for the entire deal
+            {titlePrefix ? (
+              <>
+                {titlePrefix} <span className="text-[#E51C23]">{titleHighlight}</span>
+              </>
+            ) : (
+              titleText
+            )}
           </h1>
         </div>
       </div>
 
       <div className="mx-auto mt-3 flex w-full max-w-[1184px] items-center justify-center px-3 sm:mt-4 sm:px-0">
         <div className="flex w-full max-w-[747px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[22px] text-[#6B7280] sm:text-[18px] sm:leading-[28px]">
-          <p className="m-0 text-center">
-            Verified properties, legal facilitation, financing, and closure
-            tracked end-to-end on one platform
-          </p>
-          <p className="m-0 text-center">
-            Not a portal, an operating system for real estate transactions
-          </p>
+          {descriptionLines.map((line) => (
+            <p key={line} className="m-0 text-center">
+              {line}
+            </p>
+          ))}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import React from "react";
 
 function SectionHeading({ title, subtitle, accent, className = "" }) {
-  const wrapperClassName = className || "mb-5 mt-[52px] flex flex-wrap items-end justify-between gap-5";
+  const wrapperClassName = className || "mb-5 mt-[40px] flex flex-wrap items-end justify-between gap-5";
 
   return (
     <div className={wrapperClassName}>
