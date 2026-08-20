@@ -415,6 +415,10 @@ function CityLandingPage() {
       description: `${cityLabel}'s ${index + 1} most active residential pocket.`,
     }));
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [cityLabel]);
+
   return (
     <main className="min-h-screen bg-white text-[#111827]">
       <SiteHeader />
