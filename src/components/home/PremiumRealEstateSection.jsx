@@ -1,13 +1,6 @@
 import React from "react";
 
 function PremiumRealEstateSection() {
-  const detailRows = [
-    ["Access", "Invitation only"],
-    ["Structure", "Dedicated SPV (Pvt Ltd)"],
-    ["Managed by", "Empanelled CA/CS"],
-    ["Eligible for", "Verified HNI & NRI investors"],
-  ];
-
   const chips = [
     "By invitation, subject to eligibility",
     "Assets in the Rs10 Cr - Rs100 Cr range",
@@ -63,30 +56,12 @@ function PremiumRealEstateSection() {
             </p>
           </div>
 
-          <div className="w-full max-w-[548px] rounded-[20px] border border-white/10 bg-[#ffffff12] p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
-            <div className="space-y-0">
-              {detailRows.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between border-b border-white/10 py-4 last:border-b-0"
-                >
-                  <span className="text-[16px] font-normal text-[#94A3B8]">{label}</span>
-                  <span className="text-[16px] font-semibold text-white">{value}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 flex gap-1.5">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <span
-                  key={index}
-                  className={[
-                    "h-1.5 flex-1 rounded-full",
-                    index < 4 ? "bg-[#23B5D0]" : "bg-white/15",
-                  ].join(" ")}
-                />
-              ))}
-            </div>
+          <div className="w-full max-w-[600px] overflow-hidden rounded-[16px] shadow-[0_18px_36px_rgba(0,0,0,0.16)]">
+            <img
+              src="\images\premium.png"
+              alt="Buy or sell"
+              className="h-[400px] w-full object-cover"
+            />
           </div>
         </div>
       </div>

@@ -73,7 +73,7 @@ function LocationIcon() {
 function ResultPinIcon() {
   return (
     <img
-      src="/images/pin%20icon.png"
+      src="/icons/pin%20icon.png"
       alt=""
       aria-hidden="true"
       className="h-[12px] w-[9px] shrink-0 object-contain"

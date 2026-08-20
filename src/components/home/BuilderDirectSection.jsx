@@ -24,7 +24,7 @@ function BuilderDirectSection({
         <div className="absolute rounded-[50%] inset-0 bg-[linear-gradient(90deg,#111827_0%,rgba(17,24,39,0.5)_50%,rgba(17,24,39,0)_100%)]" />
         <div className="relative w-[544px] max-w-[544px] text-white">
           <div className="inline-flex h-[32px] w-[257px] items-center justify-center gap-[10px] rounded-full border border-[#FFFFFF33] bg-[#FFFFFF33] px-4 py-2 text-center backdrop-blur-[12px]">
-            <span className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16px] tracking-[0.1em] text-white">
+            <span className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase leading-[16px] tracking-[0.1em] text-white">
               {badgeText}
             </span>
           </div>

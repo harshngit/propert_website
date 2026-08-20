@@ -2,42 +2,42 @@ import React from "react";
 
 function TrendChart({ values, labels }) {
   const width = 520;
-  const height = 230;
-  const leftPad = 22;
-  const rightPad = 12;
-  const topPad = 12;
-  const bottomPad = 32;
+  const height = 280;
+  const leftPad = 40;
+  const rightPad = 10;
+  const topPad = 14;
+  const bottomPad = 36;
   const plotWidth = width - leftPad - rightPad;
   const plotHeight = height - topPad - bottomPad;
-  const maxValue = Math.max(...values);
-  const minValue = Math.min(...values);
-  const range = Math.max(maxValue - minValue, 1);
+  const maxValue = 50000;
+  const minValue = 0;
+  const range = maxValue - minValue;
+  const xCount = Math.max(labels.length - 1, 1);
+  const yTickValues = [50000, 40000, 30000, 20000, 10000];
+  const yTickLabels = ["50k", "40k", "30k", "20k", "10k"];
 
   const points = values
     .map((value, index) => {
-      const x = leftPad + (plotWidth / (values.length - 1 || 1)) * index;
+      const x = leftPad + (plotWidth / xCount) * index;
       const normalized = (value - minValue) / range;
       const y = topPad + plotHeight - normalized * plotHeight;
       return `${x},${y}`;
     })
     .join(" ");
 
-  const yTicks = [0, 0.25, 0.5, 0.75, 1];
-  const tickLabels = ["0", "10k", "20k", "30k", "40k"];
-
   return (
-    <div className="relative h-[320px] w-full">
+    <div className="relative h-[300px] w-full">
       <div className="absolute left-0 top-0 h-full w-full">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex w-10 flex-col justify-between pb-8 pt-8 text-[11px] text-[#6B7280]">
-          {tickLabels.map((label) => (
+        <div className="pointer-events-none absolute left-0 top-0 flex h-full w-10 flex-col justify-between pb-8 pt-4 text-[11px] text-[#6B7280]">
+          {yTickLabels.map((label) => (
             <span key={label} className="block text-right">
               {label}
             </span>
           ))}
         </div>
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full">
-          {yTicks.map((tick, index) => {
-            const y = topPad + plotHeight - tick * plotHeight;
+          {yTickValues.map((tick, index) => {
+            const y = topPad + plotHeight - ((tick - minValue) / range) * plotHeight;
             return (
               <line
                 key={tick}
@@ -51,7 +51,7 @@ function TrendChart({ values, labels }) {
             );
           })}
           {labels.map((label, index) => {
-            const x = leftPad + (plotWidth / (labels.length - 1 || 1)) * index;
+            const x = leftPad + (plotWidth / xCount) * index;
             return (
               <g key={label}>
                 <line
@@ -77,15 +77,13 @@ function TrendChart({ values, labels }) {
             points={points}
           />
           {values.map((value, index) => {
-            const x = leftPad + (plotWidth / (values.length - 1 || 1)) * index;
+            const x = leftPad + (plotWidth / xCount) * index;
             const normalized = (value - minValue) / range;
             const y = topPad + plotHeight - normalized * plotHeight;
             return <circle key={`${value}-${index}`} cx={x} cy={y} r="4" fill="#E51C23" />;
           })}
           <polygon
-            points={`${leftPad},${topPad + plotHeight} ${points.replace(/\s+/g, " ").split(" ").join(" ")} ${width - rightPad},${
-              topPad + plotHeight
-            }`}
+            points={`${leftPad},${topPad + plotHeight} ${points} ${width - rightPad},${topPad + plotHeight}`}
             fill="rgba(229,28,35,0.06)"
           />
         </svg>
@@ -97,7 +95,7 @@ function TrendChart({ values, labels }) {
 function DemandSupplyChart({ labels, demand, supply }) {
   const width = 520;
   const height = 230;
-  const leftPad = 26;
+  const leftPad = 42;
   const rightPad = 18;
   const topPad = 14;
   const bottomPad = 34;
@@ -113,7 +111,7 @@ function DemandSupplyChart({ labels, demand, supply }) {
   return (
     <div className="relative h-[320px] w-full">
       <div className="absolute inset-0">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex w-8 flex-col justify-between pb-8 pt-7 text-[11px] text-[#6B7280]">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex w-10 flex-col justify-between pb-8 pt-7 text-[11px] text-[#6B7280]">
           {ticks.map((tick) => (
             <span key={tick} className="block text-right">
               {tick}

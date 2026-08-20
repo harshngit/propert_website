@@ -3,13 +3,13 @@ import React from "react";
 function AuthField({ label, error, endAdornment, className = "", ...props }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[13px] font-semibold text-slate-700">{label}</span>
+      <span className="mb-1.5 block text-[13px] font-bold text-[#111827]">{label}</span>
       <span className="relative flex items-center">
         <input
           className={[
-            "h-12 w-full rounded-2xl border bg-white px-4 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-400 focus:ring-4 focus:ring-red-500/10",
+            "h-10 w-full rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[14px] text-[#111827] outline-none transition placeholder:text-[#9CA3AF] focus:border-red-400 focus:ring-4 focus:ring-red-500/10",
             endAdornment ? "pr-16" : "",
-            error ? "border-red-400" : "border-slate-200",
+            error ? "border-red-400" : "",
           ].join(" ")}
           {...props}
         />

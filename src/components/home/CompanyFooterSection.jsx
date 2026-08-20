@@ -17,10 +17,10 @@ function CompanyFooterSection() {
   ];
 
   const socials = [
-    { alt: "Facebook", src: "/images/fb.png" },
-    { alt: "X", src: "/images/X.png" },
-    { alt: "Instagram", src: "/images/insta.png" },
-    { alt: "LinkedIn", src: "/images/linkdin.png" },
+    { alt: "Facebook", src: "/icons/fb.png" },
+    { alt: "X", src: "/icons/X.png" },
+    { alt: "Instagram", src: "/icons/insta.png" },
+    { alt: "LinkedIn", src: "/icons/linkdin.png" },
   ];
 
   return (

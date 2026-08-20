@@ -2,7 +2,10 @@ import React from "react";
 import GuideCard from "../GuideCard";
 import { guideItems, searchTags, whyItems } from "../../data/homeContent";
 
-function TrustSection() {
+function TrustSection({
+  title = "Testimonials",
+  subtitle = "Trusted by owners, buyers and institutions",
+}) {
   const testimonials = [
     {
       quote:
@@ -37,10 +40,8 @@ function TrustSection() {
   return (
     <div className="mt-12 px-0">
       <div className="mx-auto max-w-full">
-        <h3 className="text-[36px] font-black leading-tight text-[#E51C23] md:text-[34px]">
-          Testimonials
-        </h3>
-        <p className="mt-1 text-[16px] text-slate-500">Trusted by owners, buyers and institutions</p>
+        <h3 className="text-[36px] font-black leading-tight text-[#E51C23] md:text-[34px]">{title}</h3>
+        <p className="mt-1 text-[16px] text-slate-500">{subtitle}</p>
 
         <div className="mt-6 flex gap-4 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-4">
           {testimonials.map((item) => (

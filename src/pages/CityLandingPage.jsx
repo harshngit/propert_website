@@ -3,18 +3,28 @@ import { Link, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import HomeHeroSection from "../components/home/HomeHeroSection";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
+import CityTickerSection from "../components/home/CityTickerSection";
 import VerifiedListingsSection from "../components/home/VerifiedListingsSection";
 import BuilderDirectSection from "../components/home/BuilderDirectSection";
 import MarketInsightsSection from "../components/home/MarketInsightsSection";
-import { CITY_OPTIONS, buildCityPath, fromCitySlug } from "../utils/city";
+import PopularNeighborhoodsSection from "../components/home/PopularNeighborhoodsSection";
+import TrustSection from "../components/home/TrustSection";
+import { fromCitySlug } from "../utils/city";
 
 const IMAGE_POOL = ["/images/1st,4th.png", "/images/2nd.png", "/images/3rd.png"];
+
+
+
 
 const CITY_PROFILES = {
   Mumbai: {
     heroTitle: "Real Estate in Mumbai",
     heroDescription:
       "Mumbai, India's financial capital, offers a dynamic real estate market with premium developments, strong appreciation, and exceptional investment opportunities across established and emerging locations.",
+    heroDescriptionLines: [
+      "Mumbai, India's financial capital, offers a dynamic real estate market with premium developments, strong appreciation,",
+      "and exceptional investment opportunities across established and emerging locations.",
+    ],
     subtitle: "Sea-facing towers, high-energy micro-markets, and some of the country's most premium residential corridors.",
     metrics: [
       { label: "Verified Listings", value: "1,245+" },
@@ -23,11 +33,42 @@ const CITY_PROFILES = {
     ],
     areas: ["Bandra West", "Andheri West", "Powai", "Worli", "Juhu", "Borivali East"],
     highlights: ["Luxury apartments", "Coastal views", "Prime investment corridor"],
+    neighborhoods: [
+      {
+        title: "Worli",
+        count: "842 Properties",
+        description: "Sea-facing ultra-luxury towers and high connectivity.",
+      },
+      {
+        title: "Andheri West",
+        count: "1,245 Properties",
+        description: "The vibrant heart of media, food, and high-street retail.",
+      },
+      {
+        title: "Powai",
+        count: "612 Properties",
+        description: "Premium townships with an upscale European vibe.",
+      },
+      {
+        title: "Bandra West",
+        count: "428 Properties",
+        description: "The Queen of Suburbs, high-end heritage luxury.",
+      },
+      {
+        title: "Malad West",
+        count: "915 Properties",
+        description: "Growing IT hub with excellent lifestyle amenities.",
+      },
+    ],
   },
   Delhi: {
     heroTitle: "Real Estate in Delhi",
     heroDescription:
       "Delhi's residential market spans premium family homes, strategic locations, and a diverse mix of neighborhoods with long-term lifestyle and investment value.",
+    heroDescriptionLines: [
+      "Delhi's residential market spans premium family homes, strategic locations,",
+      "and a diverse mix of neighborhoods with long-term lifestyle and investment value.",
+    ],
     subtitle: "Wide roads, premium condominiums, and strong owner-occupier demand across South and West Delhi.",
     metrics: [
       { label: "Verified Listings", value: "980+" },
@@ -36,11 +77,42 @@ const CITY_PROFILES = {
     ],
     areas: ["Saket", "Dwarka", "Rajouri Garden", "Vasant Kunj", "Janakpuri", "South Delhi"],
     highlights: ["Low-rise homes", "Family neighborhoods", "Elite builder inventory"],
+    neighborhoods: [
+      {
+        title: "Saket",
+        count: "610 Properties",
+        description: "Premium malls, arterial roads, and established residential pockets.",
+      },
+      {
+        title: "Dwarka",
+        count: "1,020 Properties",
+        description: "Planned sectors, wide roads, and strong family demand.",
+      },
+      {
+        title: "Rajouri Garden",
+        count: "548 Properties",
+        description: "A lively market with retail energy and mixed housing stock.",
+      },
+      {
+        title: "Vasant Kunj",
+        count: "482 Properties",
+        description: "Low-density living with premium condominiums and green pockets.",
+      },
+      {
+        title: "Janakpuri",
+        count: "694 Properties",
+        description: "Well-connected neighborhoods with strong end-user appeal.",
+      },
+    ],
   },
   Bengaluru: {
     heroTitle: "Real Estate in Bengaluru",
     heroDescription:
       "Bengaluru combines tech-led demand, high-quality gated communities, and a broad mix of homes suited for professionals, families, and investors.",
+    heroDescriptionLines: [
+      "Bengaluru combines tech-led demand, high-quality gated communities,",
+      "and a broad mix of homes suited for professionals, families, and investors.",
+    ],
     subtitle: "Tech-driven demand, gated communities, and a strong preference for modern apartments and villas.",
     metrics: [
       { label: "Verified Listings", value: "860+" },
@@ -49,11 +121,42 @@ const CITY_PROFILES = {
     ],
     areas: ["Whitefield", "Indiranagar", "Sarjapur", "Electronic City", "Hebbal", "Jayanagar"],
     highlights: ["IT corridor homes", "Investor-friendly", "Gated communities"],
+    neighborhoods: [
+      {
+        title: "Whitefield",
+        count: "735 Properties",
+        description: "Tech-led demand with large gated communities and modern towers.",
+      },
+      {
+        title: "Indiranagar",
+        count: "418 Properties",
+        description: "Premium lifestyle living with dining, retail, and urban convenience.",
+      },
+      {
+        title: "Sarjapur",
+        count: "580 Properties",
+        description: "Fast-growing corridor with fresh launches and good commute access.",
+      },
+      {
+        title: "Electronic City",
+        count: "642 Properties",
+        description: "Value-rich apartments popular with professionals and investors.",
+      },
+      {
+        title: "Hebbal",
+        count: "399 Properties",
+        description: "Airport-linked growth pocket with premium high-rise options.",
+      },
+    ],
   },
   Pune: {
     heroTitle: "Real Estate in Pune",
     heroDescription:
       "Pune's market blends affordable premium housing, new-township growth, and strong end-user demand across the city's most active corridors.",
+    heroDescriptionLines: [
+      "Pune's market blends affordable premium housing, new-township growth,",
+      "and strong end-user demand across the city's most active corridors.",
+    ],
     subtitle: "Balanced price points, modern townships, and a healthy mix of end-user and investment demand.",
     metrics: [
       { label: "Verified Listings", value: "740+" },
@@ -62,11 +165,42 @@ const CITY_PROFILES = {
     ],
     areas: ["Hinjewadi", "Baner", "Kharadi", "Wakad", "Aundh", "Magarpatta"],
     highlights: ["Young professionals", "New launches", "Township living"],
+    neighborhoods: [
+      {
+        title: "Hinjewadi",
+        count: "690 Properties",
+        description: "IT-driven demand with modern townships and strong rental interest.",
+      },
+      {
+        title: "Baner",
+        count: "520 Properties",
+        description: "Popular for premium apartments and good social infrastructure.",
+      },
+      {
+        title: "Kharadi",
+        count: "610 Properties",
+        description: "A fast-moving eastern corridor with new-age residential supply.",
+      },
+      {
+        title: "Wakad",
+        count: "570 Properties",
+        description: "End-user friendly pocket with balanced connectivity and pricing.",
+      },
+      {
+        title: "Aundh",
+        count: "355 Properties",
+        description: "Established urban housing with high livability and convenience.",
+      },
+    ],
   },
   Hyderabad: {
     heroTitle: "Real Estate in Hyderabad",
     heroDescription:
       "Hyderabad features fast-growing luxury neighborhoods, premium villa communities, and a market that continues to attract both buyers and investors.",
+    heroDescriptionLines: [
+      "Hyderabad features fast-growing luxury neighborhoods, premium villa communities,",
+      "and a market that continues to attract both buyers and investors.",
+    ],
     subtitle: "Large-format homes, premium villa communities, and a fast-growing luxury market with excellent connectivity.",
     metrics: [
       { label: "Verified Listings", value: "620+" },
@@ -75,6 +209,33 @@ const CITY_PROFILES = {
     ],
     areas: ["Gachibowli", "Kondapur", "Madhapur", "Banjara Hills", "Kokapet", "Jubilee Hills"],
     highlights: ["Villa communities", "IT hub demand", "Premium gated projects"],
+    neighborhoods: [
+      {
+        title: "Gachibowli",
+        count: "760 Properties",
+        description: "Corporate corridor living with premium apartments and high demand.",
+      },
+      {
+        title: "Kondapur",
+        count: "620 Properties",
+        description: "A balanced residential market with strong social infrastructure.",
+      },
+      {
+        title: "Madhapur",
+        count: "540 Properties",
+        description: "Connected to the tech ecosystem with active buyer interest.",
+      },
+      {
+        title: "Banjara Hills",
+        count: "310 Properties",
+        description: "Luxury low-density living in one of the city's prime addresses.",
+      },
+      {
+        title: "Kokapet",
+        count: "455 Properties",
+        description: "A rapidly growing premium pocket with large-format homes.",
+      },
+    ],
   },
 };
 
@@ -229,6 +390,10 @@ function CityLandingPage() {
   const profile = CITY_PROFILES[cityLabel] || {
     heroTitle: `Real Estate in ${cityLabel}`,
     heroDescription: `Browse curated residential listings, neighborhood insights, and investment opportunities tailored to ${cityLabel}.`,
+    heroDescriptionLines: [
+      `Browse curated residential listings, neighborhood insights,`,
+      `and investment opportunities tailored to ${cityLabel}.`,
+    ],
     subtitle: `Browse curated residential inventory and market insights tailored to ${cityLabel}.`,
     metrics: [
       { label: "Verified Listings", value: "500+" },
@@ -238,10 +403,17 @@ function CityLandingPage() {
     areas: [cityLabel, `Central ${cityLabel}`, `${cityLabel} East`, `${cityLabel} West`],
     highlights: ["Curated inventory", "High-intent buyers", "Dynamic market snapshot"],
   };
-
+  
   const featuredListings = buildFeaturedListings(cityLabel, profile.areas);
   const verifiedListings = buildVerifiedListings(cityLabel, profile.areas);
   const marketLabels = profile.areas.slice(0, 5);
+  const neighborhoodItems =
+    profile.neighborhoods ||
+    profile.areas.slice(0, 5).map((area, index) => ({
+      title: area,
+      count: "Properties",
+      description: `${cityLabel}'s ${index + 1} most active residential pocket.`,
+    }));
 
   return (
     <main className="min-h-screen bg-white text-[#111827]">
@@ -251,8 +423,10 @@ function CityLandingPage() {
         showBadge={false}
         titlePrefix="Real Estate in"
         titleHighlight={cityLabel}
-        descriptionLines={[profile.heroDescription]}
+        descriptionLines={profile.heroDescriptionLines || [profile.heroDescription]}
       />
+
+      
 
       <section className="px-4 pb-7 sm:px-6 lg:px-12">
         <div className="mx-auto max-w-[1440px]">
@@ -287,52 +461,18 @@ function CityLandingPage() {
         />
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-12">
-        <div className="mx-auto max-w-[1440px]">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-[28px] font-black leading-tight text-[#111827]">Featured properties in {cityLabel}</h2>
-              <p className="mt-2 text-[15px] leading-7 text-[#6B7280]">
-                A dynamic set of cards for the city page, ready to link into filtered property results.
-              </p>
-            </div>
+      <PopularNeighborhoodsSection
+        cityLabel={cityLabel}
+        subtitle="Discover the most sought-after residential hubs in the city"
+        items={neighborhoodItems}
+        viewAllHref={`/properties?city=${encodeURIComponent(cityLabel)}&view=list`}
+      />
 
-            <div className="hidden sm:block">
-              <Link to={`/properties?city=${encodeURIComponent(cityLabel)}&view=list`} className="text-[14px] font-bold text-[#E51C23]">
-                View all
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {featuredListings.map((item) => (
-              <CityListingCard key={`${item.title}-${item.location}`} item={item} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-[#F3F4F6] bg-[#FAFAFA] px-4 py-10 sm:px-6 lg:px-12">
-        <div className="mx-auto max-w-[1440px]">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {CITY_OPTIONS.map((city) => (
-              <Link
-                key={city}
-                to={buildCityPath(city)}
-                className={[
-                  "rounded-[18px] border px-5 py-5 transition",
-                  city === cityLabel ? "border-[#E51C23] bg-[#FFF9F9]" : "border-[#E5E7EB] bg-white hover:border-[#E51C23]",
-                ].join(" ")}
-              >
-                <div className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#9CA3AF]">City</div>
-                <div className="mt-2 text-[20px] font-black text-[#111827]">{city}</div>
-                <div className="mt-2 text-[14px] leading-6 text-[#6B7280]">
-                  Open a dynamic landing page for {city} with the same shared layout.
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+      <section className="px-4 sm:px-6 lg:px-12">
+        <TrustSection
+          title={`Testimonials in ${cityLabel}`}
+          subtitle={`Trusted by owners, buyers and institutions in ${cityLabel}`}
+        />
       </section>
 
       <CompanyFooterSection />

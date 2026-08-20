@@ -156,9 +156,9 @@ function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
     <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <button
         type="button"
-        className="inline-flex h-8 items-center gap-1 rounded-[10px] px-2 py-1 transition hover:bg-slate-50 hover:text-slate-950"
+        className="inline-flex h-5 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 transition hover:text-slate-950"
       >
-        <span className="flex min-w-[55px] items-center font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 tracking-[0.088em] text-[#374151]">
+        <span className="leading-5 text-[#374151]">
           {selectedCity}
         </span>
         <Chevron />
@@ -268,11 +268,15 @@ function SiteHeader() {
   const navigate = useNavigate();
   const params = useParams();
   const [searchParams] = useSearchParams();
-  const showTicker = location.pathname === "/";
+  const showTicker =
+    location.pathname === "/" ||
+    location.pathname.startsWith("/city/") ||
+    location.pathname.startsWith("/properties");
   const [openMenu, setOpenMenu] = React.useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
   const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "Mumbai";
+  const cityLabel = location.pathname === "/" ? "City" : selectedCity;
 
   const handleCitySelect = (label) => {
     setOpenMenu(null);
@@ -296,7 +300,7 @@ function SiteHeader() {
 
           <div className="hidden sm:block">
             <CitySelector
-              selectedCity={selectedCity}
+              selectedCity={cityLabel}
               isOpen={openMenu === "city"}
               onEnter={() => {
                 setOpenMenu("city");
