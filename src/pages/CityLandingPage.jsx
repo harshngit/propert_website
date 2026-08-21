@@ -10,6 +10,7 @@ import MarketInsightsSection from "../components/home/MarketInsightsSection";
 import PopularNeighborhoodsSection from "../components/home/PopularNeighborhoodsSection";
 import TrustSection from "../components/home/TrustSection";
 import { fromCitySlug } from "../utils/city";
+import { buildPropertyDetailPath } from "../utils/propertySearch";
 
 const IMAGE_POOL = ["/images/1st,4th.png", "/images/2nd.png", "/images/3rd.png"];
 
@@ -332,8 +333,15 @@ function buildVerifiedListings(cityLabel, areas) {
 }
 
 function CityListingCard({ item }) {
+  const detailPath = buildPropertyDetailPath(item);
+
   return (
-    <article className="overflow-hidden rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+    <Link
+      to={detailPath}
+      state={{ property: item }}
+      className="block overflow-hidden rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+      aria-label={`View details for ${item.title}`}
+    >
       <div className="relative aspect-[1.15] overflow-hidden">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
@@ -380,7 +388,7 @@ function CityListingCard({ item }) {
           <span className="whitespace-nowrap">{item.sqft}</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 

@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { buildPropertyDetailPath } from "../utils/propertySearch";
 
 function VerifiedBadge() {
   return (
@@ -21,14 +23,19 @@ function VerifiedBadge() {
 
 function PropertyCard({ item, className = "", showMessage = true }) {
   const isNewLaunch = item.badge === "NEW LAUNCH";
+  const detailPath = buildPropertyDetailPath(item);
 
   return (
-    <article
+    <Link
+      to={detailPath}
+      state={{ property: item }}
       className={[
-        "flex h-[384px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
+        "block h-[384px] rounded-[20px] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40",
         className,
       ].join(" ")}
+      aria-label={`View details for ${item.title}`}
     >
+      <article className="flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
       <div className={`relative h-[180px] overflow-hidden p-3 ${item.cardClass}`}>
         {item.image ? (
           <img
@@ -102,7 +109,8 @@ function PropertyCard({ item, className = "", showMessage = true }) {
           </div>
         ) : null}
       </div>
-    </article>
+      </article>
+    </Link>
   );
 }
 

@@ -1,9 +1,10 @@
 ﻿import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import PropertyGallery from "../components/PropertyGallery";
 import { propertyResults } from "../data/propertyResults";
+import { buildPropertyDetailPath } from "../utils/propertySearch";
 
 function LocationIcon({ className = "text-[#E51C23]" }) {
   return (
@@ -54,6 +55,12 @@ function ChevronDownIcon() {
 
 function PromiseIcon() {
   return <img src="/icons/promise.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
+}
+
+function formatDisplayCurrency(value, prefix = "₹") {
+  if (value === undefined || value === null) return "";
+  const text = String(value).trim();
+  return text.startsWith(prefix) ? text : `${prefix}${text}`;
 }
 
 function BackIcon() {
@@ -162,8 +169,15 @@ const SIMILAR_PROPERTIES = [
 ];
 
 function SimilarPropertyCard({ item }) {
+  const detailPath = buildPropertyDetailPath(item);
+
   return (
-    <article className="overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+    <Link
+      to={detailPath}
+      state={{ property: item }}
+      className="block overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+      aria-label={`View details for ${item.title}`}
+    >
       <div className="relative aspect-[1.18] overflow-hidden">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
@@ -214,15 +228,18 @@ function SimilarPropertyCard({ item }) {
           <span className="whitespace-nowrap">{item.sqft}</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
 function PropertyDetailPage() {
   const { id } = useParams();
+  const location = useLocation();
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const property = propertyResults.find((item) => String(item.id) === id);
+  const routeProperty = propertyResults.find((item) => String(item.id) === id);
+  const stateProperty = location.state?.property;
+  const property = routeProperty || stateProperty;
 
   if (!property) {
     return (
@@ -327,9 +344,11 @@ function PropertyDetailPage() {
               </div>
 
               <div className="text-left lg:text-right">
-                <div className="text-[30px] font-black leading-none text-[#111827]">₹{property.price}</div>
+                <div className="text-[30px] font-black leading-none text-[#111827]">
+                  {formatDisplayCurrency(property.price)}
+                </div>
                 <div className="mt-1 whitespace-nowrap text-[13px] leading-[18px] text-[#9CA3AF]">
-                  ₹{property.rate}
+                  {formatDisplayCurrency(property.rate)}
                 </div>
               </div>
             </div>

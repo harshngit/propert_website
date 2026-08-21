@@ -269,7 +269,7 @@ function PropertyManagementSection() {
               {/* HEADING */}
               <h3
                 className="
-          mt-[22px]
+          mt-[15px]
           max-w-[320px]
           font-['Plus_Jakarta_Sans']
           text-[27px]
@@ -287,7 +287,7 @@ function PropertyManagementSection() {
               {/* DESCRIPTION */}
               <p
                 className="
-          mt-[22px]
+          mt-[15px]
           max-w-[305px]
           font-['Lato']
           text-[12px]

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import SiteHeader from "../components/SiteHeader";
 import { propertyResults } from "../data/propertyResults";
+import { buildPropertyDetailPath } from "../utils/propertySearch";
 
 /* -------------------------------------------------------------------------- */
 /*                                   ICONS                                    */
@@ -1841,7 +1842,9 @@ function PropertiesPage() {
                           item={item}
                           selected={selectedPropertyId === item.id}
                           favorite={favoriteIds.has(item.id)}
-                          onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
+                          onClick={() =>
+                            navigate(buildPropertyDetailPath(item), { state: { property: item } })
+                          }
                           onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
                       ))}
@@ -1862,7 +1865,9 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
+                            onClick={() =>
+                              navigate(buildPropertyDetailPath(item), { state: { property: item } })
+                            }
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -1878,7 +1883,9 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
+                            onClick={() =>
+                              navigate(buildPropertyDetailPath(item), { state: { property: item } })
+                            }
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -1975,7 +1982,11 @@ function PropertiesPage() {
                               key={item.id}
                               item={item}
                               favorite={favoriteIds.has(item.id)}
-                              onClick={() => navigate(`/properties/${item.detailId ?? item.id}`)}
+                              onClick={() =>
+                                navigate(buildPropertyDetailPath(item), {
+                                  state: { property: item },
+                                })
+                              }
                               onFavoriteToggle={() => toggleFavorite(item.id)}
                             />
                           ))}

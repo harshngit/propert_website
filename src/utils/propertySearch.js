@@ -20,3 +20,8 @@ export function buildPropertiesPath(currentSearchParams, updates = {}) {
 
   return `/properties?${nextParams.toString()}`;
 }
+
+export function buildPropertyDetailPath(item, fallbackKey = "") {
+  const rawKey = item?.detailId ?? item?.id ?? fallbackKey ?? item?.title ?? "property";
+  return `/properties/${encodeURIComponent(String(rawKey))}`;
+}

@@ -93,7 +93,7 @@ function TrustSection({
               {searchTags.map((tag) => (
                 <span
                   key={tag}
-                  className="flex w-full items-center justify-center whitespace-nowrap rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-4 py-2 text-center text-[13px] leading-5 text-[#4B5563]"
+                  className="flex w-full items-center justify-center whitespace-nowrap rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-3 py-1.5 text-center text-[12px] leading-5 text-[#4B5563]"
                 >
                   {tag}
                 </span>
@@ -107,7 +107,7 @@ function TrustSection({
               {whyItems.map((item) => (
                 <div
                   key={item}
-                  className="flex w-full items-center justify-center rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-4 py-2 text-center text-[13px] font-normal leading-5 text-[#4B5563]"
+                  className="flex w-full items-center justify-center rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-3 py-1.5 text-center text-[12px] font-normal leading-5 text-[#4B5563]"
                 >
                   {item}
                 </div>

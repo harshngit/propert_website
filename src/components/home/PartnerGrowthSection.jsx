@@ -77,7 +77,7 @@ function PartnerGrowthSection() {
         key={item.title}
         className="
           flex
-          min-h-[390px]
+          min-h-[200px]
           flex-col
           items-center
           rounded-[16px]
