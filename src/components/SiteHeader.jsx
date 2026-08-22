@@ -207,12 +207,23 @@ function initialOf(name) {
   return (name || "").trim().charAt(0).toUpperCase() || "U";
 }
 
+function canAccessConsole(role) {
+  const normalizedRole = String(role || "").toLowerCase().replace(/[\s_-]+/g, " ").trim();
+  return (
+    normalizedRole.includes("broker") ||
+    normalizedRole.includes("agency admin") ||
+    normalizedRole === "admin" ||
+    normalizedRole.includes("admin")
+  );
+}
+
 // Right-anchored on purpose (not DropdownPanel, which centers under its
 // trigger) - this sits at the far right edge of the header, so a centered
 // panel would spill off the viewport.
 function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
   const { user, logout } = useAuth();
   const firstName = (user?.fullName || "").split(" ")[0] || "Account";
+  const showConsole = canAccessConsole(user?.role);
 
   const handleLogout = async (event) => {
     event.preventDefault();
@@ -247,6 +258,14 @@ function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
           isOpen ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0",
         ].join(" ")}
       >
+        {showConsole ? (
+          <NavLink
+            to="/console"
+            className="mb-1 inline-flex w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-[14px] font-semibold leading-5 text-[#374151] transition hover:border-[#D1D5DB] hover:bg-slate-100 hover:text-slate-950"
+          >
+            Console
+          </NavLink>
+        ) : null}
         <p className="truncate px-3 pb-1 pt-1.5 text-[12px] font-semibold text-slate-400">
           Signed in as {user?.email || user?.mobile}
         </p>
@@ -439,17 +458,28 @@ function SiteHeader() {
                   {(user?.fullName || "Account").split(" ")[0]}
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={async () => {
-                  setMobileMenuOpen(false);
-                  await logout();
-                  navigate("/");
-                }}
-                className="shrink-0 text-[13px] font-bold text-red-500"
-              >
-                Logout
-              </button>
+              <div className="flex shrink-0 flex-col items-end gap-2">
+                {canAccessConsole(user?.role) ? (
+                  <NavLink
+                    to="/console"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="inline-flex h-8 items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 text-[13px] font-semibold text-[#374151]"
+                  >
+                    Console
+                  </NavLink>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setMobileMenuOpen(false);
+                    await logout();
+                    navigate("/");
+                  }}
+                  className="shrink-0 text-[13px] font-bold text-red-500"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           ) : (
             <NavLink

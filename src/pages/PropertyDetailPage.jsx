@@ -57,18 +57,20 @@ function PromiseIcon() {
   return <img src="/icons/promise.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
 }
 
-function formatDisplayCurrency(value, prefix = "₹") {
-  if (value === undefined || value === null) return "";
-  const text = String(value).trim();
-  return text.startsWith(prefix) ? text : `${prefix}${text}`;
-}
-
 function BackIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
       <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
+}
+
+function formatRupeeValue(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  return String(value).replace(/^₹\s*/, "");
 }
 
 const AMENITY_LIFESTYLE = [
@@ -175,8 +177,9 @@ function SimilarPropertyCard({ item }) {
     <Link
       to={detailPath}
       state={{ property: item }}
+      onClick={() => window.scrollTo(0, 0)}
       className="block overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
-      aria-label={`View details for ${item.title}`}
+      aria-label={`${item.title} - ${item.location}`}
     >
       <div className="relative aspect-[1.18] overflow-hidden">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
@@ -238,8 +241,7 @@ function PropertyDetailPage() {
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const routeProperty = propertyResults.find((item) => String(item.id) === id);
-  const stateProperty = location.state?.property;
-  const property = routeProperty || stateProperty;
+  const property = routeProperty || location.state?.property;
 
   if (!property) {
     return (
@@ -345,10 +347,10 @@ function PropertyDetailPage() {
 
               <div className="text-left lg:text-right">
                 <div className="text-[30px] font-black leading-none text-[#111827]">
-                  {formatDisplayCurrency(property.price)}
+                  ₹{formatRupeeValue(property.price)}
                 </div>
                 <div className="mt-1 whitespace-nowrap text-[13px] leading-[18px] text-[#9CA3AF]">
-                  {formatDisplayCurrency(property.rate)}
+                  ₹{formatRupeeValue(property.rate)}
                 </div>
               </div>
             </div>

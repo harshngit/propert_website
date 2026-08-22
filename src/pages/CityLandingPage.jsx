@@ -339,8 +339,9 @@ function CityListingCard({ item }) {
     <Link
       to={detailPath}
       state={{ property: item }}
+      onClick={() => window.scrollTo(0, 0)}
       className="block overflow-hidden rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
-      aria-label={`View details for ${item.title}`}
+      aria-label={`${item.title} - ${item.location}`}
     >
       <div className="relative aspect-[1.15] overflow-hidden">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />

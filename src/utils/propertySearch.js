@@ -4,6 +4,18 @@ export function normalizeView(view) {
   return validViews.has(view) ? view : "list";
 }
 
+export function buildPropertyDetailPath(item) {
+  const detailId = item?.detailId ?? item?.id;
+  const detailSlug =
+    detailId !== undefined && detailId !== null && detailId !== ""
+      ? detailId
+      : encodeURIComponent(
+          [item?.title, item?.location].filter(Boolean).join("-") || "property"
+        );
+
+  return `/properties/${detailSlug}`;
+}
+
 export function buildPropertiesPath(currentSearchParams, updates = {}) {
   const nextParams = new URLSearchParams(currentSearchParams);
 
@@ -19,9 +31,4 @@ export function buildPropertiesPath(currentSearchParams, updates = {}) {
   nextParams.set("view", normalizeView(nextParams.get("view")));
 
   return `/properties?${nextParams.toString()}`;
-}
-
-export function buildPropertyDetailPath(item, fallbackKey = "") {
-  const rawKey = item?.detailId ?? item?.id ?? fallbackKey ?? item?.title ?? "property";
-  return `/properties/${encodeURIComponent(String(rawKey))}`;
 }

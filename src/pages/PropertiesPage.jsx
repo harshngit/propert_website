@@ -1842,9 +1842,10 @@ function PropertiesPage() {
                           item={item}
                           selected={selectedPropertyId === item.id}
                           favorite={favoriteIds.has(item.id)}
-                          onClick={() =>
-                            navigate(buildPropertyDetailPath(item), { state: { property: item } })
-                          }
+                          onClick={() => {
+                            window.scrollTo(0, 0);
+                            navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                          }}
                           onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
                       ))}
@@ -1865,9 +1866,10 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() =>
-                              navigate(buildPropertyDetailPath(item), { state: { property: item } })
-                            }
+                            onClick={() => {
+                              window.scrollTo(0, 0);
+                              navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                            }}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -1883,9 +1885,10 @@ function PropertiesPage() {
                             hidePrimaryBadgeWhenVerified
                             selected={selectedPropertyId === item.id}
                             favorite={favoriteIds.has(item.id)}
-                            onClick={() =>
-                              navigate(buildPropertyDetailPath(item), { state: { property: item } })
-                            }
+                            onClick={() => {
+                              window.scrollTo(0, 0);
+                              navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                            }}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
@@ -1982,11 +1985,10 @@ function PropertiesPage() {
                               key={item.id}
                               item={item}
                               favorite={favoriteIds.has(item.id)}
-                              onClick={() =>
-                                navigate(buildPropertyDetailPath(item), {
-                                  state: { property: item },
-                                })
-                              }
+                              onClick={() => {
+                                window.scrollTo(0, 0);
+                                navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                              }}
                               onFavoriteToggle={() => toggleFavorite(item.id)}
                             />
                           ))}

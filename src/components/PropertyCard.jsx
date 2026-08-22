@@ -29,13 +29,13 @@ function PropertyCard({ item, className = "", showMessage = true }) {
     <Link
       to={detailPath}
       state={{ property: item }}
+      onClick={() => window.scrollTo(0, 0)}
       className={[
-        "block h-[384px] rounded-[20px] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40",
+        "block",
+        "flex h-[384px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
         className,
       ].join(" ")}
-      aria-label={`View details for ${item.title}`}
     >
-      <article className="flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
       <div className={`relative h-[180px] overflow-hidden p-3 ${item.cardClass}`}>
         {item.image ? (
           <img
@@ -109,7 +109,6 @@ function PropertyCard({ item, className = "", showMessage = true }) {
           </div>
         ) : null}
       </div>
-      </article>
     </Link>
   );
 }

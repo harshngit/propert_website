@@ -16,6 +16,15 @@ function App() {
       <Route path="/properties" element={<PropertiesPage />} />
       <Route path="/properties/:id" element={<PropertyDetailPage />} />
       <Route
+        path="/console"
+        element={
+          <RoutePage
+            title="Console"
+            description="Access your broker, agency, or admin console tools from one place."
+          />
+        }
+      />
+      <Route
         path="/buy"
         element={
           <RoutePage
