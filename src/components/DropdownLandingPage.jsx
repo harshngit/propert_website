@@ -271,6 +271,18 @@ function createDrawerState() {
   };
 }
 
+function resolveInitialDrawerState(initialDrawerState) {
+  if (typeof initialDrawerState === "function") {
+    return initialDrawerState();
+  }
+
+  if (initialDrawerState && typeof initialDrawerState === "object") {
+    return initialDrawerState;
+  }
+
+  return createDrawerState();
+}
+
 function DrawerHeader({ title, onReset, onClose, showClose = true }) {
   return (
     <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
@@ -513,15 +525,17 @@ function ResultsSidebar({ drawerState, setDrawerState, onClose }) {
   );
 }
 
-function DropdownLandingPage({ title, description }) {
+function DropdownLandingPage({ title, description, initialDrawerState, renderSidebar }) {
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [filtersMounted, setFiltersMounted] = React.useState(false);
   const [filtersEntered, setFiltersEntered] = React.useState(false);
-  const [drawerState, setDrawerState] = React.useState(() => createDrawerState());
+  const [drawerState, setDrawerState] = React.useState(() =>
+    resolveInitialDrawerState(initialDrawerState),
+  );
 
   const resetFilters = React.useCallback(() => {
-    setDrawerState(createDrawerState());
-  }, []);
+    setDrawerState(resolveInitialDrawerState(initialDrawerState));
+  }, [initialDrawerState]);
 
   React.useEffect(() => {
     if (filtersOpen) {
@@ -635,12 +649,21 @@ function DropdownLandingPage({ title, description }) {
               filtersOpen && filtersEntered ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
-            <ResultsSidebar
-              drawerState={drawerState}
-              setDrawerState={setDrawerState}
-              onClose={() => setFiltersOpen(false)}
-            />
-</aside>
+            {renderSidebar ? (
+              renderSidebar({
+                drawerState,
+                setDrawerState,
+                resetFilters,
+                onClose: () => setFiltersOpen(false),
+              })
+            ) : (
+              <ResultsSidebar
+                drawerState={drawerState}
+                setDrawerState={setDrawerState}
+                onClose={() => setFiltersOpen(false)}
+              />
+            )}
+          </aside>
         </div>
       )}
 
@@ -651,3 +674,5 @@ function DropdownLandingPage({ title, description }) {
 }
 
 export default DropdownLandingPage;
+
+export { CheckboxItem, DrawerHeader, SidebarSection, Toggle, createDrawerState };
