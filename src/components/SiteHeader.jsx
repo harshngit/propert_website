@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { CITY_OPTIONS, buildCityPath, fromCitySlug } from "../utils/city";
 
@@ -12,11 +12,18 @@ const navItems = [
 ];
 
 const navDropdowns = {
-  Buy: ["Apartments", "Villas", "Plots", "New Projects"],
+  Buy: [
+    { label: "Institutional Properties", to: "/buy/institutional-properties" },
+    { label: "Bank Auction Properties", to: "/buy/bank-auction-properties" },
+    { label: "Special Situation Properties", to: "/buy/special-situation-properties" },
+  ],
   Rent: ["Family Homes", "Studio Homes", "PG & Co-living", "Furnished Flats"],
   Sell: ["List Property", "Property Valuation", "Owner Services", "Broker Tools"],
-  Services: ["Home Loans", "Legal Help", "Interior Design", "Property Management"],
-  "News & Guide": ["Market Insights", "Buying Guide", "Legal Guide", "Investment Tips"],
+  Services: [{ label: "Get Involved", to: "/services/get-involved" }],
+  "News & Guide": [
+    { label: "Insights & Guides", to: "/news-guide/insights-guides" },
+    { label: "Opened through the blog listing", to: "/news-guide/opened-through-the-blog-listing" },
+  ],
 };
 
 const tickerItems = [
@@ -42,6 +49,8 @@ const tickerItems = [
     itemWidthClass: "w-[458px]",
   },
 ];
+
+const CONSOLE_URL = "https://property-dashboard-one-navy.vercel.app/";
 
 function Chevron() {
   return (
@@ -130,7 +139,21 @@ function DropdownPanel({ items, className = "", isOpen, onSelect }) {
     >
       <div className="grid gap-1">
         {items.map((item) => {
-          const label = typeof item === "string" ? item : item.label;
+          const config = typeof item === "string" ? { label: item } : item;
+          const label = config.label;
+
+          if (config.to) {
+            return (
+              <Link
+                key={label}
+                to={config.to}
+                onClick={() => onSelect?.(label, config)}
+                className="rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+              >
+                {label}
+              </Link>
+            );
+          }
 
           return (
             <button
@@ -138,7 +161,7 @@ function DropdownPanel({ items, className = "", isOpen, onSelect }) {
               type="button"
               onMouseDown={(event) => {
                 event.preventDefault();
-                onSelect(label);
+                onSelect?.(label, config);
               }}
               className="rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
             >
@@ -179,19 +202,18 @@ function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
 
   return (
     <div className="relative flex items-center gap-1" onMouseEnter={onEnter} onMouseLeave={onLeave}>
-      <NavLink
-        to={item.to}
-        className={({ isActive }) =>
-          [
-            "inline-flex h-5 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 transition hover:text-slate-950",
-            item.widthClass,
-            isActive ? "text-slate-950" : "text-[#374151]",
-          ].join(" ")
-        }
+      <button
+        type="button"
+        onClick={onSelect}
+        className={[
+          "inline-flex h-5 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 transition hover:text-slate-950",
+          item.widthClass,
+          isOpen ? "text-slate-950" : "text-[#374151]",
+        ].join(" ")}
       >
         <span className="leading-5">{item.label}</span>
         <Chevron />
-      </NavLink>
+      </button>
 
       <DropdownPanel
         items={dropdownItems}
@@ -259,12 +281,14 @@ function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
         ].join(" ")}
       >
         {showConsole ? (
-          <NavLink
-            to="/console"
+          <a
+            href={CONSOLE_URL}
+            target="_blank"
+            rel="noreferrer"
             className="mb-1 inline-flex w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-[14px] font-semibold leading-5 text-[#374151] transition hover:border-[#D1D5DB] hover:bg-slate-100 hover:text-slate-950"
           >
             Console
-          </NavLink>
+          </a>
         ) : null}
         <p className="truncate px-3 pb-1 pt-1.5 text-[12px] font-semibold text-slate-400">
           Signed in as {user?.email || user?.mobile}
@@ -294,6 +318,7 @@ function SiteHeader() {
   const [openMenu, setOpenMenu] = React.useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(null);
   const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "Mumbai";
   const cityLabel = location.pathname === "/" ? "City" : selectedCity;
 
@@ -302,6 +327,10 @@ function SiteHeader() {
     setMobileCityOpen(false);
     setMobileMenuOpen(false);
     navigate(buildCityPath(label));
+  };
+
+  const handleMobileNavToggle = (label) => {
+    setMobileNavOpen((current) => (current === label ? null : label));
   };
 
   return (
@@ -345,7 +374,7 @@ function SiteHeader() {
                 setOpenMenu(null);
               }}
               onSelect={() => {
-                setOpenMenu(null);
+                setOpenMenu((current) => (current === item.label ? null : item.label));
               }}
             />
           ))}
@@ -429,15 +458,42 @@ function SiteHeader() {
           </div>
 
           {navItems.map((item) => (
-            <NavLink
+            <div
               key={item.label}
-              to={item.to}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between rounded-[12px] border border-slate-200 px-4 py-3 text-[14px] font-semibold text-[#374151]"
+              className="rounded-[12px] border border-slate-200 px-4 py-3"
             >
-              <span>{item.label}</span>
-              <Chevron />
-            </NavLink>
+              <button
+                type="button"
+                onClick={() => handleMobileNavToggle(item.label)}
+                className="flex w-full items-center justify-between text-[14px] font-semibold text-[#374151]"
+              >
+                <span>{item.label}</span>
+                <span className={mobileNavOpen === item.label ? "rotate-180 transition-transform" : "transition-transform"}>
+                  <Chevron />
+                </span>
+              </button>
+
+              {mobileNavOpen === item.label ? (
+                <div className="mt-3 grid gap-2 rounded-[12px] bg-slate-50 p-3">
+                  {(navDropdowns[item.label] || []).map((option) => {
+                    const label = typeof option === "string" ? option : option.label;
+                    return (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setMobileNavOpen(null);
+                        }}
+                        className="rounded-[10px] px-3 py-2 text-left text-[13px] font-semibold text-[#374151] hover:bg-white hover:text-slate-950"
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
           ))}
 
           {isAuthenticated ? (
@@ -460,13 +516,15 @@ function SiteHeader() {
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
                 {canAccessConsole(user?.role) ? (
-                  <NavLink
-                    to="/console"
+                  <a
+                    href={CONSOLE_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
                     className="inline-flex h-8 items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 text-[13px] font-semibold text-[#374151]"
                   >
                     Console
-                  </NavLink>
+                  </a>
                 ) : null}
                 <button
                   type="button"
