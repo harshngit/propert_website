@@ -5,7 +5,12 @@ import CityLandingPage from "./pages/CityLandingPage";
 import PropertiesPage from "./pages/PropertiesPage";
 import PropertyDetailPage from "./pages/PropertyDetailPage";
 import RoutePage from "./pages/RoutePage";
-import DropdownBlankPage from "./pages/DropdownBlankPage";
+import InstitutionalPropertiesPage from "./pages/InstitutionalPropertiesPage";
+import BankAuctionPropertiesPage from "./pages/BankAuctionPropertiesPage";
+import SpecialSituationPropertiesPage from "./pages/SpecialSituationPropertiesPage";
+import GetInvolvedPage from "./pages/GetInvolvedPage";
+import InsightsGuidesPage from "./pages/InsightsGuidesPage";
+import OpenedThroughBlogListingPage from "./pages/OpenedThroughBlogListingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 
@@ -25,14 +30,14 @@ function App() {
           />
         }
       />
-      <Route path="/buy/institutional-properties" element={<DropdownBlankPage />} />
-      <Route path="/buy/bank-auction-properties" element={<DropdownBlankPage />} />
-      <Route path="/buy/special-situation-properties" element={<DropdownBlankPage />} />
+      <Route path="/buy/institutional-properties" element={<InstitutionalPropertiesPage />} />
+      <Route path="/buy/bank-auction-properties" element={<BankAuctionPropertiesPage />} />
+      <Route path="/buy/special-situation-properties" element={<SpecialSituationPropertiesPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/services/get-involved" element={<DropdownBlankPage />} />
-      <Route path="/news-guide/insights-guides" element={<DropdownBlankPage />} />
-      <Route path="/news-guide/opened-through-the-blog-listing" element={<DropdownBlankPage />} />
+      <Route path="/services/get-involved" element={<GetInvolvedPage />} />
+      <Route path="/news-guide/insights-guides" element={<InsightsGuidesPage />} />
+      <Route path="/news-guide/opened-through-the-blog-listing" element={<OpenedThroughBlogListingPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
