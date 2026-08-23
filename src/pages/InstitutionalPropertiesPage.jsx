@@ -1,10 +1,5 @@
 import React from "react";
-import DropdownLandingPage, {
-  CheckboxItem,
-  DrawerHeader,
-  SidebarSection,
-  Toggle,
-} from "../components/DropdownLandingPage";
+import PropertiesPage from "./PropertiesPage";
 
 function createInvestmentDrawerState() {
   return {
@@ -35,18 +30,51 @@ function AdvisorCard() {
 function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose }) {
   return (
     <>
-      <DrawerHeader title="Filters" onReset={resetFilters} onClose={onClose} />
+      <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
+        <h2 id="results-filters-title" className="text-[16px] font-bold leading-[20px]">
+          Filters
+        </h2>
+
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="text-[12px] font-medium text-[#E51C23]"
+          >
+            Reset All
+          </button>
+
+          <button
+            type="button"
+            aria-label="Close filters"
+            onClick={onClose}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
+              <path
+                d="M4 4l8 8M12 4l-8 8"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-5">
         <div className="flex flex-col gap-[24px]">
-          <SidebarSection title="Investment Size">
-            <div className="flex flex-col gap-[12px]">
+          <section>
+            <h3 className="text-[14px] font-bold leading-[18px] text-[#111827]">
+              Investment Size
+            </h3>
+
+            <div className="mt-3 flex flex-col gap-[12px]">
               {["₹50 Cr - ₹100 Cr", "₹100 Cr - ₹250 Cr", "₹250 Cr - ₹500 Cr", "Above ₹500 Cr"].map(
                 (label) => (
-                  <CheckboxItem
+                  <button
                     key={label}
-                    label={label}
-                    checked={drawerState.selectedInvestmentSizes.includes(label)}
+                    type="button"
                     onClick={() =>
                       setDrawerState((current) => {
                         const selectedInvestmentSizes = current.selectedInvestmentSizes.includes(label)
@@ -55,14 +83,42 @@ function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose 
                         return { ...current, selectedInvestmentSizes };
                       })
                     }
-                  />
+                    className="flex items-center gap-3 text-left text-[14px] leading-[16px] text-[#111827]"
+                  >
+                    <span
+                      className={[
+                        "inline-flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[2.5px] border",
+                        drawerState.selectedInvestmentSizes.includes(label)
+                          ? "border-[#E51C23] bg-[#E51C23] text-white"
+                          : "border-[#CBD5E1] bg-white",
+                      ].join(" ")}
+                    >
+                      {drawerState.selectedInvestmentSizes.includes(label) && (
+                        <svg viewBox="0 0 12 12" className="h-[10px] w-[10px]" fill="none">
+                          <path
+                            d="M2.5 6.2 4.8 8.5 9.5 3.5"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </span>
+
+                    <span className="font-['Lato'] font-normal">{label}</span>
+                  </button>
                 ),
               )}
             </div>
-          </SidebarSection>
+          </section>
 
-          <SidebarSection title="Property Type">
-            <div className="flex flex-wrap gap-[8px]">
+          <section>
+            <h3 className="text-[14px] font-bold leading-[18px] text-[#111827]">
+              Property Type
+            </h3>
+
+            <div className="mt-3 flex flex-wrap gap-[8px]">
               {["Educational", "Industrial", "Hospitality", "Warehouse", "Mixed"].map((label) => (
                 <button
                   key={label}
@@ -86,15 +142,18 @@ function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose 
                 </button>
               ))}
             </div>
-          </SidebarSection>
+          </section>
 
-          <SidebarSection title="Opportunity Type">
-            <div className="flex flex-col gap-[12px]">
+          <section>
+            <h3 className="text-[14px] font-bold leading-[18px] text-[#111827]">
+              Opportunity Type
+            </h3>
+
+            <div className="mt-3 flex flex-col gap-[12px]">
               {["Direct Sale", "Debt Buyout", "Joint Venture"].map((label) => (
-                <CheckboxItem
+                <button
                   key={label}
-                  label={label}
-                  checked={drawerState.selectedOpportunityTypes.includes(label)}
+                  type="button"
                   onClick={() =>
                     setDrawerState((current) => {
                       const selectedOpportunityTypes = current.selectedOpportunityTypes.includes(label)
@@ -103,25 +162,62 @@ function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose 
                       return { ...current, selectedOpportunityTypes };
                     })
                   }
-                />
+                  className="flex items-center gap-3 text-left text-[14px] leading-[16px] text-[#111827]"
+                >
+                  <span
+                    className={[
+                      "inline-flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[2.5px] border",
+                      drawerState.selectedOpportunityTypes.includes(label)
+                        ? "border-[#E51C23] bg-[#E51C23] text-white"
+                        : "border-[#CBD5E1] bg-white",
+                    ].join(" ")}
+                  >
+                    {drawerState.selectedOpportunityTypes.includes(label) && (
+                      <svg viewBox="0 0 12 12" className="h-[10px] w-[10px]" fill="none">
+                        <path
+                          d="M2.5 6.2 4.8 8.5 9.5 3.5"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </span>
+
+                  <span className="font-['Lato'] font-normal">{label}</span>
+                </button>
               ))}
             </div>
-          </SidebarSection>
+          </section>
 
           <section className="border-t border-[#F3F4F6] pt-4">
             <div className="flex items-center justify-between">
               <span className="text-[14px] font-bold leading-[18px] text-[#111827]">
                 Verified Only
               </span>
-              <Toggle
-                on={drawerState.verifiedOnly}
+
+              <button
+                type="button"
+                aria-pressed={drawerState.verifiedOnly}
                 onClick={() =>
                   setDrawerState((current) => ({
                     ...current,
                     verifiedOnly: !current.verifiedOnly,
                   }))
                 }
-              />
+                className={[
+                  "relative inline-flex h-[18px] w-[32px] items-center rounded-full",
+                  drawerState.verifiedOnly ? "bg-[#E51C23]" : "bg-[#E5E7EB]",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "inline-block h-[14px] w-[14px] rounded-full bg-white shadow-sm transition-transform",
+                    drawerState.verifiedOnly ? "translate-x-[16px]" : "translate-x-[2px]",
+                  ].join(" ")}
+                />
+              </button>
             </div>
           </section>
 
@@ -134,9 +230,10 @@ function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose 
 
 function InstitutionalPropertiesPage() {
   return (
-    <DropdownLandingPage
-      title="Institutional Opportunities"
-      description="Exclusive access to high-value portfolios, commercial assets, and distressed debt opportunities for qualified institutional investors"
+    <PropertiesPage
+      heroTitle="Institutional Opportunities"
+      heroDescription="Exclusive access to high-value portfolios, commercial assets, and distressed debt opportunities for qualified institutional investors"
+      showTopSearchBar={false}
       initialDrawerState={createInvestmentDrawerState}
       renderSidebar={(props) => <InvestmentSidebar {...props} />}
     />

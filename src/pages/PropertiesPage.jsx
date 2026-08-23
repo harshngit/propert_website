@@ -123,6 +123,18 @@ function HeartIcon({ active = false }) {
   );
 }
 
+function resolveInitialDrawerState(initialDrawerState) {
+  if (typeof initialDrawerState === "function") {
+    return initialDrawerState();
+  }
+
+  if (initialDrawerState && typeof initialDrawerState === "object") {
+    return initialDrawerState;
+  }
+
+  return {};
+}
+
 /* -------------------------------------------------------------------------- */
 /*                            TOP SEARCH COMPONENTS                           */
 /* -------------------------------------------------------------------------- */
@@ -138,6 +150,84 @@ function FilterField({ label, value }) {
 
 function Divider() {
   return <span className="h-6 w-px shrink-0 bg-slate-200" />;
+}
+
+function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = "light" }) {
+  const isDark = variant === "dark";
+
+  return (
+    <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
+      <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
+        <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
+          <LocationIcon />
+
+          <span className="font-semibold">{areaLabel}</span>
+        </div>
+
+        <Divider />
+
+        <FilterField label="Type:" value="Buy" />
+
+        <Divider />
+
+        <FilterField label="Property:" value="Flat" />
+
+        <Divider />
+
+        <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
+      </div>
+
+      <div className="flex shrink-0 items-center gap-3 md:gap-4">
+        <button
+          type="button"
+          onClick={onToggleFilters}
+          aria-expanded={filtersOpen}
+          aria-controls="results-filters"
+          className={[
+            "inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] px-5 text-[14px] font-bold",
+            isDark
+              ? "border border-[#E5E7EB] bg-white text-[#111827]"
+              : "cta-navy text-white",
+          ].join(" ")}
+        >
+          <FiltersIcon />
+          <span>More Filters</span>
+        </button>
+
+        <button
+          type="button"
+          aria-label="Search"
+          className="cta-red inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] text-white"
+        >
+          <SearchIcon />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function HeroSearchSection({ title, description, areaLabel, filtersOpen, onToggleFilters }) {
+  return (
+    <section className="w-full border-b border-[#2A3343] bg-[#111827] text-white">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8 xl:px-[9px]">
+        <div className="max-w-[1120px]">
+          <h1 className="text-[34px] font-semibold leading-[1.15] text-white sm:text-[40px]">
+            {title}
+          </h1>
+          <p className="mt-2 max-w-[1120px] text-[18px] font-normal leading-[1.45] text-white/85">
+            {description}
+          </p>
+        </div>
+
+        <SearchControlsRow
+          areaLabel={areaLabel}
+          filtersOpen={filtersOpen}
+          onToggleFilters={onToggleFilters}
+          variant="dark"
+        />
+      </div>
+    </section>
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1152,7 +1242,14 @@ const results = propertyResults;
 /*                                    PAGE                                    */
 /* -------------------------------------------------------------------------- */
 
-function PropertiesPage() {
+function PropertiesPage({
+  showTopSearchBar = true,
+  initialDrawerState,
+  renderSidebar,
+  heroTitle,
+  heroDescription,
+  heroAreaLabel = "Mumbai, Andheri West",
+}) {
   const navigate = useNavigate();
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);
@@ -1164,6 +1261,9 @@ function PropertiesPage() {
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [filtersMounted, setFiltersMounted] = React.useState(false);
   const [filtersEntered, setFiltersEntered] = React.useState(false);
+  const [customDrawerState, setCustomDrawerState] = React.useState(() =>
+    resolveInitialDrawerState(initialDrawerState),
+  );
 
   // Keep the drawer mounted for the duration of the exit transition instead
   // of yanking it out of the DOM the instant filtersOpen flips false.
@@ -1201,6 +1301,11 @@ function PropertiesPage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [filtersOpen]);
+  React.useEffect(() => {
+    if (!renderSidebar) return undefined;
+    setCustomDrawerState(resolveInitialDrawerState(initialDrawerState));
+    return undefined;
+  }, [initialDrawerState, renderSidebar]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
   const [favoriteIds, setFavoriteIds] = React.useState(
@@ -1247,6 +1352,10 @@ function PropertiesPage() {
     setVerifiedOnly(true);
     setReraApproved(false);
     setSelectedAmenities([]);
+  };
+
+  const resetCustomFilters = () => {
+    setCustomDrawerState(resolveInitialDrawerState(initialDrawerState));
   };
 
   React.useEffect(() => {
@@ -1341,54 +1450,27 @@ function PropertiesPage() {
         {/* TOP SEARCH BAR                                                     */}
         {/* ------------------------------------------------------------------ */}
 
-        <section className="w-full border-b border-[#E5E7EB] bg-white">
-          <div className="flex min-h-[77px] w-full items-center px-4 py-4 sm:px-6 lg:px-8 xl:px-12">
-            <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
-              {/* SEARCH FIELDS */}
-              <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
-                <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
-                  <LocationIcon />
+        {heroTitle && heroDescription && (
+          <HeroSearchSection
+            title={heroTitle}
+            description={heroDescription}
+            areaLabel={heroAreaLabel}
+            filtersOpen={filtersOpen}
+            onToggleFilters={() => setFiltersOpen((current) => !current)}
+          />
+        )}
 
-                  <span className="font-semibold">{areaLabel}</span>
-                </div>
-
-                <Divider />
-
-                <FilterField label="Type:" value="Buy" />
-
-                <Divider />
-
-                <FilterField label="Property:" value="Flat" />
-
-                <Divider />
-
-                <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
-              </div>
-
-              {/* ACTION BUTTONS */}
-              <div className="flex shrink-0 items-center gap-3 md:gap-4">
-                <button
-                  type="button"
-                  onClick={() => setFiltersOpen((current) => !current)}
-                  aria-expanded={filtersOpen}
-                  aria-controls="results-filters"
-                  className="cta-navy inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] px-5 text-[14px] font-bold text-white"
-                >
-                  <FiltersIcon />
-                  <span>More Filters</span>
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Search"
-                  className="cta-red inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] text-white"
-                >
-                  <SearchIcon />
-                </button>
-              </div>
+        {showTopSearchBar && !heroTitle && !heroDescription && (
+          <section className="w-full border-b border-[#E5E7EB] bg-white">
+            <div className="flex min-h-[77px] w-full items-center px-4 py-4 sm:px-6 lg:px-8 xl:px-12">
+              <SearchControlsRow
+                areaLabel={areaLabel}
+                filtersOpen={filtersOpen}
+                onToggleFilters={() => setFiltersOpen((current) => !current)}
+              />
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ------------------------------------------------------------------ */}
         {/* MAIN RESULTS                                                       */}
@@ -1430,230 +1512,244 @@ function PropertiesPage() {
                       filtersOpen && filtersEntered ? "translate-x-0" : "translate-x-full",
                     ].join(" ")}
                   >
-                <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
-                  <h2 id="results-filters-title" className="text-[16px] font-bold leading-[20px]">
-                    Filters
-                  </h2>
+                    {renderSidebar ? (
+                      renderSidebar({
+                        drawerState: customDrawerState,
+                        setDrawerState: setCustomDrawerState,
+                        resetFilters: resetCustomFilters,
+                        onClose: () => setFiltersOpen(false),
+                      })
+                    ) : (
+                      <>
+                        <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
+                          <h2
+                            id="results-filters-title"
+                            className="text-[16px] font-bold leading-[20px]"
+                          >
+                            Filters
+                          </h2>
 
-                  <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={resetFilters}
-                    className="text-[12px] font-medium text-[#E51C23]"
-                  >
-                    Reset All
-                  </button>
+                          <div className="flex items-center gap-4">
+                            <button
+                              type="button"
+                              onClick={resetFilters}
+                              className="text-[12px] font-medium text-[#E51C23]"
+                            >
+                              Reset All
+                            </button>
 
-                  <button
-                    type="button"
-                    aria-label="Close filters"
-                    onClick={() => setFiltersOpen(false)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
-                  >
-                    <CloseIcon />
-                  </button>
-                  </div>
-                </div>
+                            <button
+                              type="button"
+                              aria-label="Close filters"
+                              onClick={() => setFiltersOpen(false)}
+                              className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+                            >
+                              <CloseIcon />
+                            </button>
+                          </div>
+                        </div>
 
-                <div className="flex-1 overflow-y-auto px-5 py-5">
-                <div className="flex flex-col gap-[24px]">
-                  {/* PRICE */}
-                  <SidebarSection title="Price Range">
-                    <PriceRangeSlider
-                      minValue={minPrice}
-                      maxValue={maxPrice}
-                      onMinChange={setMinPrice}
-                      onMaxChange={setMaxPrice}
-                    />
-                  </SidebarSection>
+                        <div className="flex-1 overflow-y-auto px-5 py-5">
+                          <div className="flex flex-col gap-[24px]">
+                            {/* PRICE */}
+                            <SidebarSection title="Price Range">
+                              <PriceRangeSlider
+                                minValue={minPrice}
+                                maxValue={maxPrice}
+                                onMinChange={setMinPrice}
+                                onMaxChange={setMaxPrice}
+                              />
+                            </SidebarSection>
 
-                  {/* BHK */}
-                  <SidebarSection title="BHK Type">
-                    <div className="flex flex-wrap gap-[8px]">
-                      {["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK"].map(
-                        (label) => (
-                          <PillButton
-                            key={label}
-                            label={label}
-                            active={selectedBhk.includes(label)}
-                            onClick={() =>
-                              toggleSelection(label, setSelectedBhk)
-                            }
-                          />
-                        ),
-                      )}
-                    </div>
-                  </SidebarSection>
+                            {/* BHK */}
+                            <SidebarSection title="BHK Type">
+                              <div className="flex flex-wrap gap-[8px]">
+                                {["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK"].map(
+                                  (label) => (
+                                    <PillButton
+                                      key={label}
+                                      label={label}
+                                      active={selectedBhk.includes(label)}
+                                      onClick={() =>
+                                        toggleSelection(label, setSelectedBhk)
+                                      }
+                                    />
+                                  ),
+                                )}
+                              </div>
+                            </SidebarSection>
 
-                  {/* PROPERTY TYPE */}
-                  <SidebarSection title="Property Type">
-                    <div className="flex flex-col gap-[8px]">
-                      <CheckboxItem
-                        label="Apartment"
-                        checked={selectedPropertyTypes.includes("Apartment")}
-                        onClick={() =>
-                          toggleSelection("Apartment", setSelectedPropertyTypes)
-                        }
-                      />
+                            {/* PROPERTY TYPE */}
+                            <SidebarSection title="Property Type">
+                              <div className="flex flex-col gap-[8px]">
+                                <CheckboxItem
+                                  label="Apartment"
+                                  checked={selectedPropertyTypes.includes("Apartment")}
+                                  onClick={() =>
+                                    toggleSelection("Apartment", setSelectedPropertyTypes)
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="Independent House/Villa"
-                        checked={selectedPropertyTypes.includes(
-                          "Independent House/Villa",
-                        )}
-                        onClick={() =>
-                          toggleSelection(
-                            "Independent House/Villa",
-                            setSelectedPropertyTypes,
-                          )
-                        }
-                      />
+                                <CheckboxItem
+                                  label="Independent House/Villa"
+                                  checked={selectedPropertyTypes.includes(
+                                    "Independent House/Villa",
+                                  )}
+                                  onClick={() =>
+                                    toggleSelection(
+                                      "Independent House/Villa",
+                                      setSelectedPropertyTypes,
+                                    )
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="Plots"
-                        checked={selectedPropertyTypes.includes("Plots")}
-                        onClick={() =>
-                          toggleSelection("Plots", setSelectedPropertyTypes)
-                        }
-                      />
-                    </div>
-                  </SidebarSection>
+                                <CheckboxItem
+                                  label="Plots"
+                                  checked={selectedPropertyTypes.includes("Plots")}
+                                  onClick={() =>
+                                    toggleSelection("Plots", setSelectedPropertyTypes)
+                                  }
+                                />
+                              </div>
+                            </SidebarSection>
 
-                  {/* STATUS */}
-                  <SidebarSection title="Property Status">
-                    <div className="flex flex-col gap-[8px]">
-                      <CheckboxItem
-                        label="Under Construction"
-                        checked={selectedPropertyStatus.includes(
-                          "Under Construction",
-                        )}
-                        onClick={() =>
-                          toggleSelection(
-                            "Under Construction",
-                            setSelectedPropertyStatus,
-                          )
-                        }
-                      />
+                            {/* STATUS */}
+                            <SidebarSection title="Property Status">
+                              <div className="flex flex-col gap-[8px]">
+                                <CheckboxItem
+                                  label="Under Construction"
+                                  checked={selectedPropertyStatus.includes(
+                                    "Under Construction",
+                                  )}
+                                  onClick={() =>
+                                    toggleSelection(
+                                      "Under Construction",
+                                      setSelectedPropertyStatus,
+                                    )
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="Ready"
-                        checked={selectedPropertyStatus.includes("Ready")}
-                        onClick={() =>
-                          toggleSelection("Ready", setSelectedPropertyStatus)
-                        }
-                      />
-                    </div>
-                  </SidebarSection>
+                                <CheckboxItem
+                                  label="Ready"
+                                  checked={selectedPropertyStatus.includes("Ready")}
+                                  onClick={() =>
+                                    toggleSelection("Ready", setSelectedPropertyStatus)
+                                  }
+                                />
+                              </div>
+                            </SidebarSection>
 
-                  {/* FURNISHING */}
-                  <SidebarSection title="Furnishing">
-                    <div className="flex flex-wrap items-center gap-[12px]">
-                      <CheckboxItem
-                        label="Full"
-                        checked={selectedFurnishing.includes("Full")}
-                        onClick={() =>
-                          toggleSelection("Full", setSelectedFurnishing)
-                        }
-                      />
+                            {/* FURNISHING */}
+                            <SidebarSection title="Furnishing">
+                              <div className="flex flex-wrap items-center gap-[12px]">
+                                <CheckboxItem
+                                  label="Full"
+                                  checked={selectedFurnishing.includes("Full")}
+                                  onClick={() =>
+                                    toggleSelection("Full", setSelectedFurnishing)
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="Semi"
-                        checked={selectedFurnishing.includes("Semi")}
-                        onClick={() =>
-                          toggleSelection("Semi", setSelectedFurnishing)
-                        }
-                      />
+                                <CheckboxItem
+                                  label="Semi"
+                                  checked={selectedFurnishing.includes("Semi")}
+                                  onClick={() =>
+                                    toggleSelection("Semi", setSelectedFurnishing)
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="None"
-                        checked={selectedFurnishing.includes("None")}
-                        onClick={() =>
-                          toggleSelection("None", setSelectedFurnishing)
-                        }
-                      />
-                    </div>
-                  </SidebarSection>
+                                <CheckboxItem
+                                  label="None"
+                                  checked={selectedFurnishing.includes("None")}
+                                  onClick={() =>
+                                    toggleSelection("None", setSelectedFurnishing)
+                                  }
+                                />
+                              </div>
+                            </SidebarSection>
 
-                  {/* PARKING */}
-                  <SidebarSection title="Parking">
-                    <div className="flex flex-wrap items-center gap-[12px]">
-                      <CheckboxItem
-                        label="2 Wheeler"
-                        checked={selectedParking.includes("2 Wheeler")}
-                        onClick={() =>
-                          toggleSelection("2 Wheeler", setSelectedParking)
-                        }
-                      />
+                            {/* PARKING */}
+                            <SidebarSection title="Parking">
+                              <div className="flex flex-wrap items-center gap-[12px]">
+                                <CheckboxItem
+                                  label="2 Wheeler"
+                                  checked={selectedParking.includes("2 Wheeler")}
+                                  onClick={() =>
+                                    toggleSelection("2 Wheeler", setSelectedParking)
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="4 Wheeler"
-                        checked={selectedParking.includes("4 Wheeler")}
-                        onClick={() =>
-                          toggleSelection("4 Wheeler", setSelectedParking)
-                        }
-                      />
+                                <CheckboxItem
+                                  label="4 Wheeler"
+                                  checked={selectedParking.includes("4 Wheeler")}
+                                  onClick={() =>
+                                    toggleSelection("4 Wheeler", setSelectedParking)
+                                  }
+                                />
 
-                      <CheckboxItem
-                        label="None"
-                        checked={selectedParking.includes("None")}
-                        onClick={() =>
-                          toggleSelection("None", setSelectedParking)
-                        }
-                      />
-                    </div>
-                  </SidebarSection>
+                                <CheckboxItem
+                                  label="None"
+                                  checked={selectedParking.includes("None")}
+                                  onClick={() =>
+                                    toggleSelection("None", setSelectedParking)
+                                  }
+                                />
+                              </div>
+                            </SidebarSection>
 
-                  <div className="flex h-[74px] w-full flex-col gap-4 border-t border-[#F3F4F6] pt-4">
-                    <div className="flex w-full items-center justify-between">
-                      <span className="text-[14px] font-semibold text-[#111827]">
-                        Verified Only
-                      </span>
+                            <div className="flex h-[74px] w-full flex-col gap-4 border-t border-[#F3F4F6] pt-4">
+                              <div className="flex w-full items-center justify-between">
+                                <span className="text-[14px] font-semibold text-[#111827]">
+                                  Verified Only
+                                </span>
 
-                      <Toggle
-                        on={verifiedOnly}
-                        onClick={() => setVerifiedOnly((current) => !current)}
-                      />
-                    </div>
+                                <Toggle
+                                  on={verifiedOnly}
+                                  onClick={() => setVerifiedOnly((current) => !current)}
+                                />
+                              </div>
 
-                    <div className="flex w-full items-center justify-between">
-                      <span className="text-[14px] font-semibold text-[#111827]">
-                        RERA Approved
-                      </span>
+                              <div className="flex w-full items-center justify-between">
+                                <span className="text-[14px] font-semibold text-[#111827]">
+                                  RERA Approved
+                                </span>
 
-                      <Toggle
-                        on={reraApproved}
-                        onClick={() => setReraApproved((current) => !current)}
-                      />
-                    </div>
-                  </div>
+                                <Toggle
+                                  on={reraApproved}
+                                  onClick={() => setReraApproved((current) => !current)}
+                                />
+                              </div>
+                            </div>
 
-                  {/* AMENITIES */}
-                  <SidebarSection title="Amenities">
-                    <div className="flex flex-wrap gap-[8px]">
-                      {["Gym", "Pool", "Park", "Clubhouse"].map((item) => (
-                        <AmenityChip
-                          key={item}
-                          label={item}
-                          active={selectedAmenities.includes(item)}
-                          onClick={() =>
-                            toggleSelection(item, setSelectedAmenities)
-                          }
-                        />
-                      ))}
-                    </div>
-                  </SidebarSection>
-                </div>
-                </div>
+                            {/* AMENITIES */}
+                            <SidebarSection title="Amenities">
+                              <div className="flex flex-wrap gap-[8px]">
+                                {["Gym", "Pool", "Park", "Clubhouse"].map((item) => (
+                                  <AmenityChip
+                                    key={item}
+                                    label={item}
+                                    active={selectedAmenities.includes(item)}
+                                    onClick={() =>
+                                      toggleSelection(item, setSelectedAmenities)
+                                    }
+                                  />
+                                ))}
+                              </div>
+                            </SidebarSection>
+                          </div>
+                        </div>
 
-                <div className="shrink-0 border-t border-[#F3F4F6] px-5 py-4">
-                  <button
-                    type="button"
-                    onClick={() => setFiltersOpen(false)}
-                    className="cta-red inline-flex h-[46px] w-full items-center justify-center rounded-[12px] text-[14px] font-bold text-white"
-                  >
-                    Show Results
-                  </button>
-                </div>
+                        <div className="shrink-0 border-t border-[#F3F4F6] px-5 py-4">
+                          <button
+                            type="button"
+                            onClick={() => setFiltersOpen(false)}
+                            className="cta-red inline-flex h-[46px] w-full items-center justify-center rounded-[12px] text-[14px] font-bold text-white"
+                          >
+                            Show Results
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </aside>
                 </div>
               )}

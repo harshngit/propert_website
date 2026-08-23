@@ -21,8 +21,7 @@ const navDropdowns = {
   Sell: ["List Property", "Property Valuation", "Owner Services", "Broker Tools"],
   Services: [{ label: "Get Involved", to: "/services/get-involved" }],
   "News & Guide": [
-    { label: "Insights & Guides", to: "/news-guide/insights-guides" },
-    { label: "Opened through the blog listing", to: "/news-guide/opened-through-the-blog-listing" },
+    { label: "Blogs & Insights", to: "/news-guide/insights-guides" },
   ],
 };
 

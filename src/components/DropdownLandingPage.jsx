@@ -32,12 +32,28 @@ function FiltersIcon() {
   );
 }
 
-function SearchIcon() {
+function TopicsIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
+    <img
+      src="/icons/topic%20icom.png"
+      alt=""
+      aria-hidden="true"
+      className="h-[13.125px] w-[14px] shrink-0 object-contain"
+    />
+  );
+}
+
+function SearchIcon({ className = "text-[#9CA3AF]" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className={`h-4 w-4 shrink-0 ${className}`}
+      fill="none"
+    >
       <path
         d="M7.25 12.5a5.25 5.25 0 1 1 0-10.5 5.25 5.25 0 0 1 0 10.5Zm3.9-.9L15 15.45"
-        stroke="currentColor"
+      stroke="currentColor"
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -253,6 +269,51 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
         }
   `}</style>
     </div>
+  );
+}
+
+function GuidesSearchSection({ title, description }) {
+  return (
+    <section className="w-full border-b border-[#E5E7EB] bg-white text-[#111827]">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-4 py-8 text-center sm:px-6 lg:px-8 xl:px-[9px]">
+        <div className="max-w-[900px]">
+          <h1 className="font-['Plus_Jakarta_Sans'] text-[34px] font-extrabold leading-[42px] tracking-[-0.03em] text-[#111827] sm:text-[40px] sm:leading-[48px]">
+            {title}
+          </h1>
+          <p className="mt-2 text-[18px] font-normal leading-[28px] text-[#667085]">
+            {description}
+          </p>
+        </div>
+
+        <div className="mt-8 flex w-full flex-col gap-3 md:flex-row md:items-center">
+          <div className="flex h-[52px] min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
+            <SearchIcon className="text-[#9CA3AF]" />
+            <input
+              type="text"
+              aria-label="Search guides"
+              placeholder="Search for guides, laws, or market reports..."
+              className="min-w-0 flex-1 bg-transparent font-['Lato'] text-[14px] font-normal leading-[20px] text-[#111827] outline-none placeholder:text-[#94A3B8]"
+            />
+          </div>
+
+          <button
+            type="button"
+            className="inline-flex h-[52px] shrink-0 items-center justify-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-5 text-[14px] font-bold text-[#111827] md:w-[108px]"
+          >
+            <TopicsIcon />
+            <span>Topics</span>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Search"
+            className="inline-flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+          >
+            <SearchIcon className="text-white" />
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -525,7 +586,14 @@ function ResultsSidebar({ drawerState, setDrawerState, onClose }) {
   );
 }
 
-function DropdownLandingPage({ title, description, initialDrawerState, renderSidebar }) {
+function DropdownLandingPage({
+  title,
+  description,
+  initialDrawerState,
+  renderSidebar,
+  heroVariant = "filters",
+  belowHeroContent,
+}) {
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [filtersMounted, setFiltersMounted] = React.useState(false);
   const [filtersEntered, setFiltersEntered] = React.useState(false);
@@ -572,62 +640,69 @@ function DropdownLandingPage({ title, description, initialDrawerState, renderSid
     <main className="flex min-h-screen w-full flex-col bg-white text-slate-900">
       <SiteHeader />
 
-      <section className="w-full border-b border-[#E5E7EB] bg-[#111827] text-white">
-        <div className="w-full px-4 pb-8 pt-8 sm:px-6 lg:px-12">
-          <div className="max-w-[1000px]">
-            <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] font-extrabold leading-[38px] tracking-[-0.03em] text-white sm:text-[34px] sm:leading-[42px]">
-              {title}
-            </h1>
-            <p className="mt-2 max-w-[1040px] font-['Lato'] text-[15px] font-normal leading-6 text-white/85 sm:text-[16px]">
-              {description}
-            </p>
-          </div>
+      {heroVariant === "search" ? (
+        <>
+          <GuidesSearchSection title={title} description={description} />
+          {belowHeroContent}
+        </>
+      ) : (
+        <section className="w-full border-b border-[#E5E7EB] bg-[#111827] text-white">
+          <div className="w-full px-4 pb-8 pt-8 sm:px-6 lg:px-12">
+            <div className="max-w-[1000px]">
+              <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] font-extrabold leading-[38px] tracking-[-0.03em] text-white sm:text-[34px] sm:leading-[42px]">
+                {title}
+              </h1>
+              <p className="mt-2 max-w-[1040px] font-['Lato'] text-[15px] font-normal leading-6 text-white/85 sm:text-[16px]">
+                {description}
+              </p>
+            </div>
 
-          <div className="mt-8 flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
-            <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
-              <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
-                <LocationIcon />
-                <span className="font-semibold">Mumbai, Andheri West</span>
+            <div className="mt-8 flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
+              <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
+                <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
+                  <LocationIcon />
+                  <span className="font-semibold">Mumbai, Andheri West</span>
+                </div>
+
+                <Divider />
+
+                <FilterField label="Type:" value="Buy" />
+
+                <Divider />
+
+                <FilterField label="Property:" value="Flat" />
+
+                <Divider />
+
+                <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
               </div>
 
-              <Divider />
+              <div className="flex shrink-0 items-center gap-3 md:gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen((current) => !current)}
+                  aria-expanded={filtersOpen}
+                  aria-controls="results-filters"
+                  className="inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-white px-5 text-[14px] font-bold text-[#111827]"
+                >
+                  <FiltersIcon />
+                  <span>More Filters</span>
+                </button>
 
-              <FilterField label="Type:" value="Buy" />
-
-              <Divider />
-
-              <FilterField label="Property:" value="Flat" />
-
-              <Divider />
-
-              <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
-            </div>
-
-            <div className="flex shrink-0 items-center gap-3 md:gap-4">
-              <button
-                type="button"
-                onClick={() => setFiltersOpen((current) => !current)}
-                aria-expanded={filtersOpen}
-                aria-controls="results-filters"
-                className="inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-white px-5 text-[14px] font-bold text-[#111827]"
-              >
-                <FiltersIcon />
-                <span>More Filters</span>
-              </button>
-
-              <button
-                type="button"
-                aria-label="Search"
-                className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
-              >
-                <SearchIcon />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Search"
+                  className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+                >
+                  <SearchIcon />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {filtersMounted && (
+      {heroVariant !== "search" && filtersMounted && (
         <div className="fixed inset-0 z-[100]">
           <button
             type="button"
