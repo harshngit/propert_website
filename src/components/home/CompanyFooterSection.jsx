@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function CompanyFooterSection() {
   const columns = [
@@ -67,9 +68,18 @@ function CompanyFooterSection() {
               Rajouri Garden, New Delhi - 110027
             </div>
             <div className="grid grid-cols-2 gap-x-5 gap-y-2 md:flex md:flex-wrap">
-              <span className="whitespace-nowrap">TERMS OF SERVICE</span>
-              <span className="whitespace-nowrap">PRIVACY POLICY</span>
-              <span className="col-span-2 whitespace-nowrap md:col-span-1">RERA COMPLIANCE</span>
+              <Link to="/legal#terms" className="whitespace-nowrap transition hover:text-slate-600">
+                TERMS OF SERVICE
+              </Link>
+              <Link to="/legal#privacy" className="whitespace-nowrap transition hover:text-slate-600">
+                PRIVACY POLICY
+              </Link>
+              <Link
+                to="/legal#rera"
+                className="col-span-2 whitespace-nowrap transition hover:text-slate-600 md:col-span-1"
+              >
+                RERA COMPLIANCE
+              </Link>
             </div>
           </div>
         </div>

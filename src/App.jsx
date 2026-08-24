@@ -10,6 +10,7 @@ import BankAuctionPropertiesPage from "./pages/BankAuctionPropertiesPage";
 import SpecialSituationPropertiesPage from "./pages/SpecialSituationPropertiesPage";
 import GetInvolvedPage from "./pages/GetInvolvedPage";
 import InsightsGuidesPage from "./pages/InsightsGuidesPage";
+import PublicLegalPage from "./pages/PublicLegalPage";
 import BlogContentPage from "./pages/BlogContentPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -36,6 +37,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/services/get-involved" element={<GetInvolvedPage />} />
+      <Route path="/legal" element={<PublicLegalPage />} />
       <Route path="/news-guide/insights-guides" element={<InsightsGuidesPage />} />
       <Route path="/news-guide/article/:slug" element={<BlogContentPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
