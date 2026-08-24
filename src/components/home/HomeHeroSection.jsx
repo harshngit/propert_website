@@ -126,7 +126,7 @@ function HomeHeroSection({
       </div>
 
       <div className="mx-auto mt-3 flex w-full max-w-[1184px] items-center justify-center px-3 sm:mt-4 sm:px-0">
-        <div className="flex w-full max-w-[1020px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[22px] text-[#6B7280] sm:text-[18px] sm:leading-[28px]">
+        <div className="flex w-full max-w-[1020px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[15px] text-[#6B7280] sm:text-[18px] sm:leading-[29px]">
           {descriptionLines.map((line) => (
             <p key={line} className="m-0 text-center">
               {line}

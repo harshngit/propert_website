@@ -155,10 +155,10 @@ function PublicLegalPage() {
   const activeId = location.hash.replace("#", "") || "terms";
 
   return (
-    <main className="flex min-h-screen w-full flex-col bg-white text-slate-900">
+    <main className="flex min-h-screen w-full flex-col bg-[#F8FAFC] text-slate-900">
       <SiteHeader />
 
-      <section className="border-y border-slate-200 bg-white">
+      <section className=" w-full border-0 border-t border-[#E5E7EB] bg-white">
         <div className="mx-auto w-full max-w-[1180px] px-4 py-11 text-center sm:px-6 lg:px-8 lg:py-12">
           <h1 className="font-['Plus_Jakarta_Sans'] text-[32px] font-extrabold leading-[1.15] tracking-[-0.04em] text-[#111827] sm:text-[36px] lg:text-[38px]">
             Legal Documentation
@@ -171,14 +171,16 @@ function PublicLegalPage() {
         </div>
       </section>
 
-      <section className="border-t-[3px] border-t-[#2563EB] bg-white">
+      <div aria-hidden="true" className="h-px w-full bg-[#E5E7EB]" />
+
+      <section className="bg-white">
         <div className="mx-auto w-full max-w-[1440px]">
           <div className="flex w-full items-start">
             {/* Documentation sidebar */}
-            <aside className="mt-[50px] ml-[60px] w-[410px] shrink-0 bg-[#F8FAFF]">
-        <div className="w-[500px] pt-[42px] ml-[90px]">
+            <aside className="mt-[10px] ml-[60px] w-[370px] shrink-0">
+        <div className="w-[300px] pt-[42px]">
           <p className="font-['Plus_Jakarta_Sans'] text-[14px] font-bold uppercase leading-[20px] tracking-[0.08em] text-[#111827]">
-            Documentation
+           Documentation
           </p>
 
           <nav className="mt-[22px] flex flex-col gap-[4px]">
@@ -285,14 +287,16 @@ function PublicLegalPage() {
           </nav>
 
           {/* Legal support card */}
-          <div className="relative mt-12 h-[180px] w-[400px] overflow-hidden rounded-[16px] bg-[#0F172A] px-[24px] py-[18px] text-white">
-            <div
+          <div className="relative my-12 h-[180px] w-[280px] overflow-hidden rounded-[16px] bg-[#0F172A] py-[18px] text-white">
+            <img
+              src="/images/support card.png"
+              alt=""
               aria-hidden="true"
-              className="absolute -bottom-[10px] -right-[8px] h-[44px] w-[44px] rotate-45 rounded-[8px] bg-[#1A2438]"
+              className="pointer-events-none absolute bottom-0 right-0 h-[40px] w-[40px] select-none object-contain"
             />
 
-            <div className="flex h-[165px] w-full flex-col items-start gap-[6px]">
-              <p className=" w-full text-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px]">
+            <div className="relative z-10 flex h-[165px] w-full flex-col items-start gap-[6px]">
+              <p className=" w-[350px] ml-5 text-start font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px]">
                 Need Legal Help?
               </p>
 
@@ -304,7 +308,7 @@ function PublicLegalPage() {
 
               <a
                 href="mailto:support@propertyserch.com"
-                className="mt-auto flex h-[39.333335876464844px] w-full items-center justify-center rounded-[10.67px] bg-[#E31B23] px-0 py-[10.67px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition-colors hover:bg-[#c9151d]"
+                className="mt-5 mx-3 flex h-[39.333335876464844px] w-[260px] items-center justify-center rounded-[10.67px] bg-[#E31B23] px-0  font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition-colors hover:bg-[#c9151d]"
               >
                 Message Legal Support
               </a>
@@ -313,8 +317,8 @@ function PublicLegalPage() {
         </div>
             </aside>
 
-            <main className="mt-[50px] ml-[40px] min-w-0">
-              <article className="h-[2442.888916015625px] w-[768px] rounded-[21.33px] border border-[#1118271A] bg-white p-[42.67px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
+            <main className="mt-[50px] mx-[20px] min-w-0">
+              <article className="h-[2442.888916015625px] w-[930px] rounded-[21.33px] border border-[#1118271A] bg-white p-[42.67px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
                 <div className="flex items-start justify-between border-b border-[#E5E7EB] pb-[14px]">
                   <h2 className="font-['Plus_Jakarta_Sans'] text-[18.67px] font-semibold leading-[28px] text-[#111827]">
                     Terms of Service
