@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 
 const documentationNav = [
-  { id: "terms", label: "Terms of Service", active: true },
-  { id: "privacy", label: "Privacy Policy" },
-  { id: "dpdp", label: "DPDP Notice" },
-  { id: "disclaimers", label: "Disclaimers" },
-  { id: "cookies", label: "Cookie Policy" },
+  {
+    id: "terms",
+    label: "Terms of Service",
+    icon: "/icons/terms%20and%20service.png",
+  },
+  {
+    id: "privacy",
+    label: "Privacy Policy",
+    icon: "/icons/privacy%20policy.png",
+  },
+  { id: "rera", label: "RERA Compliance", icon: "/icons/rera.png" },
 ];
+
+const activeIconFilter =
+  "brightness(0) saturate(100%) invert(19%) sepia(96%) saturate(7492%) hue-rotate(349deg) brightness(97%) contrast(108%)";
+
+const inactiveIconFilter =
+  "brightness(0) saturate(100%) invert(37%) sepia(14%) saturate(679%) hue-rotate(174deg) brightness(92%) contrast(88%)";
 
 const termsSections = [
   {
@@ -150,9 +162,62 @@ const privacySections = [
   },
 ];
 
+const reraSections = [
+  {
+    number: "1.",
+    title: "RERA Overview",
+    body: [
+      "PropertySerch highlights RERA-related information to support transparent property discovery and informed decision-making.",
+    ],
+  },
+  {
+    number: "2.",
+    title: "Listing Information",
+    body: [
+      "Where applicable, property details such as registration numbers, project status, and promoter information should be verified against official RERA records before taking any action.",
+    ],
+  },
+  {
+    number: "3.",
+    title: "User Responsibility",
+    body: [
+      "Users are responsible for independently confirming compliance requirements, approvals, and disclosures that apply in their jurisdiction.",
+    ],
+  },
+  {
+    number: "4.",
+    title: "Contact",
+    body: [
+      "For RERA-related questions, please contact our support team through the official PropertySerch contact channels.",
+    ],
+  },
+];
+
 function PublicLegalPage() {
   const location = useLocation();
   const activeId = location.hash.replace("#", "") || "terms";
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (activeId === "terms") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return undefined;
+    }
+
+    const target = document.getElementById(activeId);
+    if (!target) return undefined;
+
+    const offset = activeId === "privacy" ? 120 : activeId === "rera" ? 80 : 0;
+    const raf = requestAnimationFrame(() => {
+      const targetTop = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [activeId]);
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-[#F8FAFC] text-slate-900">
@@ -173,7 +238,7 @@ function PublicLegalPage() {
 
       <div aria-hidden="true" className="h-px w-full bg-[#E5E7EB]" />
 
-      <section className="bg-white">
+      <section className="bg-[#F8FAFC]">
         <div className="mx-auto w-full max-w-[1440px]">
           <div className="flex w-full items-start">
             {/* Documentation sidebar */}
@@ -191,6 +256,7 @@ function PublicLegalPage() {
                 <Link
                   key={item.id}
                   to={`/legal#${item.id}`}
+                  aria-current={isActive ? "page" : undefined}
                     className={[
                       "flex h-[48px] w-full items-center gap-[14px] rounded-[8px] px-[16px] transition-colors",
                       isActive
@@ -201,81 +267,27 @@ function PublicLegalPage() {
                   <span
                     className={[
                       "inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center",
-                      isActive ? "text-[#E51C23]" : "text-[#526078]",
+                      isActive ? "opacity-100" : "opacity-80",
                     ].join(" ")}
                     aria-hidden="true"
                   >
-                    {item.id === "terms" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-[17px] w-[17px]"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.9"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M6 2.75h8l4 4v14.5H6V2.75Z" />
-                        <path d="M14 2.75v4h4" />
-                        <path d="M8.5 13.2h7" />
-                        <path d="M8.5 16.2h7" />
-                        <path d="M9 9.5h2.5" />
-                      </svg>
-                    )}
-
-                    {item.id === "privacy" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-[18px] w-[18px]"
-                        fill="currentColor"
-                      >
-                        <circle cx="8" cy="7" r="4" />
-                        <circle cx="17.5" cy="9" r="3" />
-                        <path d="M2 20v-3.5A4.5 4.5 0 0 1 6.5 12h3A4.5 4.5 0 0 1 14 16.5V20H2Z" />
-                        <path d="M14.5 20v-4.2c0-1.1-.35-2.15-.95-3h3.95a4 4 0 0 1 4 4V20h-7Z" />
-                      </svg>
-                    )}
-
-                    {item.id === "dpdp" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-[18px] w-[18px]"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      >
-                        <path d="M12 3.5a7 7 0 0 0-7 7v3" />
-                        <path d="M12 6.5a4 4 0 0 0-4 4v5" />
-                        <path d="M12 9.5a1 1 0 0 0-1 1v7" />
-                        <path d="M15 5a6 6 0 0 1 3 5.2v4.3" />
-                        <path d="M15 8.5a3.5 3.5 0 0 1 1 2.5v6" />
-                        <path d="M14 12v7" />
-                      </svg>
-                    )}
-
-                    {item.id === "disclaimers" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-[18px] w-[18px]"
-                        fill="currentColor"
-                      >
-                        <path d="M10.3 3.2a2 2 0 0 1 3.4 0l8 13.8A2 2 0 0 1 20 20H4a2 2 0 0 1-1.7-3l8-13.8ZM11 8v5h2V8h-2Zm1 8a1.2 1.2 0 1 0 0 2.4A1.2 1.2 0 0 0 12 16Z" />
-                      </svg>
-                    )}
-
-                    {item.id === "cookies" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-[18px] w-[18px]"
-                        fill="currentColor"
-                      >
-                        <path d="M20.5 13.3A8.5 8.5 0 1 1 10.7 3.5a4.5 4.5 0 0 0 5.8 5.8 4.5 4.5 0 0 0 4 4Z" />
-                        <circle cx="8" cy="11" r="1.2" fill="#F8FAFF" />
-                        <circle cx="11" cy="16" r="1.2" fill="#F8FAFF" />
-                        <circle cx="6.5" cy="16.5" r="1" fill="#F8FAFF" />
-                      </svg>
-                    )}
+                    <img
+                      src={item.icon}
+                      alt=""
+                      className={[
+                        "object-contain transition-[filter,opacity] duration-150",
+                        item.id === "rera" ? "h-[22px] w-[22px]" : "h-[18px] w-[18px]",
+                      ].join(" ")}
+                      style={
+                        isActive
+                          ? {
+                              filter: activeIconFilter,
+                            }
+                          : {
+                              filter: inactiveIconFilter,
+                            }
+                      }
+                    />
                   </span>
 
                   <span className="font-['Plus_Jakarta_Sans'] text-[16px] font-medium leading-[22px]">
@@ -318,23 +330,26 @@ function PublicLegalPage() {
             </aside>
 
             <main className="mt-[50px] mx-[20px] min-w-0">
-              <article className="h-[2442.888916015625px] w-[930px] rounded-[21.33px] border border-[#1118271A] bg-white p-[42.67px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
-                <div className="flex items-start justify-between border-b border-[#E5E7EB] pb-[14px]">
-                  <h2 className="font-['Plus_Jakarta_Sans'] text-[18.67px] font-semibold leading-[28px] text-[#111827]">
+              <article className="w-[930px] rounded-[21.33px] border border-[#1118271A] bg-white p-[42.67px] pb-[56px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
+                <div
+                  id="terms"
+                  className="scroll-mt-[120px] flex items-start justify-between border-b border-[#E5E7EB] pb-[14px]"
+                >
+                  <h2 className="font-['Plus_Jakarta_Sans'] text-[26.67px] font-semibold leading-[28px] text-[#111827]">
                     Terms of Service
                   </h2>
-                  <p className="pt-[3px] font-['Plus_Jakarta_Sans'] text-[10.67px] font-medium leading-[16px] text-[#94A3B8]">
+                  <p className="pt-[3px] font-['Plus_Jakarta_Sans'] text-[12.67px] font-medium leading-[16px] text-[#94A3B8]">
                     Last Updated: August 5, 2026
                   </p>
                 </div>
 
-                <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14px] leading-[22px] text-[#111827]">
+                <div className="mt-[18px] space-y-[21px] font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                   {termsSections.map((section) => (
                     <section key={section.title} className="space-y-[10px]">
-                      <h3 className="text-[13.33px] font-normal leading-[20px] text-[#111827]">
+                      <h3 className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                         {section.number} {section.title}
                       </h3>
-                      <div className="text-[13.33px] leading-[21.33px] text-[#111827]">
+                      <div className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                         {section.list ? (
                           <>
                             <p className="mb-[6px]">{section.body[0]}</p>
@@ -352,18 +367,18 @@ function PublicLegalPage() {
                   ))}
                 </div>
 
-                <div className="mt-[28px] border-t border-[#E5E7EB] pt-[26px]">
-                  <h2 className="font-['Plus_Jakarta_Sans'] text-[18.67px] font-semibold leading-[28px] text-[#111827]">
+                <div id="privacy" className="mt-[28px] border-t border-[#E5E7EB] pt-[26px]">
+                  <h2 className="font-['Lato'] text-[26.67px] font-semibold leading-[28px] text-[#111827]">
                     Privacy Policy
                   </h2>
 
-                  <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14px] leading-[22px] text-[#111827]">
+                  <div className="mt-[18px] space-y-[21px] font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                     {privacySections.map((section) => (
                       <section key={section.title} className="space-y-[10px]">
-                        <h3 className="text-[13.33px] font-normal leading-[20px] text-[#111827]">
+                        <h3 className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                           {section.number} {section.title}
                         </h3>
-                        <div className="text-[13.33px] leading-[21.33px] text-[#111827]">
+                        <div className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
                           {section.list ? (
                             <>
                               <p className="mb-[6px]">{section.body[0]}</p>
@@ -377,14 +392,36 @@ function PublicLegalPage() {
                             <>
                               <p>{section.body[0]}</p>
                               <div className="mt-[18px] rounded-[8px] border border-[#E5E7EB] bg-[#F8FAFC] px-[16px] py-[18px]">
-                                <p className="text-[13.33px] leading-[21.33px] text-[#111827]">
-                                  {section.body[1]}
+                                <p className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                                  Email:{" "}
+                                  <span className="text-[#E31B23]">{section.body[1].replace("Email: ", "")}</span>
                                 </p>
                               </div>
                             </>
                           ) : (
                             section.body.map((line) => <p key={line}>{line}</p>)
                           )}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-[28px] border-t border-[#E5E7EB] pt-[26px]" id="rera">
+                  <h2 className="font-['Plus_Jakarta_Sans'] text-[18.67px] font-semibold leading-[28px] text-[#111827]">
+                    RERA Compliance
+                  </h2>
+
+                  <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14px] leading-[22px] text-[#111827]">
+                    {reraSections.map((section) => (
+                      <section key={section.title} className="space-y-[10px]">
+                        <h3 className="text-[13.33px] font-normal leading-[20px] text-[#111827]">
+                          {section.number} {section.title}
+                        </h3>
+                        <div className="text-[13.33px] leading-[21.33px] text-[#111827]">
+                          {section.body.map((line) => (
+                            <p key={line}>{line}</p>
+                          ))}
                         </div>
                       </section>
                     ))}

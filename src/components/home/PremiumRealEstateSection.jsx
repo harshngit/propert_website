@@ -66,7 +66,7 @@ function PremiumRealEstateSection() {
 
       {/* Buttons */}
       <div className="flex gap-[12px]">
-        <button className="inline-flex h-[50px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition hover:bg-[#cc1820]">
+        <button className="cta-red-on-dark inline-flex h-[50px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition">
           <span>Register Your Interest</span>
           <span aria-hidden="true">&rarr;</span>
         </button>

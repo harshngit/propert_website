@@ -47,7 +47,7 @@ function DealSupportSection({
           <h3 className="text-[28px] font-black">{financeTitle}</h3>
           <p className="mt-3 text-[14px] leading-6 text-white/90">{financeDescription}</p>
           <div className="mt-5 text-[28px] font-black leading-none">{financeRange}</div>
-          <button className="mt-6 w-full rounded-[14px] bg-white px-6 py-3.5 text-[16px] font-extrabold text-red-500 transition hover:bg-slate-50">
+          <button className="cta-white-on-red mt-6 w-full rounded-[14px] bg-white px-6 py-3.5 text-[16px] font-extrabold text-red-500 transition hover:bg-slate-50">
             {financeButtonText}
           </button>
           <p className="mt-4 border-t border-white/20 pt-4 text-[14px] leading-6 text-white/85">

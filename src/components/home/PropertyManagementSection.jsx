@@ -117,7 +117,7 @@ function PropertyManagementSection() {
             {/* =====================================================
         CTA BUTTON
     ====================================================== */}
-            <button className="mt-[20px] inline-flex h-[46px] w-fit items-center gap-[11px] rounded-[8px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[13px] font-extrabold text-white transition hover:bg-[#cf1820]">
+            <button className="cta-red mt-[20px] inline-flex h-[46px] w-fit items-center gap-[11px] rounded-[8px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[13px] font-extrabold text-white transition">
               <span>Talk to a Relationship Manager</span>
 
               <span
@@ -306,6 +306,7 @@ function PropertyManagementSection() {
               <button
                 type="button"
                 className="
+          cta-red-on-dark
           mt-[22px]
           inline-flex
           h-[46px]
@@ -320,7 +321,6 @@ function PropertyManagementSection() {
           font-extrabold
           text-white
           transition
-          hover:bg-[#cf1820]
         "
               >
                 <span>View NRI Property Management</span>

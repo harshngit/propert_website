@@ -197,7 +197,7 @@ function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = 
         <button
           type="button"
           aria-label="Search"
-          className="cta-red inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] text-white"
+          className="cta-red-on-dark inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
         >
           <SearchIcon />
         </button>

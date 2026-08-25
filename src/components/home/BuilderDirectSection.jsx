@@ -35,8 +35,8 @@ function BuilderDirectSection({
           <p className="mt-4 h-[48px] w-[544px] font-['Lato'] text-[16px] font-normal leading-6 tracking-[0] text-[#E5E7EB]">
             {description}
           </p>
-          <button className="cta-red mt-5 inline-flex h-[48px] w-[153px] items-center justify-center rounded-[12px] px-8 py-3 text-white">
-            <span className="inline-flex h-[24px] w-[89px] items-center justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0068em] text-white">
+          <button className="cta-red cta-red-on-dark mt-5 inline-flex h-[48px] w-[153px] items-center justify-center rounded-[12px] px-8 py-3 text-white">
+            <span className="inline-flex h-[24px] w-[89px] items-center justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0068em] text-inherit">
               {buttonText}
             </span>
           </button>

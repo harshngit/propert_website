@@ -21,7 +21,7 @@ function PremiumOwnershipSection() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-[14px] bg-[#ef2d2d] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#d92626]">
+              <button className="cta-red-on-dark rounded-[14px] bg-[#ef2d2d] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#d92626]">
                 Register Your Interest
               </button>
               <button className="rounded-[14px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">

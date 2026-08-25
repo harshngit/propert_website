@@ -606,6 +606,10 @@ function DropdownLandingPage({
   }, [initialDrawerState]);
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  React.useEffect(() => {
     if (filtersOpen) {
       setFiltersMounted(true);
       return undefined;
@@ -692,7 +696,7 @@ function DropdownLandingPage({
                 <button
                   type="button"
                   aria-label="Search"
-                  className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+                  className="cta-red-on-dark inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
                 >
                   <SearchIcon />
                 </button>

@@ -35,7 +35,7 @@ function BusinessGrowthPromoSection() {
           {cards.map((card) => (
             <article
               key={card.title}
-              className="rounded-[22px] border border-[#E5E7EB] bg-white px-7 py-8 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
+              className="flex h-full flex-col rounded-[22px] border border-[#E5E7EB] bg-white px-7 py-8 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
             >
               <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-[1.25] tracking-[-0.02em] text-[#111827]">
                 {card.title}
@@ -47,7 +47,7 @@ function BusinessGrowthPromoSection() {
 
               <button
                 type="button"
-                className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-[#E51C23] transition hover:text-[#cc171d]"
+                className="mt-10 inline-flex items-center gap-2 whitespace-nowrap text-[14px] font-semibold text-[#E51C23] transition hover:text-[#cc171d]"
               >
                 <span>{card.action}</span>
                 <span aria-hidden="true">→</span>
@@ -104,14 +104,14 @@ function CareersPromoSection() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
-                className="inline-flex h-[54px] w-full items-center justify-center rounded-[14px] bg-[#E51C23] px-7 text-[16px] font-extrabold text-white transition hover:bg-[#cc171d] sm:w-auto sm:min-w-[255px] sm:text-[16px]"
+                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] bg-[#E51C23] px-7 text-[16px] font-extrabold text-white transition hover:bg-[#FFFFFF] sm:w-auto sm:min-w-[255px] sm:text-[16px]"
               >
                 Contact Institutional Desk
               </button>
 
               <button
                 type="button"
-                className="inline-flex h-[54px] w-full items-center justify-center rounded-[14px] border border-white/15 bg-transparent px-7 text-[16px] font-extrabold text-white transition hover:bg-white/5 sm:w-auto sm:min-w-[205px] sm:text-[16px]"
+                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] border border-white/15 bg-transparent px-7 text-[16px] font-extrabold text-white transition hover:bg-white sm:w-auto sm:min-w-[205px] sm:text-[16px]"
               >
                 Sample Data Room
               </button>
@@ -272,7 +272,7 @@ function CareersPromoSection() {
 
               <button
                 type="button"
-                className="mt-2 inline-flex h-[36px] w-full items-center justify-center rounded-[8px] bg-[#E51C23] text-[14px] font-bold text-white transition hover:bg-[#cc171d]"
+                className="dark-hover-btn mt-2 inline-flex h-[36px] w-full items-center justify-center rounded-[8px] bg-[#E51C23] text-[14px] font-bold text-white transition"
               >
                 Submit Application
               </button>
@@ -382,6 +382,10 @@ function GetInvolvedPage() {
     }
     return CITY_OPTIONS.filter((city) => city.toLowerCase().includes(query));
   }, [cityInput]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const handlePointerDown = (event) => {
@@ -686,7 +690,7 @@ function GetInvolvedPage() {
 
                 <button
                   type="submit"
-                  className="mt-auto inline-flex h-[35px] w-full shrink-0 items-center justify-center rounded-[7px] border-0 bg-[#E51C23] font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition hover:bg-[#CC171D] focus:outline-none focus:ring-2 focus:ring-[#E51C23]/30"
+                  className="cta-red mt-auto inline-flex h-[35px] w-full shrink-0 items-center justify-center rounded-[7px] border-0 font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition focus:outline-none focus:ring-2 focus:ring-[#E51C23]/30"
                 >
                   Request City
                 </button>

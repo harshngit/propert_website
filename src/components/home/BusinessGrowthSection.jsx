@@ -20,10 +20,10 @@ function BusinessGrowthSection() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-[14px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
+              <button className="dark-hover-btn rounded-[14px] bg-[#E51C23] px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-[#cc1820]">
                 Contact Institutional Desk
               </button>
-              <button className="rounded-[14px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">
+              <button className="dark-hover-btn rounded-[14px] border border-white/15 px-6 py-3.5 text-[16px] font-extrabold text-white transition hover:bg-white/5">
                 Sample Data Room
               </button>
             </div>

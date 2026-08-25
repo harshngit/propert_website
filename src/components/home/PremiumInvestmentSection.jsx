@@ -27,11 +27,11 @@ function PremiumInvestmentSection() {
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <button className="w-full rounded-[12px] bg-red-500 px-4 py-3.5 text-[14px] font-extrabold whitespace-nowrap text-white transition hover:bg-red-600 sm:w-auto sm:px-6 sm:text-[16px]">
+                <button className="w-full rounded-[12px] bg-red-500 px-4 py-3.5 text-[14px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:text-[16px]">
                   Contact Institutional Desk
                 </button>
 
-                <button className="w-full rounded-[12px] border border-white/15 px-4 py-3.5 text-[14px] font-extrabold whitespace-nowrap text-white transition hover:bg-white/5 sm:w-auto sm:px-6 sm:text-[16px]">
+                <button className="w-full rounded-[12px] border border-white/15 px-4 py-3.5 text-[14px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:text-[16px]">
                   Sample Data Room
                 </button>
               </div>

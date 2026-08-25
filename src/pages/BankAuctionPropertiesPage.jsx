@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropertiesPage from "./PropertiesPage";
 
 function BankAuctionPropertiesPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <PropertiesPage
       heroTitle="Bank Auction Opportunities"

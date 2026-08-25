@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropertiesPage from "./PropertiesPage";
 
 function createInvestmentDrawerState() {
@@ -229,6 +229,10 @@ function InvestmentSidebar({ drawerState, setDrawerState, resetFilters, onClose 
 }
 
 function InstitutionalPropertiesPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <PropertiesPage
       heroTitle="Institutional Opportunities"

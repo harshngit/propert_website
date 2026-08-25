@@ -147,7 +147,7 @@ function HomeHeroSection({
                 tabWidths[tab],
                 tabSmWidths[tab],
                 activeTab === tab
-                  ? "bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#cc1820]"
+                  ? "bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#0F172A]"
                   : "bg-[#F9FAFB] tracking-[0.0059em] text-[#4B5563]",
               ].join(" ")}
             >
