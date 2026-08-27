@@ -129,7 +129,7 @@ function DropdownPanel({ items, className = "", isOpen, onSelect }) {
   return (
     <div
       className={[
-        "absolute left-1/2 top-full z-50 mt-0 min-w-[220px] -translate-x-1/2 rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150",
+        "absolute left-0 top-full z-50 mt-2 w-max min-w-[160px] max-w-[280px] rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150",
         isOpen
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none translate-y-1 opacity-0",
@@ -188,7 +188,6 @@ function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
 
       <DropdownPanel
         items={CITY_OPTIONS}
-        className="min-w-[240px]"
         isOpen={isOpen}
         onSelect={onSelect}
       />
@@ -216,7 +215,6 @@ function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
 
       <DropdownPanel
         items={dropdownItems}
-        className="min-w-[280px]"
         isOpen={isOpen}
         onSelect={onSelect}
       />
@@ -304,6 +302,57 @@ function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none">
+      <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M5 19c1.2-3.2 4-5 7-5s5.8 1.8 7 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// Guest (logged-out) equivalent of AccountMenu: hovering "Profile" reveals
+// Login / Sign Up instead of a plain Login link, so the header always shows
+// one consistent account-entry-point shape regardless of auth state.
+function GuestMenu({ isOpen, onEnter, onLeave, location }) {
+  return (
+    <div className="relative flex items-center" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <button
+        type="button"
+        className="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
+      >
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-[#374151]">
+          <UserIcon />
+        </span>
+        <span>Profile</span>
+        <Chevron />
+      </button>
+
+      <div
+        className={[
+          "absolute inset-x-0 top-full z-50 mt-0 rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150 w-[150px]",
+          isOpen ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0 ",
+        ].join(" ")}
+      >
+        <NavLink
+          to="/login"
+          state={{ from: location }}
+          className="block rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+        >
+          Login
+        </NavLink>
+        <NavLink
+          to="/register"
+          state={{ from: location }}
+          className="block rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+        >
+          Sign Up
+        </NavLink>
+      </div>
+    </div>
+  );
+}
+
 function SiteHeader() {
   const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
@@ -340,9 +389,12 @@ function SiteHeader() {
         <div className="flex items-center gap-3 sm:gap-6">
           <NavLink
             to="/"
-            className="flex h-8 items-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-8 tracking-[-0.6px] text-[#E51C23] sm:text-[24px]"
+            className="flex flex-col items-start justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] leading-tight text-[#E51C23]"
           >
-            PropertySerch
+            <span className="text-[20px] font-extrabold tracking-[-0.6px] sm:text-[24px]">PropertySerch</span>
+            <span className="lg:text-[15px] font-semibold tracking-[0.01em] text-[#6B7280] text-[10px]">
+              A brand of A R Buildwel
+            </span>
           </NavLink>
 
           <div className="hidden sm:block">
@@ -391,14 +443,12 @@ function SiteHeader() {
               }}
             />
           ) : (
-            <NavLink
-              to="/login"
-              state={{ from: location }}
-              className="inline-flex h-10 shrink-0 items-center gap-1 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 text-[#374151] transition hover:text-slate-950"
-            >
-              <span className="flex h-5 items-center justify-start">Login</span>
-              <Chevron />
-            </NavLink>
+            <GuestMenu
+              isOpen={openMenu === "guest"}
+              onEnter={() => setOpenMenu("guest")}
+              onLeave={() => setOpenMenu(null)}
+              location={location}
+            />
           )}
 
           <button className="cta-red inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white">

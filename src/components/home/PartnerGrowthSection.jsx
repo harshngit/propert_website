@@ -119,7 +119,6 @@ function PartnerGrowthSection() {
               stroke="#E51C23"
               strokeWidth="1.8"
               strokeLinecap="round"
-              strokeDasharray="2.5 5"
               pathLength="100"
               strokeDasharray="27 73"
               transform="rotate(195 55 55)"
