@@ -25,16 +25,16 @@ function PropertyManagementSection() {
         {/* =====================================================
             LEFT CARD
         ====================================================== */}
-        <div className="relative h-[419.7px] overflow-hidden rounded-[20px] border border-[#d7e3ff] bg-[#eef3ff] text-[#0f172a] shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
+        <div className="relative overflow-hidden rounded-[20px] border border-[#d7e3ff] bg-[#eef3ff] p-5 text-[#0f172a] shadow-[0_16px_36px_rgba(15,23,42,0.05)] sm:p-6 lg:h-[419.7px] lg:p-0">
           {/* =====================================================
-              LARGE CURVED BACKGROUND
+              LARGE CURVED BACKGROUND (desktop-only decorative art)
           ====================================================== */}
-          <div className="pointer-events-none absolute -right-[120px] -top-[135px] h-[535px] w-[455px] rounded-full bg-[#dce8fb]" />
+          <div className="pointer-events-none absolute -right-[120px] -top-[135px] hidden h-[535px] w-[455px] rounded-full bg-[#dce8fb] lg:block" />
 
           {/* =====================================================
-              HOUSE IMAGE
+              HOUSE IMAGE - desktop: clipped side art; mobile: top banner
           ====================================================== */}
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[43%] overflow-hidden">
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[43%] overflow-hidden lg:block">
             <div className="absolute inset-0 overflow-hidden [clip-path:ellipse(88%_78%_at_100%_52%)]">
               <img
                 src={encodeURI("/images/property-management-house.png")}
@@ -50,23 +50,31 @@ function PropertyManagementSection() {
             />
           </div>
 
+          <div className="mb-5 -mx-5 -mt-5 overflow-hidden rounded-t-[20px] sm:-mx-6 sm:-mt-6 lg:hidden">
+            <img
+              src={encodeURI("/images/property-management-house.png")}
+              alt=""
+              aria-hidden="true"
+              className="h-[170px] w-full object-cover object-[58%_center]"
+            />
+          </div>
+
           {/* =====================================================
               LEFT CONTENT
           ====================================================== */}
-          <div className="relative z-10 flex h-full w-[62%] flex-col p-8">
+          <div className="relative z-10 flex h-full w-full flex-col lg:w-[62%] lg:p-8">
             {/* =====================================================
         HEADING
     ====================================================== */}
-            <h3 className="max-w-[410px] font-['Plus_Jakarta_Sans'] text-[27px] font-extrabold leading-[1.15] tracking-[-0.02em] text-[#0f172a]">
+            <h3 className="max-w-full font-['Plus_Jakarta_Sans'] text-[22px] font-extrabold leading-[1.2] tracking-[-0.02em] text-[#0f172a] lg:max-w-[410px] lg:text-[27px] lg:leading-[1.15]">
               Your India property. Managed
-              <br />
-              while you&apos;re abroad.
+              <br className="hidden lg:block" /> while you&apos;re abroad.
             </h3>
 
             {/* =====================================================
         DESCRIPTION
     ====================================================== */}
-            <p className="mt-[14px] max-w-[430px] font-['Lato'] text-[12px] leading-[1.65] text-[#334155]">
+            <p className="mt-[14px] max-w-full font-['Lato'] text-[13px] leading-[1.6] text-[#334155] lg:max-w-[430px] lg:text-[12px] lg:leading-[1.65]">
               A dedicated relationship manager handles renting, repairs, and tax
               payments on your behalf. One point of contact, one simple monthly
               fee, no visits required.
@@ -75,41 +83,37 @@ function PropertyManagementSection() {
             {/* =====================================================
         FEATURE CARDS
     ====================================================== */}
-            <div className="mt-[18px] grid max-w-[445px] grid-cols-3 gap-[8px]">
+            <div className="mt-[18px] grid max-w-full grid-cols-3 gap-[8px] lg:max-w-[445px]">
               {/* Tenant */}
-              <div className="flex h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
                 <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
                   <TenantIcon />
                 </div>
 
-                <p className="max-w-[92px] font-['Plus_Jakarta_Sans'] text-[8px] font-semibold leading-[1.08] text-[#0f172a]">
-                  <span className="block whitespace-nowrap">Tenant placement</span>
-                  <span className="block whitespace-nowrap">& rent</span>
-                  <span className="block whitespace-nowrap">collection</span>
+                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                  Tenant placement &amp; rent collection
                 </p>
               </div>
 
               {/* Repairs */}
-              <div className="flex h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
                 <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
                   <RepairIcon />
                 </div>
 
-                <p className="max-w-[100px] font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.18] text-[#0f172a]">
-                  <span className="block">Repairs &</span>
-                  <span className="block">maintenance coordination</span>
+                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                  Repairs &amp; maintenance coordination
                 </p>
               </div>
 
               {/* Tax */}
-              <div className="flex h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
                 <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
                   <DocumentIcon />
                 </div>
 
-                <p className="max-w-[100px] font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.18] text-[#0f172a]">
-                  <span className="block">Property tax &</span>
-                  <span className="block">statutory payments</span>
+                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                  Property tax &amp; statutory payments
                 </p>
               </div>
             </div>
@@ -131,7 +135,7 @@ function PropertyManagementSection() {
             {/* =====================================================
         DISCLAIMER
     ====================================================== */}
-            <div className="mt-auto max-w-[440px] border-t border-[#d3def3] pt-[13px]">
+            <div className="mt-[18px] max-w-full border-t border-[#d3def3] pt-[13px] lg:mt-auto lg:max-w-[440px]">
               <div className="flex items-start gap-[8px]">
                 {/* information icon */}
                 <div className="mt-[1px] flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full border border-[#2b7cff]">
@@ -140,7 +144,7 @@ function PropertyManagementSection() {
                   </span>
                 </div>
 
-                <p className="max-w-[405px] font-['Lato'] text-[9px] leading-[1.55] text-[#64748b]">
+                <p className="max-w-full font-['Lato'] text-[10px] leading-[1.5] text-[#64748b] lg:max-w-[405px] lg:text-[9px] lg:leading-[1.55]">
                   Service fees are billed monthly and communicated upfront; tax
                   rules vary by state and individual situation. Consult a
                   qualified CA before transacting.
@@ -157,18 +161,18 @@ function PropertyManagementSection() {
         <div
           className="
     relative
-    h-[419.7px] w-[670px]
-    
+    w-full
     overflow-hidden
     rounded-[20px]
     bg-[#07182f]
-    px-8 pb-8 pt-5
+    p-5 sm:p-6
     text-white
     shadow-[0_16px_36px_rgba(15,23,42,0.14)]
+    lg:h-[419.7px] lg:w-[670px] lg:px-8 lg:pb-8 lg:pt-5
   "
         >
           {/* =====================================================
-      RIGHT IMAGE
+      RIGHT IMAGE - desktop: clipped side art; mobile: top banner
   ====================================================== */}
 
           <div
@@ -179,8 +183,10 @@ function PropertyManagementSection() {
       right-0
       top-0
       z-[1]
+      hidden
       w-[47%]
       overflow-hidden
+      lg:block
     "
           >
             {/* Curved image clipping */}
@@ -227,6 +233,15 @@ function PropertyManagementSection() {
             />
           </div>
 
+          <div className="mb-5 -mx-5 -mt-5 overflow-hidden rounded-t-[20px] sm:-mx-6 sm:-mt-6 lg:hidden">
+            <img
+              src={encodeURI("/images/property managment 2.png")}
+              alt=""
+              aria-hidden="true"
+              className="h-[170px] w-full object-cover object-[57%_center]"
+            />
+          </div>
+
           {/* =====================================================
       CONTENT
   ====================================================== */}
@@ -236,7 +251,7 @@ function PropertyManagementSection() {
         TOP CONTENT
     ====================================================== */}
 
-            <div className="w-[57%]">
+            <div className="w-full lg:w-[57%]">
               {/* BADGE */}
               <div
                 className="
@@ -270,13 +285,16 @@ function PropertyManagementSection() {
               <h3
                 className="
           mt-[15px]
-          max-w-[320px]
+          max-w-full
           font-['Plus_Jakarta_Sans']
-          text-[27px]
+          text-[22px]
           font-extrabold
-          leading-[1.18]
+          leading-[1.2]
           tracking-[-0.025em]
           text-white
+          lg:max-w-[320px]
+          lg:text-[27px]
+          lg:leading-[1.18]
         "
               >
                 Tension-free ownership,
@@ -288,12 +306,15 @@ function PropertyManagementSection() {
               <p
                 className="
           mt-[15px]
-          max-w-[305px]
+          max-w-full
           font-['Lato']
-          text-[12px]
+          text-[13px]
           font-normal
-          leading-[1.9]
+          leading-[1.7]
           text-white/90
+          lg:max-w-[305px]
+          lg:text-[12px]
+          lg:leading-[1.9]
         "
               >
                 Whether you&apos;re in Dubai, London, or Singapore, your
@@ -317,10 +338,11 @@ function PropertyManagementSection() {
           bg-[#E51C23]
           px-[20px]
           font-['Plus_Jakarta_Sans']
-          text-[12px]
+          text-[13px]
           font-extrabold
           text-white
           transition
+          lg:text-[12px]
         "
               >
                 <span>View NRI Property Management</span>
@@ -345,10 +367,12 @@ function PropertyManagementSection() {
 
             <div
               className="
-        mt-auto
+        mt-6
         grid
-        w-[56%]
+        w-full
         grid-cols-3
+        lg:mt-auto
+        lg:w-[56%]
       "
             >
               {/* ALWAYS UPDATED */}

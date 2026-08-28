@@ -8,7 +8,7 @@ function PremiumRealEstateSection() {
   ];
 
   return (
-    <div className="relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden bg-[#111827] px-16 py-12 text-white md:px-16 md:py-16">
+    <div className="relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden bg-[#111827] px-5 py-10 text-white sm:px-8 lg:px-16 lg:py-16">
       <div className="mx-auto max-w-[1780px]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="w-full max-w-[700.69px]">
@@ -18,7 +18,7 @@ function PremiumRealEstateSection() {
   </div>
 
   {/* Main Content */}
-  <div className="grid grid-cols-[230px_minmax(0,1fr)] items-stretch gap-[26px]">
+  <div className="grid grid-cols-1 items-stretch gap-[18px] lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-[26px]">
     
     {/* LEFT SIDE */}
     <div className="flex flex-col justify-center rounded-[18px] border border-white/15 px-[16px] py-[12px]">
@@ -65,7 +65,7 @@ function PremiumRealEstateSection() {
       <div className="my-[18px] h-px w-full bg-white/10" />
 
       {/* Buttons */}
-      <div className="flex gap-[12px]">
+      <div className="flex flex-col gap-[12px] sm:flex-row">
         <button className="cta-red-on-dark inline-flex h-[50px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition">
           <span>Register Your Interest</span>
           <span aria-hidden="true">&rarr;</span>
@@ -87,18 +87,21 @@ function PremiumRealEstateSection() {
               className="h-[350px] w-full object-cover"
             />
 
+            {/* Flat scrim for mobile, where the content spans full width */}
+            <div className="pointer-events-none absolute inset-0 bg-[#0F1929]/60 lg:hidden" />
+
             {/* Dark gradient overlay
       Darker on left for text readability,
       transparent on right so image stays visible
   */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0F1929]/95 via-[#0F1929]/65 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-[#0F1929]/95 via-[#0F1929]/65 to-transparent lg:block" />
 
             {/* Small bottom gradient for extra contrast */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0F1929]/45 via-transparent to-transparent" />
 
             {/* Content */}
             <div className="absolute inset-0 flex items-center">
-              <div className="w-[58%] px-[32px]">
+              <div className="w-full px-5 sm:px-8 lg:w-[58%] lg:px-[32px]">
                 {/* Verified Access Badge */}
                 <div className="mb-[28px] inline-flex items-center gap-[10px] rounded-full border border-white/20 bg-[#111827]/45 px-[14px] py-[8px] backdrop-blur-[4px]">
                   <span className="flex h-[22px] w-[22px] items-center justify-center">
