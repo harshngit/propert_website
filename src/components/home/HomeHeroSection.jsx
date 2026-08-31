@@ -157,84 +157,173 @@ function HomeHeroSection({
         </div>
       </div>
 
-      <form className="mx-auto mt-6 w-full max-w-[896px] px-1 sm:mt-12 sm:px-0" onSubmit={handleSearch}>
-        <div className="mx-auto grid w-full max-w-[880px] grid-cols-4 gap-[1px] sm:flex sm:gap-1 sm:overflow-visible">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              className={[
-                "flex h-[42px] w-full items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-1.5 py-3 font-['Plus_Jakarta_Sans'] text-[11px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)] sm:px-6 sm:text-[14px]",
-                tabWidths[tab],
-                tabSmWidths[tab],
-                activeTab === tab
-                  ? "bg-[#E51C23] tracking-[0.0283em] text-white hover:bg-[#0F172A]"
-                  : "bg-[#F9FAFB] tracking-[0.0059em] text-[#4B5563]",
-              ].join(" ")}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+      <form
+  className="mx-auto mt-6 w-full max-w-[896px] px-1 sm:mt-12 sm:px-0"
+  onSubmit={handleSearch}
+>
+  {/* Tabs */}
+  <div className="flex w-full items-end gap-0 overflow-visible">
+    {tabs.map((tab) => (
+      <button
+        key={tab}
+        type="button"
+        onClick={() => setActiveTab(tab)}
+        className={[
+          "flex h-[36px] shrink-0 items-center justify-center",
+          "rounded-t-[11px] px-2",
+          "font-['Plus_Jakarta_Sans'] text-[10px] font-bold leading-none",
+          "transition-colors duration-200",
+          tab === "Buy" ? "w-[57px]" : "",
+          tab === "Rent" ? "w-[60px]" : "",
+          tab === "Commercial" ? "w-[96px]" : "",
+          tab === "Institutional" ? "w-[93px]" : "",
+          "sm:h-[54px] sm:flex-1 sm:px-4 sm:text-[14px]",
+          activeTab === tab
+            ? "relative z-10 bg-[#ED1C24] text-white"
+            : "border-r border-white bg-[#F8F9FA] text-[#4B5563] hover:bg-[#F3F4F6]",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
 
-        <div className="mx-auto mt-0 flex w-full flex-col gap-0 overflow-hidden rounded-bl-[16px] rounded-br-[16px] rounded-tr-[16px] border border-[#F3F4F6] bg-white p-0 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-[4px] sm:p-4 lg:h-[88px] lg:flex-nowrap lg:flex-row lg:items-center lg:gap-4 lg:overflow-visible">
-          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[305px] lg:shrink-0 lg:border-b-0 lg:border-r lg:px-4 lg:py-0">
-            <PinIcon />
-            <div className="flex w-full items-center py-0 lg:h-[36px] lg:w-[249px] lg:py-[9px]">
-              <input
-                type="text"
-                placeholder="Search City, Locality or Landmark"
-                value={searchLocation}
-                onChange={(event) => setSearchLocation(event.target.value)}
-                className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
-              />
-            </div>
-          </div>
+  {/* Search form container */}
+  <div
+    className="
+      mx-auto mt-0 flex w-full flex-col overflow-hidden
+      rounded-bl-[12px] rounded-br-[12px] rounded-tr-[16px]
+      border border-[#E5E7EB] bg-white
+      px-[18px] pb-[18px]
+      shadow-[0px_4px_8px_rgba(0,0,0,0.12)]
+      backdrop-blur-[4px]
+      sm:p-4
+      lg:h-[88px] lg:flex-row lg:flex-nowrap lg:items-center
+      lg:gap-4 lg:overflow-visible lg:rounded-bl-[16px]
+      lg:rounded-br-[16px]
+    "
+  >
+    {/* Location */}
+    <div
+      className="
+        flex h-[56px] w-full items-center gap-[14px]
+        border-b border-[#E5E7EB] px-0
+        text-[#1A1A1A]
+        lg:h-[36px] lg:w-[305px] lg:shrink-0
+        lg:border-b-0 lg:border-r lg:px-4
+      "
+    >
+      <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
+        <PinIcon />
+      </div>
 
-          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[192px] lg:shrink-0 lg:border-b-0 lg:px-4 lg:py-0">
-            <HomeIcon />
-            <div className="flex w-full items-center py-0 pl-1 pr-0 lg:h-[36px] lg:w-[130px] lg:py-[9px] lg:pr-4">
-              <input
-                type="text"
-                placeholder="Property Type"
-                value={propertyType}
-                onChange={(event) => setPropertyType(event.target.value)}
-                className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
-              />
-            </div>
-          </div>
+      <input
+        type="text"
+        placeholder="Search City, Locality or Landmark"
+        value={searchLocation}
+        onChange={(event) => setSearchLocation(event.target.value)}
+        className="
+          w-full min-w-0 border-0 bg-transparent p-0
+          font-['Plus_Jakarta_Sans'] text-[12px] font-normal
+          leading-5 text-[#1A1A1A] outline-none
+          placeholder:text-[#9CA3AF]
+          focus:border-0 focus:outline-none
+          sm:text-[14px]
+        "
+      />
+    </div>
 
-          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[160px] lg:shrink-0 lg:border-b-0 lg:px-4 lg:py-0">
-            <RupeeIcon />
-            <div className="flex w-full items-center py-0 pl-2 pr-0 lg:h-[36px] lg:w-[106px] lg:py-[9px] lg:pr-4">
-              <input
-                type="text"
-                placeholder="Budget"
-                value={budget}
-                onChange={(event) => setBudget(event.target.value)}
-                className="w-full min-w-0 border-0 bg-transparent p-0 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-5 text-[#1A1A1A] outline-none placeholder:text-gray-500 focus:border-0 focus:outline-none"
-              />
-            </div>
-          </div>
+    {/* Property type */}
+    <div
+      className="
+        flex h-[56px] w-full items-center gap-[14px]
+        border-b border-[#E5E7EB] px-0
+        text-[#1A1A1A]
+        lg:h-[36px] lg:w-[192px] lg:shrink-0
+        lg:border-b-0 lg:px-4
+      "
+    >
+      <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
+        <HomeIcon />
+      </div>
 
-          <button type="submit" className="cta-red mx-4 my-4 inline-flex h-[56px] w-auto shrink-0 items-center justify-center gap-2 rounded-[14px] px-8 py-4 text-white lg:mx-0 lg:ml-auto lg:h-[56px] lg:w-[159px] lg:rounded-[12px]">
-            <SearchIcon />
-            <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[15px] font-bold leading-6 tracking-[0.0049em]">
-              Search
-            </span>
-          </button>
-        </div>
-      </form>
+      <input
+        type="text"
+        placeholder="Property Type"
+        value={propertyType}
+        onChange={(event) => setPropertyType(event.target.value)}
+        className="
+          w-full min-w-0 border-0 bg-transparent p-0
+          font-['Plus_Jakarta_Sans'] text-[12px] font-normal
+          leading-5 text-[#1A1A1A] outline-none
+          placeholder:text-[#1A1A1A]
+          focus:border-0 focus:outline-none
+          sm:text-[14px]
+        "
+      />
+    </div>
 
-      <div className="mt-5 flex h-6 w-full items-center justify-center px-4 text-center font-['Plus_Jakarta_Sans'] text-[13px] leading-6 tracking-[0.0049em] sm:mt-6 sm:text-[14px]">
+    {/* Budget */}
+    <div
+      className="
+        flex h-[56px] w-full items-center gap-[14px]
+        border-b border-[#E5E7EB] px-0
+        text-[#1A1A1A]
+        lg:h-[36px] lg:w-[160px] lg:shrink-0
+        lg:border-b-0 lg:px-4
+      "
+    >
+      <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
+        <RupeeIcon />
+      </div>
+
+      <input
+        type="text"
+        placeholder="Budget"
+        value={budget}
+        onChange={(event) => setBudget(event.target.value)}
+        className="
+          w-full min-w-0 border-0 bg-transparent p-0
+          font-['Plus_Jakarta_Sans'] text-[12px] font-normal
+          leading-5 text-[#1A1A1A] outline-none
+          placeholder:text-[#1A1A1A]
+          focus:border-0 focus:outline-none
+          sm:text-[14px]
+        "
+      />
+    </div>
+
+    {/* Search button */}
+    <button
+      type="submit"
+      className="
+        cta-red mt-[17px] inline-flex h-[60px] w-full shrink-0
+        items-center justify-center gap-[10px] rounded-[13px]
+        bg-[#ED1C24] px-8 text-white
+        transition-colors hover:bg-[#D71920]
+        lg:ml-auto lg:mt-0 lg:h-[56px] lg:w-[159px]
+        lg:rounded-[12px]
+      "
+    >
+      <SearchIcon />
+
+      <span className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6">
+        Search
+      </span>
+    </button>
+  </div>
+</form>
+
+      <div className="mt-5 flex h-6 w-full items-center justify-center px-4 text-center font-['Plus_Jakarta_Sans'] text-[12px] leading-6 tracking-[0.0049em] sm:mt-6 sm:text-[14px]">
         <span className="font-normal text-[#6B7280]">
           Are you a Property Owner?{" "}
         </span>
         <span className="font-semibold text-[#E51C23]">Post for FREE</span>
       </div>
 
-      <div className="mt-10 inline-flex whitespace-nowrap rounded-full bg-slate-100 px-3 py-2 text-[9px] font-extrabold uppercase tracking-[0.14em] text-slate-600 sm:mt-[68px] sm:px-4 sm:text-[12px] sm:tracking-[0.18em]">
+      <div className="mt-10 hidden whitespace-nowrap rounded-full bg-slate-100 px-3 py-2 text-[9px] font-extrabold uppercase tracking-[0.14em] text-slate-600 sm:mt-[68px] sm:inline-flex sm:px-4 sm:text-[12px] sm:tracking-[0.18em]">
         Verified users • Secure contact • End-to-end tracking
       </div>
     </section>
