@@ -73,10 +73,10 @@ function HomeHeroSection({
   const [propertyType, setPropertyType] = React.useState("");
   const [budget, setBudget] = React.useState("");
   const tabWidths = {
-    Buy: "w-[75px]",
-    Rent: "w-[80px]",
-    Commercial: "w-[132px]",
-    Institutional: "w-[131px]",
+    Buy: "w-[60.43px]",
+    Rent: "w-[63.43px]",
+    Commercial: "w-[98.43px]",
+    Institutional: "w-[96.43px]",
   };
   const tabSmWidths = {
     Buy: "sm:w-[75px]",
@@ -157,8 +157,8 @@ function HomeHeroSection({
         </div>
       </div>
 
-      <form className="mx-auto mt-6 w-full max-w-[896px] px-4 sm:mt-12 sm:px-0" onSubmit={handleSearch}>
-        <div className="mx-auto grid w-full max-w-[880px] grid-cols-4 gap-[1px] sm:flex sm:gap-2 sm:overflow-visible">
+      <form className="mx-auto mt-6 w-full max-w-[896px] px-1 sm:mt-12 sm:px-0" onSubmit={handleSearch}>
+        <div className="mx-auto grid w-full max-w-[880px] grid-cols-4 gap-[1px] sm:flex sm:gap-1 sm:overflow-visible">
           {tabs.map((tab) => (
             <button
               key={tab}
