@@ -74,11 +74,17 @@ function MenuIcon() {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 text-[#374151]"
+      viewBox="0 0 28 28"
+      className="h-[32px] w-[18px] text-[#111827]"
       fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="3.25"
     >
-      <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M3.5 6.5H24.5" />
+      <path d="M3.5 14H24.5" />
+      <path d="M3.5 21.5H17.5" />
     </svg>
   );
 }
@@ -100,7 +106,7 @@ function ScrollingTicker() {
   const track = [...tickerItems, ...tickerItems];
 
   return (
-    <div className="ticker-bar h-10 w-full overflow-hidden bg-[#111827] px-12 py-[10px]">
+    <div className="ticker-bar h-10 w-full overflow-hidden bg-[#111827] px-4 py-[10px] sm:px-12">
       <div className="ticker-track flex w-max items-center gap-6">
         {track.map((item, index) => (
           <React.Fragment key={`${item.badge}-${item.text}-${index}`}>
@@ -383,9 +389,48 @@ function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#F3F4F6] bg-white">
-      {showTicker ? <div className="hidden sm:block"><ScrollingTicker /></div> : null}
+      {showTicker ? (
+        <>
+          <div className="hidden sm:block">
+            <ScrollingTicker />
+          </div>
+          <div className="block sm:hidden">
+            <ScrollingTicker />
+          </div>
+        </>
+      ) : null}
 
-      <div className="flex min-h-[64px] w-full items-center justify-between px-4 py-3 sm:h-[72px] sm:px-6 lg:px-12">
+      <div className="flex h-[56px] items-center justify-between pl-2 pr-4 sm:hidden">
+        <div className="flex h-[32px] w-[137px] min-w-0 items-center ">
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] text-[#111827]"
+            onClick={() => {
+              setMobileMenuOpen((value) => !value);
+            }}
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            <MenuIcon />
+          </button>
+
+          <NavLink
+            to="/"
+            className="flex min-w-0 flex-col items-start justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] leading-tight text-[#E51C23]"
+          >
+            <span className="text-[16px] font-extrabold tracking-[-0.45px]">PropertySerch</span>
+          </NavLink>
+        </div>
+
+        <button className="cta-red inline-flex h-[32px] w-[137px] shrink-0 items-center gap-1 rounded-[11px] px-3 text-[11.2px] font-bold leading-none whitespace-nowrap text-white shadow-[0_10px_22px_-12px_rgba(229,28,35,0.55)]">
+          <span>Post Property</span>
+          <span className="inline-flex h-[12.8px] items-center rounded-[3px] bg-[#F4B400] px-2 text-[8px] font-bold uppercase leading-none tracking-[0.02em] text-[#111827]">
+            FREE
+          </span>
+        </button>
+      </div>
+
+      <div className="hidden min-h-[72px] w-full items-center justify-between px-4 py-3 sm:flex sm:px-6 lg:px-12">
         <div className="flex items-center gap-3 sm:gap-6">
           <NavLink
             to="/"
@@ -459,14 +504,14 @@ function SiteHeader() {
           </button>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border border-slate-200 lg:hidden"
-          onClick={() => {
-            setMobileMenuOpen((value) => !value);
-          }}
-          aria-label="Toggle navigation menu"
-          aria-expanded={mobileMenuOpen}
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border border-slate-200 lg:hidden"
+            onClick={() => {
+              setMobileMenuOpen((value) => !value);
+            }}
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
         >
           <MenuIcon />
         </button>
@@ -599,13 +644,6 @@ function SiteHeader() {
               <Chevron />
             </NavLink>
           )}
-
-          <button className="cta-red inline-flex h-11 items-center justify-center gap-2 rounded-[12px] px-4 text-[14px] font-bold text-white">
-            Post Property
-            <span className="rounded-[2px] bg-[#F4B400] px-2 py-1 text-[10px] font-bold uppercase text-[#111827]">
-              FREE
-            </span>
-          </button>
         </div>
       </div>
     </header>

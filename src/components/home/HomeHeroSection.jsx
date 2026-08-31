@@ -104,14 +104,31 @@ function HomeHeroSection({
     <section className="relative flex min-h-[548px] max-w-full flex-col items-center justify-start pb-8 lg:pb-10">
       <div className="relative w-full pt-16 sm:pt-8 lg:pt-[96px]">
         {showBadge ? (
-          <div className="absolute left-1/2 top-0 inline-flex -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F6E8C8] px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#C08C2C] sm:top-[44px] sm:px-5 sm:text-[10px]">
+          <div className="absolute left-1/2 top-[30px] inline-flex -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F6E8C8] px-3 py-1.5 text-[8px] font-extrabold uppercase tracking-[0.12em] text-[#C08C2C] sm:top-[44px] sm:px-5 sm:py-2 sm:text-[10px] sm:tracking-[0.14em]">
             Real Estate Transaction Operating System
           </div>
         ) : null}
 
         <div className="mx-auto flex w-full max-w-[1184px] items-center justify-center px-2 sm:px-0">
           <h1
-            className="text-center font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[34px] tracking-[0] text-[#111827] sm:text-[36px] sm:leading-[42px] lg:text-[48px] lg:leading-[48px]"
+            className="text-center font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[34px] tracking-[0] text-[#111827] sm:hidden"
+            style={{ width: "100%", maxWidth: "320px" }}
+          >
+            {titlePrefix ? (
+              <>
+                <span className="block">{titlePrefix}</span>
+                <span className="block text-[#E51C23]">{titleHighlight}</span>
+              </>
+            ) : (
+              <>
+                <span className="block">Beyond listings.</span>
+                <span className="block">Built for the entire deal</span>
+              </>
+            )}
+          </h1>
+
+          <h1
+            className="hidden text-center font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[34px] tracking-[0] text-[#111827] sm:block sm:text-[36px] sm:leading-[42px] lg:text-[48px] lg:leading-[48px]"
             style={{ width: "100%", maxWidth: "1020px" }}
           >
             {titlePrefix ? (
@@ -125,8 +142,13 @@ function HomeHeroSection({
         </div>
       </div>
 
-      <div className="mx-auto mt-3 flex w-full max-w-[1184px] items-center justify-center px-3 sm:mt-4 sm:px-0">
-        <div className="flex w-full max-w-[1020px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[15px] text-[#6B7280] sm:text-[18px] sm:leading-[29px]">
+      <div className="mx-auto mt-2 flex w-full max-w-[1184px] items-center justify-center px-3 sm:mt-4 sm:px-0">
+        <div className="flex w-full max-w-[340px] flex-col items-center justify-center font-['Lato'] text-[12px] font-normal leading-[20px] text-[#6B7280] sm:hidden">
+          <p className="m-0 text-center">An operating system for real estate transactions with</p>
+          <p className="m-0 text-center">legal facilitation and end-to-end tracking.</p>
+        </div>
+
+        <div className="hidden w-full max-w-[1020px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[20px] text-[#6B7280] sm:flex sm:text-[18px] sm:leading-[29px]">
           {descriptionLines.map((line) => (
             <p key={line} className="m-0 text-center">
               {line}
@@ -135,15 +157,15 @@ function HomeHeroSection({
         </div>
       </div>
 
-      <form className="mx-auto mt-8 w-full max-w-[896px] px-0 sm:mt-12" onSubmit={handleSearch}>
-        <div className="mx-auto grid w-full max-w-[880px] grid-cols-2 gap-2 sm:flex sm:overflow-visible">
+      <form className="mx-auto mt-6 w-full max-w-[896px] px-4 sm:mt-12 sm:px-0" onSubmit={handleSearch}>
+        <div className="mx-auto grid w-full max-w-[880px] grid-cols-4 gap-[1px] sm:flex sm:gap-2 sm:overflow-visible">
           {tabs.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
               className={[
-                "flex h-[44px] w-full items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-3 py-3 font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)] sm:px-6 sm:text-[14px]",
+                "flex h-[42px] w-full items-center justify-center rounded-tl-[12px] rounded-tr-[12px] px-1.5 py-3 font-['Plus_Jakarta_Sans'] text-[11px] font-bold leading-5 shadow-[2px_0_6px_rgba(0,0,0,0.08)] sm:px-6 sm:text-[14px]",
                 tabWidths[tab],
                 tabSmWidths[tab],
                 activeTab === tab
@@ -156,8 +178,8 @@ function HomeHeroSection({
           ))}
         </div>
 
-        <div className="mx-auto mt-0 flex w-full flex-col gap-3 rounded-bl-[16px] rounded-br-[16px] rounded-tr-[16px] border border-[#F3F4F6] bg-white p-3 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-[4px] sm:p-4 lg:h-[88px] lg:flex-nowrap lg:flex-row lg:items-center lg:gap-4">
-          <div className="flex min-h-[44px] w-full items-center gap-3 border-r-0 border-[#F3F4F6] px-0 text-[#1A1A1A] lg:h-[36px] lg:w-[305px] lg:shrink-0 lg:border-r lg:px-4">
+        <div className="mx-auto mt-0 flex w-full flex-col gap-0 overflow-hidden rounded-bl-[16px] rounded-br-[16px] rounded-tr-[16px] border border-[#F3F4F6] bg-white p-0 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-[4px] sm:p-4 lg:h-[88px] lg:flex-nowrap lg:flex-row lg:items-center lg:gap-4 lg:overflow-visible">
+          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[305px] lg:shrink-0 lg:border-b-0 lg:border-r lg:px-4 lg:py-0">
             <PinIcon />
             <div className="flex w-full items-center py-0 lg:h-[36px] lg:w-[249px] lg:py-[9px]">
               <input
@@ -170,9 +192,9 @@ function HomeHeroSection({
             </div>
           </div>
 
-          <div className="flex min-h-[44px] w-full items-center gap-3 px-0 text-[#1A1A1A] lg:h-[36px] lg:w-[192px] lg:shrink-0 lg:px-4">
+          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[192px] lg:shrink-0 lg:border-b-0 lg:px-4 lg:py-0">
             <HomeIcon />
-            <div className="flex w-full items-center py-0 pl-1 pr-4 lg:h-[36px] lg:w-[130px] lg:py-[9px]">
+            <div className="flex w-full items-center py-0 pl-1 pr-0 lg:h-[36px] lg:w-[130px] lg:py-[9px] lg:pr-4">
               <input
                 type="text"
                 placeholder="Property Type"
@@ -183,9 +205,9 @@ function HomeHeroSection({
             </div>
           </div>
 
-          <div className="flex min-h-[44px] w-full items-center gap-3 px-0 text-[#1A1A1A] lg:h-[36px] lg:w-[160px] lg:shrink-0 lg:px-4">
+          <div className="flex min-h-[44px] w-full items-center gap-3 border-b border-[#F3F4F6] px-3.5 py-3.5 text-[#1A1A1A] lg:h-[36px] lg:w-[160px] lg:shrink-0 lg:border-b-0 lg:px-4 lg:py-0">
             <RupeeIcon />
-            <div className="flex w-full items-center py-0 pl-2 pr-4 lg:h-[36px] lg:w-[106px] lg:py-[9px]">
+            <div className="flex w-full items-center py-0 pl-2 pr-0 lg:h-[36px] lg:w-[106px] lg:py-[9px] lg:pr-4">
               <input
                 type="text"
                 placeholder="Budget"
@@ -196,9 +218,9 @@ function HomeHeroSection({
             </div>
           </div>
 
-          <button type="submit" className="cta-red ml-0 inline-flex h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-[12px] px-10 py-4 text-white lg:ml-auto lg:w-[159px]">
+          <button type="submit" className="cta-red mx-4 my-4 inline-flex h-[56px] w-auto shrink-0 items-center justify-center gap-2 rounded-[14px] px-8 py-4 text-white lg:mx-0 lg:ml-auto lg:h-[56px] lg:w-[159px] lg:rounded-[12px]">
             <SearchIcon />
-            <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0049em]">
+            <span className="flex h-6 w-[55px] items-center justify-center font-['Plus_Jakarta_Sans'] text-[15px] font-bold leading-6 tracking-[0.0049em]">
               Search
             </span>
           </button>
