@@ -225,7 +225,7 @@ function SimilarPropertyCard({ item }) {
       to={detailPath}
       state={{ property: item }}
       onClick={() => window.scrollTo(0, 0)}
-            className="block h-[368px] min-w-[294px] shrink-0 overflow-hidden rounded-[16px] border border-[#1118271A] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:h-auto sm:min-w-0 sm:border-[#E5E7EB] sm:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+            className="block h-[368px] w-[294px] min-w-[294px] shrink-0 overflow-hidden rounded-[16px] border border-[#1118271A] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:h-auto sm:w-full sm:min-w-0 sm:border-[#E5E7EB] sm:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
       aria-label={`${item.title} - ${item.location}`}
     >
       <div className="relative h-[195px] overflow-hidden sm:aspect-[1.18] sm:h-auto">
@@ -287,6 +287,7 @@ function PropertyDetailPage() {
   const location = useLocation();
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
   const routeProperty = propertyResults.find((item) => String(item.id) === id);
   const property = routeProperty || location.state?.property;
 
@@ -373,9 +374,20 @@ function PropertyDetailPage() {
                   <span>VERIFIED</span>
                 </span>
               </div>
-              <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#64748B] shadow-sm sm:hidden">
-                <span className="text-[22px] leading-none">♡</span>
-              </span>
+              <button
+                type="button"
+                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                aria-pressed={isFavorite}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsFavorite((value) => !value);
+                }}
+                className={`absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-colors sm:hidden ${
+                  isFavorite ? "text-[#E51C23]" : "text-[#64748B]"
+                }`}
+              >
+                <span className="text-[22px] leading-none">{isFavorite ? "♥" : "♡"}</span>
+              </button>
               <span className="absolute bottom-3 right-3 rounded-[3px] bg-black/45 px-1.5 py-0.5 text-[11px] font-medium text-white sm:hidden">1/12 Images</span>
             </>
           }
@@ -392,7 +404,7 @@ function PropertyDetailPage() {
                   <h1 className="mt-3 text-[14px] font-black leading-5 tracking-tight text-[#111827] sm:mt-0 sm:text-[32px]">
                     {property.title}, Borivali
                   </h1>
-                  <span className="mt-3 inline-flex h-[23px] shrink-0 items-center rounded-[8px] bg-[#111827] px-2 text-[9px] font-bold text-white sm:hidden">
+                  <span className="mt-3 inline-flex h-[28px] shrink-0 items-center rounded-[8px] bg-[#111827] px-3 text-[10px] font-bold text-white sm:hidden">
                     89% Match
                   </span>
                 </div>
@@ -515,7 +527,7 @@ function PropertyDetailPage() {
                 </span>
               </button>
             </section>
-            <div className="relative left-1/2 mx-0 mt-8 h-[420px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
+            <div className="relative left-1/2 mx-0 mt-8 h-[420px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] px-6 pt-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
               <h2 className="flex items-center gap-2 text-[20px] font-extrabold leading-tight text-[#111827]"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E51C23] text-[12px] font-bold text-white">i</span>Property Details</h2>
               <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-2 sm:gap-y-8">
                 {[
@@ -526,7 +538,7 @@ function PropertyDetailPage() {
                   { label: "Age of Property", value: "New Construction" },
                   { label: "Gated Community", value: "Yes" },
                 ].map((item) => (
-                  <div key={item.label} className="mt-4 flex h-[33px] items-center justify-between border-b border-[#E5E7EB] pb-2 first:mt-0 last:border-b-0 sm:h-auto sm:items-end sm:pb-4 sm:first:mt-4 sm:last:border-b">
+                  <div key={item.label} className="mt-4 flex h-[33px] items-center justify-between border-b border-[#E5E7EB] first:mt-0 last:border-b-0 sm:h-auto sm:items-end sm:pb-4 sm:first:mt-4 sm:last:border-b">
                     <div className="pr-4 text-[13px] leading-tight text-[#6B7280]">{item.label}</div>
                     <div className="whitespace-nowrap text-right text-[14px] font-bold leading-tight text-[#111827] sm:text-[16px]">
                       {item.value}
