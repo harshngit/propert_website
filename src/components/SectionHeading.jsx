@@ -7,6 +7,7 @@ function SectionHeading({
   className = "",
   mobileCompact = false,
   mobileSmall = false,
+  cityLandingMobile = false,
 }) {
   const wrapperClassName =
     className ||
@@ -19,7 +20,9 @@ function SectionHeading({
       <div>
         <h2
           className={`font-['Plus_Jakarta_Sans'] font-extrabold leading-9 tracking-[0.002em] text-[#111827] ${
-            mobileSmall
+            cityLandingMobile
+              ? "text-[24px] sm:text-[30px]"
+              : mobileSmall
               ? "text-[28px] sm:text-[30px]"
               : mobileCompact
                 ? "text-[24px] sm:text-[30px]"
@@ -42,7 +45,9 @@ function SectionHeading({
       </div>
       <button
         className={`inline-flex h-6 w-[77.5px] flex-nowrap items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] font-bold leading-6 tracking-[0.0049em] text-[#E51C23] transition hover:text-red-600 ${
-          mobileSmall
+          cityLandingMobile
+            ? "mt-5 mb-0 w-auto text-[12px] sm:mt-0 sm:w-[77.5px] sm:mb-5 sm:text-[12px]"
+            : mobileSmall
             ? "mt-5 mb-0 w-auto text-[10px] sm:mt-0 sm:w-[77.5px] sm:mb-5 sm:text-[12px]"
             : mobileCompact
               ? "mt-5 mb-0 w-auto text-[12px] sm:mt-0 sm:w-[77.5px] sm:mb-5"
@@ -60,7 +65,7 @@ function SectionHeading({
           src="/icons/Img%20(1).png"
           alt=""
           aria-hidden="true"
-          className="h-[12px] w-[7.5px] shrink-0 object-contain"
+          className="h-[10px] w-[7.5px] shrink-0 object-contain"
         />
       </button>
     </div>

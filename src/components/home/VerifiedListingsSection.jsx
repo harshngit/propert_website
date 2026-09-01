@@ -6,13 +6,14 @@ import { verifiedListings } from "../../data/homeContent";
 function VerifiedListingsSection({
   title = "Verified Listings",
   accent,
+  cityLandingMobile = false,
   subtitle = "Curated properties with verified details",
   items = verifiedListings,
   showMessage = true,
 }) {
   return (
     <div className="w-full">
-      <SectionHeading title={title} accent={accent} subtitle={subtitle} mobileCompact mobileSmall />
+      <SectionHeading title={title} accent={accent} subtitle={subtitle} mobileCompact mobileSmall cityLandingMobile={cityLandingMobile} />
 
       <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2 pt-3 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 xl:grid-cols-4">
         {items.map((item) => (

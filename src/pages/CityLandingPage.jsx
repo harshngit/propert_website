@@ -453,6 +453,7 @@ function CityLandingPage() {
           <VerifiedListingsSection
             title="Exclusive Properties in"
             accent={cityLabel}
+            cityLandingMobile
             subtitle="Curated properties with verified details in your city"
             items={verifiedListings}
             showMessage={false}
