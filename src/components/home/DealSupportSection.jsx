@@ -18,24 +18,24 @@ function DealSupportSection({
       <div className="h-[50px]" />
 
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-        <div className="rounded-[18px] border border-slate-200 bg-white px-8 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:px-6">
+        <div className="rounded-[18px] border border-slate-200 bg-white px-6 py-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:px-6">
           <div className="hidden rounded-full border border-slate-200 bg-slate-100 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-slate-500 sm:inline-flex">
             {scoreText}
           </div>
 
-          <h3 className="mt-0 text-[22px] font-black leading-9 text-slate-900 sm:mt-4 sm:text-[24px]">{title}</h3>
-          <p className="mt-4 max-w-[650px] text-[12px] leading-[27px] text-slate-500 sm:mt-2 sm:text-[14px] sm:leading-6">{description}</p>
+          <h3 className="mt-0 text-[28px] font-black leading-9 text-slate-900 sm:mt-4 sm:text-[24px]">{title}</h3>
+          <p className="mt-4 max-w-[650px] text-[14px] leading-6 text-slate-500 sm:mt-2 sm:text-[14px] sm:leading-6">{description}</p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             {pills.map((pill) => (
               <span
                 key={pill}
-                className="rounded-full border border-slate-200 bg-slate-100 px-5 py-2 text-[11px] font-extrabold uppercase tracking-[0.05em] text-slate-500 sm:px-3 sm:py-1.5"
+                className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-[0.05em] text-slate-500 sm:px-3 sm:py-1.5 sm:text-[11px]"
               >
                 {pill}
               </span>
             ))}
           </div>
-          <button className="cta-red mt-[18px] h-[74px] w-full rounded-[16px] px-6 py-3.5 text-[20px] font-extrabold text-white sm:mt-4 sm:h-auto sm:w-auto sm:rounded-[14px] sm:text-[16px]">
+          <button className="cta-red mt-[18px] h-[50px] w-full rounded-[16px] px-6 py-3.5 text-[16px] font-extrabold text-white sm:mt-4 sm:h-auto sm:w-auto sm:rounded-[14px] sm:text-[16px]">
             {buttonText}
           </button>
           <p className="mt-4 hidden border-t border-slate-100 pt-4 text-[14px] leading-6 text-slate-500 sm:block">

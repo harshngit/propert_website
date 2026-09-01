@@ -85,34 +85,34 @@ function PropertyManagementSection() {
     ====================================================== */}
             <div className="mt-[18px] grid max-w-full grid-cols-3 gap-[8px] lg:max-w-[445px]">
               {/* Tenant */}
-              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
-                <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[5px] overflow-hidden rounded-[8px] border border-[#cbdcff] bg-white px-[5px] py-1.5 sm:gap-[8px] sm:px-[9px] sm:py-2">
+                <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff] sm:h-[30px] sm:w-[30px]">
                   <TenantIcon />
                 </div>
 
-                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                <p className="min-w-0 break-words font-['Plus_Jakarta_Sans'] text-[8px] font-semibold leading-[1.2] text-[#0f172a] sm:text-[9px]">
                   Tenant placement &amp; rent collection
                 </p>
               </div>
 
               {/* Repairs */}
-              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
-                <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[5px] overflow-hidden rounded-[8px] border border-[#cbdcff] bg-white px-[5px] py-1.5 sm:gap-[8px] sm:px-[9px] sm:py-2">
+                <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff] sm:h-[30px] sm:w-[30px]">
                   <RepairIcon />
                 </div>
 
-                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                <p className="min-w-0 break-words font-['Plus_Jakarta_Sans'] text-[8px] font-semibold leading-[1.2] text-[#0f172a] sm:text-[9px]">
                   Repairs &amp; maintenance coordination
                 </p>
               </div>
 
               {/* Tax */}
-              <div className="flex min-h-[60px] min-w-0 items-center gap-[8px] rounded-[8px] border border-[#cbdcff] bg-white px-[9px] py-2">
-                <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff]">
+              <div className="flex min-h-[60px] min-w-0 items-center gap-[5px] overflow-hidden rounded-[8px] border border-[#cbdcff] bg-white px-[5px] py-1.5 sm:gap-[8px] sm:px-[9px] sm:py-2">
+                <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[7px] bg-[#edf4ff] sm:h-[30px] sm:w-[30px]">
                   <DocumentIcon />
                 </div>
 
-                <p className="min-w-0 font-['Plus_Jakarta_Sans'] text-[9px] font-semibold leading-[1.2] text-[#0f172a]">
+                <p className="min-w-0 break-words font-['Plus_Jakarta_Sans'] text-[8px] font-semibold leading-[1.2] text-[#0f172a] sm:text-[9px]">
                   Property tax &amp; statutory payments
                 </p>
               </div>

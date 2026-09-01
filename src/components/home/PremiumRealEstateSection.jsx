@@ -66,12 +66,12 @@ function PremiumRealEstateSection() {
 
       {/* Buttons */}
       <div className="flex flex-col gap-[12px] sm:flex-row">
-        <button className="cta-red-on-dark inline-flex h-[50px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition">
+        <button className="cta-red-on-dark inline-flex h-[50px] w-full flex-none items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition sm:w-auto sm:flex-1">
           <span>Register Your Interest</span>
           <span aria-hidden="true">&rarr;</span>
         </button>
 
-        <button className="inline-flex h-[50px] flex-1 items-center justify-center whitespace-nowrap rounded-[12px] border border-white/15 px-[12px] text-[12px] font-extrabold text-white transition hover:bg-white/5">
+        <button className="inline-flex h-[50px] w-full flex-none items-center justify-center whitespace-nowrap rounded-[12px] border border-white/15 px-[12px] text-[12px] font-extrabold text-white transition hover:bg-white/5 sm:w-auto sm:flex-1">
           For NRI &amp; HNI Investors
         </button>
       </div>

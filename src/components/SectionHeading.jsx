@@ -20,7 +20,7 @@ function SectionHeading({
         <h2
           className={`font-['Plus_Jakarta_Sans'] font-extrabold leading-9 tracking-[0.002em] text-[#111827] ${
             mobileSmall
-              ? "text-[22px] sm:text-[30px]"
+              ? "text-[28px] sm:text-[30px]"
               : mobileCompact
                 ? "text-[24px] sm:text-[30px]"
                 : "text-[30px]"
@@ -31,7 +31,7 @@ function SectionHeading({
         <p
           className={`font-['Plus_Jakarta_Sans'] font-normal leading-6 text-[#6B7280] ${
             mobileSmall
-              ? "text-[10px] sm:mt-1 sm:text-[16px]"
+              ? "text-[13px] sm:mt-1 sm:text-[16px]"
               : mobileCompact
                 ? "text-[12px] sm:mt-1 sm:text-[16px]"
                 : "text-[16px]"
