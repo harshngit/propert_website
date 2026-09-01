@@ -60,6 +60,7 @@ function HomeHeroSection({
   titlePrefix = "",
   titleHighlight = "",
   titleText = "Beyond listings. Built for the entire deal",
+  cityLandingMobile = false,
   descriptionLines = [
     "Verified properties, legal facilitation, financing, and closure tracked end-to-end on one platform",
     "Not a portal, an operating system for real estate transactions",
@@ -158,7 +159,7 @@ function HomeHeroSection({
       </div>
 
       <form
-  className="mx-auto mt-6 w-full max-w-[896px] px-1 sm:mt-12 sm:px-0"
+  className={`mx-auto mt-6 w-full px-1 sm:mt-12 sm:px-0 ${cityLandingMobile ? "h-[272px] max-w-[370px] sm:h-auto sm:max-w-[896px]" : "max-w-[896px]"}`}
   onSubmit={handleSearch}
 >
   {/* Tabs */}
@@ -321,7 +322,7 @@ function HomeHeroSection({
   </div>
 </form>
 
-      <div className="mt-5 flex h-6 w-full items-center justify-center px-4 text-center font-['Plus_Jakarta_Sans'] text-[12px] leading-6 tracking-[0.0049em] sm:mt-6 sm:text-[14px]">
+      <div className={`${cityLandingMobile ? "mt-[48px] sm:mt-6" : "mt-5 sm:mt-6"} flex h-6 w-full items-center justify-center px-4 text-center font-['Plus_Jakarta_Sans'] text-[12px] leading-6 tracking-[0.0049em] sm:text-[14px]`}>
         <span className="font-normal text-[#6B7280]">
           Are you a Property Owner?{" "}
         </span>

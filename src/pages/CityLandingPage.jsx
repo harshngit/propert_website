@@ -60,6 +60,12 @@ const CITY_PROFILES = {
         count: "915 Properties",
         description: "Growing IT hub with excellent lifestyle amenities.",
       },
+      {
+        title: "Goregaon East",
+        count: "706 Properties",
+        description: "Well-connected homes with modern amenities and strong rental demand.",
+        mobileOnly: true,
+      },
     ],
   },
   Delhi: {
@@ -434,6 +440,7 @@ function CityLandingPage() {
       <HomeHeroSection
         currentCity={cityLabel}
         showBadge={false}
+        cityLandingMobile
         titlePrefix="Real Estate in"
         titleHighlight={cityLabel}
         descriptionLines={profile.heroDescriptionLines || [profile.heroDescription]}
@@ -444,7 +451,8 @@ function CityLandingPage() {
       <section className="px-4 pb-7 sm:px-6 lg:px-12">
         <div className="mx-auto max-w-[1440px]">
           <VerifiedListingsSection
-            title={`Exclusive Properties in ${cityLabel}`}
+            title="Exclusive Properties in"
+            accent={cityLabel}
             subtitle="Curated properties with verified details in your city"
             items={verifiedListings}
             showMessage={false}
@@ -455,7 +463,7 @@ function CityLandingPage() {
       <section className="px-4 pb-10 sm:px-6 lg:px-12">
         <div className="mx-auto max-w-[1440px]">
           <BuilderDirectSection
-            badgeText="Builder Direct · Zero Brokerage"
+            badgeText="Builder Direct"
             titlePrefix={`The ${cityLabel} Collection,`}
             titleHighlight="by A R Buildwel"
             description={`RERA registered residences in ${cityLabel} with construction progress you can track in real time. No middlemen, direct from the builder, backed end-to-end.`}
@@ -467,6 +475,7 @@ function CityLandingPage() {
       <section className="px-4 pb-10 sm:px-6 lg:px-12">
         <MarketInsightsSection
           cityLabel={cityLabel}
+          mobileCityLayout
           subtitle={`Real-time data for informed investment decisions in ${cityLabel}`}
           trendTitle="Price Appreciation Trend (Past 5 Years)"
           comparisonTitle="Demand vs Supply Index (By Locality)"

@@ -4,7 +4,7 @@ function TrendChart({ values, labels }) {
   const width = 520;
   const height = 280;
   const leftPad = 40;
-  const rightPad = 10;
+  const rightPad = 28;
   const topPad = 14;
   const bottomPad = 36;
   const plotWidth = width - leftPad - rightPad;
@@ -26,28 +26,18 @@ function TrendChart({ values, labels }) {
     .join(" ");
 
   return (
-    <div className="relative h-[300px] w-full">
+    <div className="relative h-[220px] w-full sm:h-[300px]">
       <div className="absolute left-0 top-0 h-full w-full">
-        <div className="pointer-events-none absolute left-0 top-0 flex h-full w-10 flex-col justify-between pb-8 pt-4 text-[11px] text-[#6B7280]">
-          {yTickLabels.map((label) => (
-            <span key={label} className="block text-right">
-              {label}
-            </span>
-          ))}
-        </div>
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full">
           {yTickValues.map((tick, index) => {
             const y = topPad + plotHeight - ((tick - minValue) / range) * plotHeight;
             return (
-              <line
-                key={tick}
-                x1={leftPad}
-                y1={y}
-                x2={width - rightPad}
-                y2={y}
-                stroke="#F3F4F6"
-                strokeWidth="1"
-              />
+              <g key={tick}>
+                <line x1={leftPad} y1={y} x2={width - rightPad} y2={y} stroke="#F3F4F6" strokeWidth="1" />
+                <text x={leftPad - 6} y={y + 4} textAnchor="end" className="fill-[#6B7280]" fontSize="11">
+                  {yTickLabels[index]}
+                </text>
+              </g>
             );
           })}
           {labels.map((label, index) => {
@@ -92,7 +82,7 @@ function TrendChart({ values, labels }) {
   );
 }
 
-function DemandSupplyChart({ labels, demand, supply }) {
+function DemandSupplyChart({ labels, demand, supply, mobileLarge = false }) {
   const width = 520;
   const height = 230;
   const leftPad = 42;
@@ -101,7 +91,7 @@ function DemandSupplyChart({ labels, demand, supply }) {
   const bottomPad = 34;
   const plotWidth = width - leftPad - rightPad;
   const plotHeight = height - topPad - bottomPad;
-  const maxValue = Math.max(...demand, ...supply, 1);
+  const maxValue = 100;
   const barGroupWidth = plotWidth / labels.length;
   const barWidth = 28;
   const gap = 4;
@@ -109,28 +99,18 @@ function DemandSupplyChart({ labels, demand, supply }) {
   const ticks = [0, 20, 40, 60, 80, 100];
 
   return (
-    <div className="relative h-[320px] w-full">
+    <div className={`relative w-full ${mobileLarge ? "h-[204.47px] sm:h-[320px]" : "h-[320px]"}`}>
       <div className="absolute inset-0">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex w-10 flex-col justify-between pb-8 pt-7 text-[11px] text-[#6B7280]">
-          {ticks.map((tick) => (
-            <span key={tick} className="block text-right">
-              {tick}
-            </span>
-          ))}
-        </div>
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full">
           {ticks.map((tick) => {
             const y = topPad + plotHeight - (tick / maxValue) * plotHeight;
             return (
-              <line
-                key={tick}
-                x1={leftPad}
-                y1={y}
-                x2={width - rightPad}
-                y2={y}
-                stroke="#F3F4F6"
-                strokeWidth="1"
-              />
+              <g key={tick}>
+                <line x1={leftPad} y1={y} x2={width - rightPad} y2={y} stroke="#F3F4F6" strokeWidth="1" />
+                <text x={leftPad - 6} y={y + 4} textAnchor="end" className="fill-[#6B7280]" fontSize="11">
+                  {tick}
+                </text>
+              </g>
             );
           })}
           {labels.map((label, index) => {
@@ -177,6 +157,7 @@ function MarketInsightsSection({
   trendValues = [32000, 31500, 34000, 38500, 42000, 48500],
   demandValues = [85, 95, 78, 88, 70],
   supplyValues = [60, 82, 55, 75, 88],
+  mobileCityLayout = false,
   stats = [
     { label: "Annual Appreciation", value: "+8.4%" },
     { label: "Estimated Rent", value: "₹1.2L / mo" },
@@ -188,16 +169,16 @@ function MarketInsightsSection({
 
   return (
     <section className="mx-auto w-full max-w-[1440px]">
-      <div className="rounded-[28px] border border-[#E5E7EB] bg-white px-6 py-8 shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="text-[30px] font-black leading-tight text-[#111827] sm:text-[34px]">
+      <div className={`rounded-[28px] border border-[#E5E7EB] bg-white  py-8 shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10 ${mobileCityLayout ? "rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-[28px] sm:border-[#E5E7EB] sm:bg-white sm:p-8 sm:shadow-[0_10px_24px_rgba(15,23,42,0.05)]" : ""}`}>
+        <div className={`flex items-start justify-between gap-4 ${mobileCityLayout ? "flex-col sm:flex-row" : ""}`}>
+          <div className={mobileCityLayout ? "min-w-0 max-w-none" : ""}>
+            <h2 className={`font-black leading-tight text-[#111827] ${mobileCityLayout ? "text-[30px] sm:text-[34px]" : "text-[30px] sm:text-[34px]"}`}>
               {cityLabel} Market Insights
             </h2>
-            <p className="mt-1 text-[16px] leading-6 text-[#6B7280]">{subtitle}</p>
+            <p className={`mt-1 leading-6 text-[#6B7280] ${mobileCityLayout ? "max-w-none text-[16px] sm:text-[16px] sm:leading-6" : "text-[16px]"}`}>{subtitle}</p>
           </div>
 
-          <div className="inline-flex rounded-[10px] border border-[#E5E7EB] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
+          <div className={`inline-flex shrink-0 rounded-[10px] border border-[#E5E7EB] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.06)] ${mobileCityLayout ? "self-end sm:shrink-0 sm:self-auto" : ""}`}>
             {toggleOptions.map((option) => {
               const active = activeTab === option;
               return (
@@ -217,18 +198,18 @@ function MarketInsightsSection({
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div className={`grid gap-6 ${mobileCityLayout ? "mt-4 sm:mt-8" : "mt-8"} lg:grid-cols-2`}>
           <article className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
-            <h3 className="text-[20px] font-bold leading-tight text-[#111827]">{trendTitle}</h3>
+            <h3 className="text-[16px] font-bold leading-tight text-[#111827] sm:text-[20px]">{trendTitle}</h3>
             <div className="mt-6">
               <TrendChart values={trendValues} labels={trendYears} />
             </div>
           </article>
 
-          <article className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
-            <h3 className="text-[20px] font-bold leading-tight text-[#111827]">{comparisonTitle}</h3>
-            <div className="mt-6">
-              <DemandSupplyChart labels={labels} demand={demandValues} supply={supplyValues} />
+          <article className={`rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] ${mobileCityLayout ? "mx-auto h-[284.44px] w-[366px] rounded-[16.36px] border-[0.68px] border-[#F3F4F6] p-[21.81px] shadow-[0_0.68px_1.36px_rgba(0,0,0,0.05)] sm:mx-0 sm:h-auto sm:w-auto sm:rounded-[24px] sm:border sm:border-[#E5E7EB] sm:p-6 sm:shadow-[0_10px_24px_rgba(15,23,42,0.05)]" : ""}`}>
+            <h3 className="text-[16px] font-bold leading-tight text-[#111827] sm:text-[20px]">{comparisonTitle}</h3>
+            <div className={mobileCityLayout ? "mt-[16.36px] sm:mt-6" : "mt-6"}>
+              <DemandSupplyChart labels={labels} demand={demandValues} supply={supplyValues} mobileLarge={mobileCityLayout} />
               <div className="mt-3 flex items-center gap-6 pl-2 text-[12px] text-[#6B7280]">
                 <span className="inline-flex items-center gap-2">
                   <span className="h-3 w-3 bg-[#111827]" aria-hidden="true" />

@@ -135,7 +135,7 @@ function DropdownPanel({ items, className = "", isOpen, onSelect }) {
   return (
     <div
       className={[
-        "absolute left-0 top-full z-50 mt-2 w-max min-w-[160px] max-w-[280px] rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150",
+        "absolute left-0 top-full z-50 mt-0 w-max min-w-[160px] max-w-[280px] rounded-[16px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition duration-150 before:absolute before:-top-2 before:left-0 before:right-0 before:h-2 before:content-['']",
         isOpen
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none translate-y-1 opacity-0",
@@ -196,6 +196,7 @@ function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
         items={CITY_OPTIONS}
         isOpen={isOpen}
         onSelect={onSelect}
+        className="left-1/2 -translate-x-1/2"
       />
     </div>
   );
@@ -223,6 +224,7 @@ function HeaderNavItem({ item, isOpen, onEnter, onLeave, onSelect }) {
         items={dropdownItems}
         isOpen={isOpen}
         onSelect={onSelect}
+        className="left-1/2 -translate-x-1/2"
       />
     </div>
   );
@@ -374,6 +376,7 @@ function SiteHeader() {
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
   const [mobileNavOpen, setMobileNavOpen] = React.useState(null);
   const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "Mumbai";
+  const hasSelectedCity = Boolean(params.citySlug || searchParams.get("city"));
   const cityLabel = location.pathname === "/" ? "City" : selectedCity;
 
   const handleCitySelect = (label) => {
@@ -541,7 +544,7 @@ function SiteHeader() {
                     onClick={() => handleCitySelect(city)}
                     className={[
                       "rounded-full px-3.5 py-2 text-[13px] font-semibold leading-4",
-                    selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
+                    hasSelectedCity && selectedCity === city ? "bg-[#E51C23] text-white" : "bg-white text-[#374151]",
                     ].join(" ")}
                   >
                     {city}
