@@ -85,7 +85,7 @@ function ResultPinIcon() {
 function BedIcon() {
   return (
     <img
-      src="/icons/bhk.png"
+      src={`${import.meta.env.BASE_URL}icons/bhk.png`}
       alt=""
       aria-hidden="true"
       className="h-[13px] w-[13px] shrink-0 object-contain"
@@ -96,7 +96,7 @@ function BedIcon() {
 function AreaIcon() {
   return (
     <img
-      src="/icons/Vector.png"
+      src={`${import.meta.env.BASE_URL}icons/Vector.png`}
       alt=""
       aria-hidden="true"
       className="h-[12px] w-[12px] shrink-0 object-contain"
