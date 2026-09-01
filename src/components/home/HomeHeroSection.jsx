@@ -159,7 +159,7 @@ function HomeHeroSection({
       </div>
 
       <form
-  className={`mx-auto mt-6 w-full px-1 sm:mt-12 sm:px-0 ${cityLandingMobile ? "h-[272px] max-w-[370px] sm:h-auto sm:max-w-[896px]" : "max-w-[896px]"}`}
+  className={`mx-auto mt-6 w-full px-1 sm:mt-12 sm:px-0 ${cityLandingMobile ? "h-[272px] max-w-[350px] sm:h-auto sm:max-w-[896px]" : "max-w-[896px]"}`}
   onSubmit={handleSearch}
 >
   {/* Tabs */}
@@ -213,13 +213,13 @@ function HomeHeroSection({
   >
     {/* Location */}
     <div
-      className="
+      className={`
         flex h-[56px] w-full items-center gap-[14px]
         border-b border-[#E5E7EB] px-0
         text-[#1A1A1A]
         lg:h-[36px] lg:w-[305px] lg:shrink-0
         lg:border-b-0 lg:border-r lg:px-4
-      "
+      ${cityLandingMobile ? "h-[44px] sm:h-[56px]" : ""}`}
     >
       <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
         <PinIcon />
@@ -243,13 +243,13 @@ function HomeHeroSection({
 
     {/* Property type */}
     <div
-      className="
+      className={`
         flex h-[56px] w-full items-center gap-[14px]
         border-b border-[#E5E7EB] px-0
         text-[#1A1A1A]
         lg:h-[36px] lg:w-[192px] lg:shrink-0
         lg:border-b-0 lg:px-4
-      "
+      ${cityLandingMobile ? "h-[44px] sm:h-[56px]" : ""}`}
     >
       <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
         <HomeIcon />
@@ -273,13 +273,13 @@ function HomeHeroSection({
 
     {/* Budget */}
     <div
-      className="
+      className={`
         flex h-[56px] w-full items-center gap-[14px]
         border-b border-[#E5E7EB] px-0
         text-[#1A1A1A]
         lg:h-[36px] lg:w-[160px] lg:shrink-0
         lg:border-b-0 lg:px-4
-      "
+      ${cityLandingMobile ? "h-[44px] sm:h-[56px]" : ""}`}
     >
       <div className="flex w-[20px] shrink-0 items-center justify-center text-[#9CA3AF]">
         <RupeeIcon />
@@ -304,14 +304,14 @@ function HomeHeroSection({
     {/* Search button */}
     <button
       type="submit"
-      className="
+      className={`
         cta-red mt-[17px] inline-flex h-[60px] w-full shrink-0
         items-center justify-center gap-[10px] rounded-[13px]
         bg-[#ED1C24] px-8 text-white
         transition-colors hover:bg-[#D71920]
         lg:ml-auto lg:mt-0 lg:h-[56px] lg:w-[159px]
         lg:rounded-[12px]
-      "
+      ${cityLandingMobile ? "mt-[12px] h-[52px] sm:mt-[17px] sm:h-[60px]" : ""}`}
     >
       <SearchIcon />
 

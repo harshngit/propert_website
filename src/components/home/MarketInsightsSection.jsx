@@ -1,10 +1,10 @@
 import React from "react";
 
-function TrendChart({ values, labels }) {
+function TrendChart({ values, labels, mobileLarge = false }) {
   const width = 520;
   const height = 280;
-  const leftPad = 40;
-  const rightPad = 28;
+  const leftPad = mobileLarge ? 28 : 40;
+  const rightPad = mobileLarge ? 24 : 28;
   const topPad = 14;
   const bottomPad = 36;
   const plotWidth = width - leftPad - rightPad;
@@ -99,7 +99,7 @@ function DemandSupplyChart({ labels, demand, supply, mobileLarge = false }) {
   const ticks = [0, 20, 40, 60, 80, 100];
 
   return (
-    <div className={`relative w-full ${mobileLarge ? "h-[204.47px] sm:h-[320px]" : "h-[320px]"}`}>
+    <div className={`relative w-full ${mobileLarge ? "h-[180px] sm:h-[320px]" : "h-[320px]"}`}>
       <div className="absolute inset-0">
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full">
           {ticks.map((tick) => {
@@ -199,14 +199,14 @@ function MarketInsightsSection({
         </div>
 
         <div className={`grid gap-6 ${mobileCityLayout ? "mt-4 sm:mt-8" : "mt-8"} lg:grid-cols-2`}>
-          <article className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+          <article className={`rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] ${mobileCityLayout ? "mx-auto w-full max-w-[calc(100vw-32px)] sm:mx-0 sm:max-w-none" : ""}`}>
             <h3 className="text-[16px] font-bold leading-tight text-[#111827] sm:text-[20px]">{trendTitle}</h3>
             <div className="mt-6">
               <TrendChart values={trendValues} labels={trendYears} />
             </div>
           </article>
 
-          <article className={`rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] ${mobileCityLayout ? "mx-auto h-[284.44px] w-[366px] rounded-[16.36px] border-[0.68px] border-[#F3F4F6] p-[21.81px] shadow-[0_0.68px_1.36px_rgba(0,0,0,0.05)] sm:mx-0 sm:h-auto sm:w-auto sm:rounded-[24px] sm:border sm:border-[#E5E7EB] sm:p-6 sm:shadow-[0_10px_24px_rgba(15,23,42,0.05)]" : ""}`}>
+          <article className={`rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_24px_rgba(15,23,42,0.05)] ${mobileCityLayout ? "mx-auto h-[284.44px] w-[366px] max-w-[calc(100vw-32px)] rounded-[16.36px] border-[0.68px] border-[#F3F4F6] p-[21.81px] shadow-[0_0.68px_1.36px_rgba(0,0,0,0.05)] sm:mx-0 sm:h-auto sm:w-auto sm:max-w-none sm:rounded-[24px] sm:border sm:border-[#E5E7EB] sm:p-6 sm:shadow-[0_10px_24px_rgba(15,23,42,0.05)]" : ""}`}>
             <h3 className="text-[16px] font-bold leading-tight text-[#111827] sm:text-[20px]">{comparisonTitle}</h3>
             <div className={mobileCityLayout ? "mt-[16.36px] sm:mt-6" : "mt-6"}>
               <DemandSupplyChart labels={labels} demand={demandValues} supply={supplyValues} mobileLarge={mobileCityLayout} />
