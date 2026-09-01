@@ -162,7 +162,7 @@ function HomeHeroSection({
   onSubmit={handleSearch}
 >
   {/* Tabs */}
-  <div className="flex w-full items-end gap-0 overflow-visible">
+  <div className="mx-auto flex w-full items-end gap-0 overflow-visible lg:max-w-[865px] lg:gap-[3px]">
     {tabs.map((tab) => (
       <button
         key={tab}
@@ -178,9 +178,14 @@ function HomeHeroSection({
           tab === "Commercial" ? "w-[96px]" : "",
           tab === "Institutional" ? "w-[93px]" : "",
           "sm:h-[54px] sm:flex-1 sm:px-4 sm:text-[14px]",
+          "lg:h-[44px] lg:flex-none lg:px-6 lg:py-3 lg:text-[14px] lg:shadow-[2px_0_6px_rgba(0,0,0,0.08)]",
+          tab === "Buy" ? "lg:w-[75px]" : "",
+          tab === "Rent" ? "lg:w-[80px]" : "",
+          tab === "Commercial" ? "lg:w-[132px]" : "",
+          tab === "Institutional" ? "lg:w-[131px]" : "",
           activeTab === tab
-            ? "relative z-10 bg-[#ED1C24] text-white"
-            : "border-r border-white bg-[#F8F9FA] text-[#4B5563] hover:bg-[#F3F4F6]",
+            ? "relative z-10 bg-[#ED1C24] text-white lg:rounded-tl-[12px] lg:rounded-tr-[12px] lg:hover:bg-[#111827]"
+            : "border-r border-white bg-[#F9FAFB] text-[#4B5563] lg:rounded-tl-[12px] lg:rounded-tr-[12px] lg:hover:bg-[#111827] lg:hover:text-white",
         ]
           .filter(Boolean)
           .join(" ")}
