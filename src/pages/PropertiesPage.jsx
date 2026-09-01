@@ -59,7 +59,7 @@ function LocationIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 16 16"
-      className="h-4 w-4 shrink-0 text-[#6B7280]"
+      className="h-6 w-6 shrink-0 text-[#6B7280]"
       fill="none"
     >
       <path
@@ -156,48 +156,51 @@ function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = 
   const isDark = variant === "dark";
 
   return (
-    <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
-      <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
-        <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
+    <div className="flex w-full items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] pl-3 pr-4 py-1.5 md:gap-4 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:py-0">
+      <div className="flex h-[46px] min-w-0 flex-1 items-center gap-3 overflow-hidden bg-transparent px-0 md:h-[41px] md:gap-4 md:overflow-x-auto md:rounded-[12px] md:border md:border-[#E5E7EB] md:bg-[#F9FAFB] md:px-4">
+        <div className="flex min-w-0 shrink-0 items-center gap-2 whitespace-nowrap text-[14px] leading-5 text-[#0F172A] md:gap-2 md:text-[14px]">
           <LocationIcon />
 
-          <span className="font-semibold">{areaLabel}</span>
+          <span className="flex min-w-0 flex-col font-semibold leading-5 md:flex-row md:items-center md:leading-5">
+            <span>{areaLabel}</span>
+            <span className="text-[11px] font-normal leading-[18px] text-[#6B7280] md:hidden">Flat • ₹1 Cr - ₹5 Cr</span>
+          </span>
         </div>
 
-        <Divider />
+        <span className="hidden md:inline-flex"><Divider /></span>
 
-        <FilterField label="Type:" value="Buy" />
+        <span className="hidden md:inline-flex"><FilterField label="Type:" value="Buy" /></span>
 
-        <Divider />
+        <span className="hidden md:inline-flex"><Divider /></span>
 
-        <FilterField label="Property:" value="Flat" />
+        <span className="hidden md:inline-flex"><FilterField label="Property:" value="Flat" /></span>
 
-        <Divider />
+        <span className="hidden md:inline-flex"><Divider /></span>
 
-        <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
+        <span className="hidden md:inline-flex"><FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" /></span>
       </div>
 
-      <div className="flex shrink-0 items-center gap-3 md:gap-4">
+      <div className="flex shrink-0 items-center gap-2 md:gap-4">
         <button
           type="button"
           onClick={onToggleFilters}
           aria-expanded={filtersOpen}
           aria-controls="results-filters"
           className={[
-            "inline-flex h-[45px] w-[149px] shrink-0 items-center justify-center gap-2 rounded-[12px] px-5 text-[14px] font-bold",
+            "inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center gap-2 rounded-[10px] p-0 text-[14px] font-bold md:h-[45px] md:w-[149px] md:rounded-[12px] md:px-5",
             isDark
               ? "border border-[#E5E7EB] bg-white text-[#111827]"
               : "cta-navy text-white",
           ].join(" ")}
         >
           <FiltersIcon />
-          <span>More Filters</span>
+          <span className="hidden md:inline">More Filters</span>
         </button>
 
         <button
           type="button"
           aria-label="Search"
-          className="cta-red-on-dark inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+          className="cta-red-on-dark inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[#E51C23] text-white md:h-[44px] md:w-[44px] md:rounded-[12px]"
         >
           <SearchIcon />
         </button>
@@ -641,15 +644,15 @@ function ResultTileCard({
         className={[
           "flex flex-col overflow-hidden border",
           featuredLayout
-            ? "h-[500.5px] w-full min-w-0 flex-1 rounded-[16px] shadow-[0_4px_20px_0_rgba(0,0,0,0.05)]"
-            : "h-[500.5px] rounded-[16px] shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
+            ? "h-[460px] w-full min-w-0 flex-1 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[500.5px]"
+            : "h-[460px] rounded-[16px] shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:h-[500.5px]",
           selected
             ? "border-[#FFEBEB] bg-[#FFF9F9]"
           : "border-[#E5E7EB] bg-white",
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
     >
-      <div className="relative h-[206px] w-full">
+      <div className="relative h-[195px] w-full sm:h-[206px]">
         <img
           src={item.image}
           alt={item.title}
@@ -715,8 +718,13 @@ function ResultTileCard({
             )}
           </div>
 
-          {showMatchBadge && !featuredLayout && (
-            <span className="inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px]  text-[10px] font-bold leading-[15px] text-white shadow-sm">
+          {showMatchBadge && (
+            <span
+              className={[
+                "inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px] text-[10px] font-bold leading-[15px] text-white shadow-sm",
+                featuredLayout ? "md:hidden" : "",
+              ].join(" ")}
+            >
               {item.match}
             </span>
           )}
@@ -738,7 +746,7 @@ function ResultTileCard({
     <div
   className={[
     "flex flex-1 flex-col",
-    featuredLayout ? "p-[20px]" : "gap-[12px] p-[16px]",
+    featuredLayout ? "p-[16px] sm:p-[20px]" : "gap-[8px] p-[16px] sm:gap-[12px]",
   ].join(" ")}
 >
   {/* PRICE / TITLE / LOCATION */}
@@ -755,7 +763,7 @@ function ResultTileCard({
         className={[
           "whitespace-nowrap font-extrabold text-[#111827]",
           featuredLayout
-            ? "text-[22px] leading-[32px]"
+            ? "text-[18px] leading-[26px] sm:text-[22px] sm:leading-[32px]"
             : "text-[17px] leading-[22px]",
         ].join(" ")}
       >
@@ -791,7 +799,7 @@ function ResultTileCard({
       className={[
         "flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] font-normal tracking-normal text-[#6B7280]",
         featuredLayout
-          ? "mt-[4px] text-[13px] leading-[19.5px]"
+          ? "mt-[4px] text-[12px] leading-[18px] sm:text-[13px] sm:leading-[19.5px]"
           : "mt-[6px] text-[13px] leading-[19.5px]",
       ].join(" ")}
     >
@@ -808,18 +816,18 @@ function ResultTileCard({
     className={[
       "flex flex-wrap items-center uppercase text-[#111827]",
       featuredLayout
-        ? "mt-[16px] min-h-[52px] gap-[16px] border-y border-[#F3F4F6] py-[10px] text-[14px] font-semibold leading-[16px]"
+        ? "mt-[16px] min-h-[52px] gap-[12px] border-y border-[#F3F4F6] py-[10px] text-[11px] font-semibold leading-[16px] sm:gap-[16px] sm:text-[14px]"
         : "gap-x-[14px] gap-y-[8px] border-y border-[#F3F4F6] py-[8px] text-[11px] font-semibold leading-[16px]",
     ].join(" ")}
   >
     {/* BHK */}
-    <span className="inline-flex items-center text-[12px] gap-[6px] whitespace-nowrap">
+      <span className="inline-flex items-center gap-[5px] text-[11px] whitespace-nowrap sm:gap-[6px] sm:text-[12px]">
       <BedIcon />
       {item.details}
     </span>
 
     {/* AREA */}
-    <span className="inline-flex items-center text-[12px] gap-[6px] whitespace-nowrap">
+    <span className="inline-flex items-center gap-[5px] text-[11px] whitespace-nowrap sm:gap-[6px] sm:text-[12px]">
       <AreaIcon />
       {item.area}
     </span>
@@ -829,7 +837,7 @@ function ResultTileCard({
       className={[
         "whitespace-nowrap rounded-[8px] bg-[#111827] font-bold normal-case text-white",
         featuredLayout
-          ? "px-[10px] py-[8px] text-[10px]"
+          ? "px-[8px] py-[6px] text-[9px] sm:px-[10px] sm:py-[8px] sm:text-[10px]"
           : "px-[8px] py-[6px] text-[9px]",
       ].join(" ")}
     >
@@ -841,13 +849,13 @@ function ResultTileCard({
   <div
     className={[
       "flex w-full flex-wrap items-start content-start gap-x-[8px] gap-y-[8px]",
-      featuredLayout ? "mt-[12px]" : "mt-[4px] min-h-[64px]",
+      featuredLayout ? "mt-[8px] sm:mt-[12px]" : "mt-[4px] min-h-0 sm:min-h-[64px]",
     ].join(" ")}
   >
     {item.tags.map((tag) => (
       <span
         key={tag}
-        className="inline-flex h-[30px] items-center rounded-[6px] bg-[#F9FAFB] px-[12px] text-[10px] font-semibold uppercase leading-[16px] text-[#6B7280]"
+        className="inline-flex h-[24px] items-center rounded-[6px] bg-[#F9FAFB] px-[8px] text-[9px] font-semibold uppercase leading-[16px] text-[#6B7280] sm:h-[30px] sm:px-[12px] sm:text-[10px]"
       >
         {tag}
       </span>
@@ -859,7 +867,7 @@ function ResultTileCard({
     className={[
       "mt-auto flex items-center gap-[10px]",
       featuredLayout
-        ? "pt-[16px]"
+        ? "pt-[10px] sm:pt-[16px]"
         : "",
     ].join(" ")}
   >
@@ -870,8 +878,8 @@ function ResultTileCard({
       className={[
         "cta-red inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
         featuredLayout
-          ? "h-[48px] text-[14px]"
-          : "h-[40px] text-[14px]",
+          ? "h-[38px] text-[13px] sm:h-[48px] sm:text-[14px]"
+          : "h-[36px] text-[14px] sm:h-[40px]",
       ].join(" ")}
     >
       Enquire Now
@@ -885,8 +893,8 @@ function ResultTileCard({
       className={[
         "inline-flex shrink-0 items-center justify-center border-2 border-[#E51C23] bg-white text-[#E51C23]",
         featuredLayout
-          ? "h-[48px] w-[48px] rounded-[12px]"
-          : "h-[40px] w-[40px] rounded-[10px]",
+          ? "h-[38px] w-[38px] rounded-[10px] sm:h-[48px] sm:w-[48px] sm:rounded-[12px]"
+          : "h-[36px] w-[36px] rounded-[10px] sm:h-[40px] sm:w-[40px]",
       ].join(" ")}
     >
       <img
@@ -1498,7 +1506,9 @@ function PropertiesPage({
                     onClick={() => setFiltersOpen(false)}
                     className={[
                       "absolute inset-0 bg-slate-900/50 transition-opacity duration-300 ease-out",
-                      filtersOpen && filtersEntered ? "opacity-100" : "opacity-0",
+                      filtersOpen && filtersEntered
+                        ? "opacity-100"
+                        : "opacity-0",
                     ].join(" ")}
                   />
 
@@ -1509,7 +1519,9 @@ function PropertiesPage({
                     aria-labelledby="results-filters-title"
                     className={[
                       "fixed inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-[#E5E7EB] bg-white shadow-[-20px_0_60px_-24px_rgba(15,23,42,0.35)] transition-transform duration-300 ease-out",
-                      filtersOpen && filtersEntered ? "translate-x-0" : "translate-x-full",
+                      filtersOpen && filtersEntered
+                        ? "translate-x-0"
+                        : "translate-x-full",
                     ].join(" ")}
                   >
                     {renderSidebar ? (
@@ -1564,18 +1576,22 @@ function PropertiesPage({
                             {/* BHK */}
                             <SidebarSection title="BHK Type">
                               <div className="flex flex-wrap gap-[8px]">
-                                {["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK"].map(
-                                  (label) => (
-                                    <PillButton
-                                      key={label}
-                                      label={label}
-                                      active={selectedBhk.includes(label)}
-                                      onClick={() =>
-                                        toggleSelection(label, setSelectedBhk)
-                                      }
-                                    />
-                                  ),
-                                )}
+                                {[
+                                  "1 BHK",
+                                  "2 BHK",
+                                  "3 BHK",
+                                  "4 BHK",
+                                  "5+ BHK",
+                                ].map((label) => (
+                                  <PillButton
+                                    key={label}
+                                    label={label}
+                                    active={selectedBhk.includes(label)}
+                                    onClick={() =>
+                                      toggleSelection(label, setSelectedBhk)
+                                    }
+                                  />
+                                ))}
                               </div>
                             </SidebarSection>
 
@@ -1584,9 +1600,14 @@ function PropertiesPage({
                               <div className="flex flex-col gap-[8px]">
                                 <CheckboxItem
                                   label="Apartment"
-                                  checked={selectedPropertyTypes.includes("Apartment")}
+                                  checked={selectedPropertyTypes.includes(
+                                    "Apartment",
+                                  )}
                                   onClick={() =>
-                                    toggleSelection("Apartment", setSelectedPropertyTypes)
+                                    toggleSelection(
+                                      "Apartment",
+                                      setSelectedPropertyTypes,
+                                    )
                                   }
                                 />
 
@@ -1605,9 +1626,14 @@ function PropertiesPage({
 
                                 <CheckboxItem
                                   label="Plots"
-                                  checked={selectedPropertyTypes.includes("Plots")}
+                                  checked={selectedPropertyTypes.includes(
+                                    "Plots",
+                                  )}
                                   onClick={() =>
-                                    toggleSelection("Plots", setSelectedPropertyTypes)
+                                    toggleSelection(
+                                      "Plots",
+                                      setSelectedPropertyTypes,
+                                    )
                                   }
                                 />
                               </div>
@@ -1631,9 +1657,14 @@ function PropertiesPage({
 
                                 <CheckboxItem
                                   label="Ready"
-                                  checked={selectedPropertyStatus.includes("Ready")}
+                                  checked={selectedPropertyStatus.includes(
+                                    "Ready",
+                                  )}
                                   onClick={() =>
-                                    toggleSelection("Ready", setSelectedPropertyStatus)
+                                    toggleSelection(
+                                      "Ready",
+                                      setSelectedPropertyStatus,
+                                    )
                                   }
                                 />
                               </div>
@@ -1646,7 +1677,10 @@ function PropertiesPage({
                                   label="Full"
                                   checked={selectedFurnishing.includes("Full")}
                                   onClick={() =>
-                                    toggleSelection("Full", setSelectedFurnishing)
+                                    toggleSelection(
+                                      "Full",
+                                      setSelectedFurnishing,
+                                    )
                                   }
                                 />
 
@@ -1654,7 +1688,10 @@ function PropertiesPage({
                                   label="Semi"
                                   checked={selectedFurnishing.includes("Semi")}
                                   onClick={() =>
-                                    toggleSelection("Semi", setSelectedFurnishing)
+                                    toggleSelection(
+                                      "Semi",
+                                      setSelectedFurnishing,
+                                    )
                                   }
                                 />
 
@@ -1662,7 +1699,10 @@ function PropertiesPage({
                                   label="None"
                                   checked={selectedFurnishing.includes("None")}
                                   onClick={() =>
-                                    toggleSelection("None", setSelectedFurnishing)
+                                    toggleSelection(
+                                      "None",
+                                      setSelectedFurnishing,
+                                    )
                                   }
                                 />
                               </div>
@@ -1673,17 +1713,27 @@ function PropertiesPage({
                               <div className="flex flex-wrap items-center gap-[12px]">
                                 <CheckboxItem
                                   label="2 Wheeler"
-                                  checked={selectedParking.includes("2 Wheeler")}
+                                  checked={selectedParking.includes(
+                                    "2 Wheeler",
+                                  )}
                                   onClick={() =>
-                                    toggleSelection("2 Wheeler", setSelectedParking)
+                                    toggleSelection(
+                                      "2 Wheeler",
+                                      setSelectedParking,
+                                    )
                                   }
                                 />
 
                                 <CheckboxItem
                                   label="4 Wheeler"
-                                  checked={selectedParking.includes("4 Wheeler")}
+                                  checked={selectedParking.includes(
+                                    "4 Wheeler",
+                                  )}
                                   onClick={() =>
-                                    toggleSelection("4 Wheeler", setSelectedParking)
+                                    toggleSelection(
+                                      "4 Wheeler",
+                                      setSelectedParking,
+                                    )
                                   }
                                 />
 
@@ -1705,7 +1755,9 @@ function PropertiesPage({
 
                                 <Toggle
                                   on={verifiedOnly}
-                                  onClick={() => setVerifiedOnly((current) => !current)}
+                                  onClick={() =>
+                                    setVerifiedOnly((current) => !current)
+                                  }
                                 />
                               </div>
 
@@ -1716,7 +1768,9 @@ function PropertiesPage({
 
                                 <Toggle
                                   on={reraApproved}
-                                  onClick={() => setReraApproved((current) => !current)}
+                                  onClick={() =>
+                                    setReraApproved((current) => !current)
+                                  }
                                 />
                               </div>
                             </div>
@@ -1724,16 +1778,21 @@ function PropertiesPage({
                             {/* AMENITIES */}
                             <SidebarSection title="Amenities">
                               <div className="flex flex-wrap gap-[8px]">
-                                {["Gym", "Pool", "Park", "Clubhouse"].map((item) => (
-                                  <AmenityChip
-                                    key={item}
-                                    label={item}
-                                    active={selectedAmenities.includes(item)}
-                                    onClick={() =>
-                                      toggleSelection(item, setSelectedAmenities)
-                                    }
-                                  />
-                                ))}
+                                {["Gym", "Pool", "Park", "Clubhouse"].map(
+                                  (item) => (
+                                    <AmenityChip
+                                      key={item}
+                                      label={item}
+                                      active={selectedAmenities.includes(item)}
+                                      onClick={() =>
+                                        toggleSelection(
+                                          item,
+                                          setSelectedAmenities,
+                                        )
+                                      }
+                                    />
+                                  ),
+                                )}
                               </div>
                             </SidebarSection>
                           </div>
@@ -1758,16 +1817,16 @@ function PropertiesPage({
               {/* RIGHT PROPERTY RESULTS                                       */}
               {/* ============================================================ */}
 
-              <section className="min-w-0 w-full">
+              <section className="w-full min-w-0">
                 {/* RESULTS HEADER */}
-                <div className="flex w-full items-start justify-between gap-6">
+                <div className="flex w-full items-start justify-between gap-3 md:gap-6">
                   {viewMode !== "map" && (
-                    <div className="w-[258.98px] shrink-0">
-                      <h1 className="text-[20px] font-semibold leading-[30px] text-[#111827]">
+                    <div className="min-w-0 shrink-0 md:w-[258.98px]">
+                      <h1 className="font-['Plus_Jakarta_Sans'] text-[16px] font-extrabold leading-[27px] text-[#111827] md:text-[20px] md:font-semibold md:leading-[30px]">
                         1,245 Properties in Mumbai
                       </h1>
 
-                      <p className="font-['Lato'] text-[14px] font-normal leading-[21px] tracking-[-0.49%] text-[#6B7280]">
+                      <p className="font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[18px] tracking-[0] text-[#6B7280] md:font-['Lato'] md:text-[14px] md:leading-[21px] md:tracking-[-0.49%]">
                         Properties for Sale in Andheri West
                       </p>
                     </div>
@@ -1776,7 +1835,7 @@ function PropertiesPage({
                   {viewMode !== "map" && (
                     <div
                       className={[
-                        "flex h-10 shrink-0 items-center gap-4",
+                        "hidden h-10 shrink-0 items-center gap-4 md:flex",
                         isPriceSort ? "w-[325.5px]" : "w-[300.5px]",
                       ].join(" ")}
                     >
@@ -1832,7 +1891,10 @@ function PropertiesPage({
                           >
                             {[
                               { label: "Relevance", value: "relevance" },
-                              { label: "Price: Low to High", value: "price-low" },
+                              {
+                                label: "Price: Low to High",
+                                value: "price-low",
+                              },
                               {
                                 label: "Price: High to Low",
                                 value: "price-high",
@@ -1926,12 +1988,65 @@ function PropertiesPage({
                       </div>
                     </div>
                   )}
+
+                  {viewMode !== "map" && (
+                    <button
+                      type="button"
+                      aria-label="Sort properties"
+                      onClick={() => setSortOpen((current) => !current)}
+                      className="inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-[8px] bg-[#111827] text-white md:hidden"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-[18px] w-[18px]"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        {/* Down arrow */}
+                        <path
+                          d="M7 9v11m0 0-3-3m3 3 3-3"
+                          stroke="currentColor"
+                          strokeWidth="2.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+
+                        {/* Up arrow */}
+                        <path
+                          d="M16 15V6m0 0-3 3m3-3 3 3"
+                          stroke="currentColor"
+                          strokeWidth="2.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
 
                 {viewMode === "list" && (
                   <>
+                    <div className="mt-[20px] flex w-full flex-col gap-[12px] md:hidden">
+                      {pagedResults.map((item, index) => (
+                        <ResultTileCard
+                          key={`mobile-${item.id}`}
+                          item={item}
+                          featuredLayout={index === 0}
+                          hidePrimaryBadgeWhenVerified
+                          selected={selectedPropertyId === item.id}
+                          favorite={favoriteIds.has(item.id)}
+                          onClick={() => {
+                            window.scrollTo(0, 0);
+                            navigate(buildPropertyDetailPath(item), {
+                              state: { property: item },
+                            });
+                          }}
+                          onFavoriteToggle={() => toggleFavorite(item.id)}
+                        />
+                      ))}
+                    </div>
                     {/* PROPERTY LIST */}
-                    <div className="mt-[24px] flex w-full flex-col gap-[12px]">
+                    <div className="mt-[24px] hidden w-full flex-col gap-[12px] md:flex">
                       {pagedResults.map((item) => (
                         <ResultCard
                           key={item.id}
@@ -1940,7 +2055,9 @@ function PropertiesPage({
                           favorite={favoriteIds.has(item.id)}
                           onClick={() => {
                             window.scrollTo(0, 0);
-                            navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                            navigate(buildPropertyDetailPath(item), {
+                              state: { property: item },
+                            });
                           }}
                           onFavoriteToggle={() => toggleFavorite(item.id)}
                         />
@@ -1964,7 +2081,9 @@ function PropertiesPage({
                             favorite={favoriteIds.has(item.id)}
                             onClick={() => {
                               window.scrollTo(0, 0);
-                              navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                              navigate(buildPropertyDetailPath(item), {
+                                state: { property: item },
+                              });
                             }}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
@@ -1983,14 +2102,15 @@ function PropertiesPage({
                             favorite={favoriteIds.has(item.id)}
                             onClick={() => {
                               window.scrollTo(0, 0);
-                              navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                              navigate(buildPropertyDetailPath(item), {
+                                state: { property: item },
+                              });
                             }}
                             onFavoriteToggle={() => toggleFavorite(item.id)}
                           />
                         ))}
                       </div>
                     )}
-
                   </>
                 )}
 
@@ -2083,7 +2203,9 @@ function PropertiesPage({
                               favorite={favoriteIds.has(item.id)}
                               onClick={() => {
                                 window.scrollTo(0, 0);
-                                navigate(buildPropertyDetailPath(item), { state: { property: item } });
+                                navigate(buildPropertyDetailPath(item), {
+                                  state: { property: item },
+                                });
                               }}
                               onFavoriteToggle={() => toggleFavorite(item.id)}
                             />
