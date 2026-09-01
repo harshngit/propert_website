@@ -38,22 +38,23 @@ function PropertyGallery({ images, title, heroOverlay }) {
 
   return (
     <>
-      <div className="grid w-full grid-cols-1 gap-4 lg:h-[500px] lg:grid-cols-[2fr_1fr]">
+      <div className="grid h-[233px] w-full grid-cols-1 gap-4 lg:h-[500px] lg:grid-cols-[2fr_1fr]">
         <button
           type="button"
           onClick={() => openAt(0)}
           aria-label={`View photos of ${title}`}
-          className="group relative h-[260px] w-full overflow-hidden rounded-[16px] bg-transparent lg:row-span-2 lg:h-[500px]"
+          className="group relative h-[233px] w-full overflow-hidden rounded-none bg-transparent lg:row-span-2 lg:h-[500px] lg:rounded-[16px]"
         >
           <img
             src={hero}
             alt={title}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
           />
+          <div className="pointer-events-none absolute inset-0 bg-black/20 sm:hidden" />
           {heroOverlay}
         </button>
 
-        <div className="grid h-[260px] grid-cols-2 grid-rows-2 gap-4 lg:col-start-2 lg:row-span-2 lg:h-[500px] lg:w-full">
+        <div className="hidden h-[260px] grid-cols-2 grid-rows-2 gap-4 lg:col-start-2 lg:row-span-2 lg:grid lg:h-[500px] lg:w-full">
           {thumbs.map((src, i) => {
             const isLast = i === thumbs.length - 1;
             const showMore = isLast && remaining > 0;

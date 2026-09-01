@@ -26,7 +26,7 @@ function CompanyFooterSection() {
 
   return (
     <div className="mt-12 border-t border-slate-100">
-      <div className="px-4 pt-10 sm:px-6 lg:px-12">
+      <div className="px-4 pt-8 sm:px-6 lg:px-12">
         <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_repeat(3,1fr)]">
           <div>
             <div className="text-[24px] font-black text-[#E51C23] sm:text-[28px]">PropertySerch</div>

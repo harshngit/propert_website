@@ -57,6 +57,53 @@ function PromiseIcon() {
   return <img src="/icons/promise.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
 }
 
+function RedKeyIcon() {
+  return (
+    <svg
+  aria-hidden="true"
+  viewBox="0 0 24 24"
+  className="h-[16px] w-[16px] shrink-0 text-[#ED1C24]"
+  fill="none"
+>
+  <path
+    fill="currentColor"
+    fillRule="evenodd"
+    clipRule="evenodd"
+    d="
+      M15.55 2
+      C11.99 2 9.1 4.89 9.1 8.45
+      C9.1 9.15 9.21 9.82 9.42 10.45
+
+      L2.62 17.25
+      C2.22 17.65 2 18.19 2 18.75
+      V21.9
+      C2 23.06 2.94 24 4.1 24
+      H6.85
+      C8.01 24 8.95 23.06 8.95 21.9
+      V20.25
+      H10.55
+      C11.71 20.25 12.65 19.31 12.65 18.15
+      V16.65
+      H14.35
+      C14.91 16.65 15.45 16.43 15.85 16.03
+      L17.04 14.84
+
+      C19.9 14.17 22 11.6 22 8.55
+      C22 4.93 19.07 2 15.55 2
+      Z
+
+      M16.95 6.15
+      C15.91 6.15 15.07 6.99 15.07 8.03
+      C15.07 9.07 15.91 9.91 16.95 9.91
+      C17.99 9.91 18.83 9.07 18.83 8.03
+      C18.83 6.99 17.99 6.15 16.95 6.15
+      Z
+    "
+  />
+</svg>
+  );
+}
+
 function BackIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4" fill="none">
@@ -76,35 +123,35 @@ function formatRupeeValue(value) {
 const AMENITY_LIFESTYLE = [
   {
     label: "Gymnasium",
-    icon: <img src="/icons/gym.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/gym.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "Swimming Pool",
-    icon: <img src="/icons/swimming.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/swimming.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "Grand Lawn",
-    icon: <img src="/icons/lawn.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/lawn.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "24/7 Security",
-    icon: <img src="/icons/security.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/security.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "Visitor Parking",
-    icon: <img src="/icons/car parking.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain brightness-0 invert-[46%] sepia-[7%] saturate-[363%] hue-rotate-[177deg] brightness-[94%] contrast-[92%]" />,
+    icon: <img src="/icons/car parking.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain brightness-0 invert-[46%] sepia-[7%] saturate-[363%] hue-rotate-[177deg] brightness-[94%] contrast-[92%] sm:h-7 sm:w-7" />,
   },
   {
     label: "Power Backup",
-    icon: <img src="/icons/power.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/power.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "Kids Play Area",
-    icon: <img src="/icons/kids play.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/kids play.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
   {
     label: "Broadband",
-    icon: <img src="/icons/wifi.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />,
+    icon: <img src="/icons/wifi.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
 ];
 const FAQS = [
@@ -178,10 +225,10 @@ function SimilarPropertyCard({ item }) {
       to={detailPath}
       state={{ property: item }}
       onClick={() => window.scrollTo(0, 0)}
-      className="block overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+            className="block h-[368px] min-w-[294px] shrink-0 overflow-hidden rounded-[16px] border border-[#1118271A] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:h-auto sm:min-w-0 sm:border-[#E5E7EB] sm:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
       aria-label={`${item.title} - ${item.location}`}
     >
-      <div className="relative aspect-[1.18] overflow-hidden">
+      <div className="relative h-[195px] overflow-hidden sm:aspect-[1.18] sm:h-auto">
         <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
           {item.featured ? (
@@ -212,9 +259,9 @@ function SimilarPropertyCard({ item }) {
         </div>
       </div>
 
-      <div className="px-4 py-4">
+      <div className="px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-3">
-          <div className="text-[24px] font-black leading-tight text-[#111827]">{item.price}</div>
+          <div className="text-[22px] font-black leading-tight text-[#111827] sm:text-[24px]">{item.price}</div>
           <div className="whitespace-nowrap text-[12px] leading-tight text-[#6B7280]">{item.rate}</div>
         </div>
 
@@ -268,7 +315,7 @@ function PropertyDetailPage() {
     <main className="min-h-screen w-full bg-white text-[#0F172A]">
       <SiteHeader />
 
-      <section className="mx-auto max-w-full px-4 pt-6 sm:px-6 lg:px-12">
+      <section className="mx-auto hidden max-w-full px-4 pt-6 sm:block sm:px-6 lg:px-12">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[13px] leading-[20px]">
           <Link to="/" className="font-normal text-[#9CA3AF] transition hover:text-[#111827]">
             Home
@@ -298,7 +345,7 @@ function PropertyDetailPage() {
         </nav>
       </section>
 
-      <section className="mx-auto max-w-full px-4 py-6 lg:px-12 lg:py-10">
+      <section className="mx-auto max-w-full px-0 py-0 sm:px-6 sm:py-6 lg:px-12 lg:py-10">
         <PropertyGallery
           images={[
             "/images/detail%201.png",
@@ -306,25 +353,31 @@ function PropertyDetailPage() {
           ]}
           title={property.title}
           heroOverlay={
-            <div className="absolute left-4 top-4 flex items-center gap-2">
-              <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
-                FEATURED
-              </span>
-              <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-sm">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
-                  <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
-                    <path
-                      d="M4 8.5 6.5 11 12 5.5"
-                      stroke="#FFFFFF"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+            <>
+              <div className="absolute left-4 top-4 flex items-center gap-2">
+                <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
+                  FEATURED
                 </span>
-                <span>VERIFIED</span>
+                <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-sm">
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
+                    <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
+                      <path
+                        d="M4 8.5 6.5 11 12 5.5"
+                        stroke="#FFFFFF"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <span>VERIFIED</span>
+                </span>
+              </div>
+              <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#64748B] shadow-sm sm:hidden">
+                <span className="text-[22px] leading-none">♡</span>
               </span>
-            </div>
+              <span className="absolute bottom-3 right-3 rounded-[3px] bg-black/45 px-1.5 py-0.5 text-[11px] font-medium text-white sm:hidden">1/12 Images</span>
+            </>
           }
         />
       </section>
@@ -335,27 +388,32 @@ function PropertyDetailPage() {
           <div className="min-w-0">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
-                <h1 className="text-[30px] font-black leading-tight tracking-tight text-[#111827] sm:text-[32px]">
-                  {property.title}, Borivali
-                </h1>
+                <div className="flex items-start justify-between gap-3">
+                  <h1 className="mt-3 text-[14px] font-black leading-5 tracking-tight text-[#111827] sm:mt-0 sm:text-[32px]">
+                    {property.title}, Borivali
+                  </h1>
+                  <span className="mt-3 inline-flex h-[23px] shrink-0 items-center rounded-[8px] bg-[#111827] px-2 text-[9px] font-bold text-white sm:hidden">
+                    89% Match
+                  </span>
+                </div>
 
-                <p className="mt-2 flex items-center gap-1.5 text-[15px] text-[#6B7280]">
+                <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#6B7280] sm:text-[15px]">
                   <LocationIcon />
                   {property.location}
                 </p>
               </div>
 
-              <div className="text-left lg:text-right">
-                <div className="text-[30px] font-black leading-none text-[#111827]">
+              <div className="flex items-baseline gap-3 text-left sm:block lg:text-right">
+                <div className="text-[20px] font-black leading-none text-[#111827] sm:text-[30px]">
                   ₹{formatRupeeValue(property.price)}
                 </div>
-                <div className="mt-1 whitespace-nowrap text-[13px] leading-[18px] text-[#9CA3AF]">
+                <div className="mt-0 whitespace-nowrap text-[11px] leading-[18px] text-[#9CA3AF] sm:mt-1 sm:text-[13px]">
                   ₹{formatRupeeValue(property.rate)}
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col border-y border-[#F3F4F6] py-5 sm:flex-row sm:items-stretch sm:gap-0">
+            <div className="mt-6 hidden flex-col border-y border-[#F3F4F6] py-5 sm:flex sm:flex-row sm:items-stretch sm:gap-0">
               {[
                 { label: "RERA Approved", value: "P51800003521" },
                 { label: "Top Builder", value: "Oberoi Realty" },
@@ -380,21 +438,22 @@ function PropertyDetailPage() {
               ))}
             </div>
 
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { label: "Configuration", value: "3 BHK Apartment", icon: <RedBedIcon /> },
-                { label: "Carpet Area", value: "1850 sqft", icon: <RedAreaIcon /> },
-                {
-                  label: "Facing",
-                  value: "East Facing",
-                  icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" />,
-                },
+            <div className="mt-6 hidden grid-cols-2 gap-x-5 gap-y-6 sm:mt-8 sm:grid sm:grid-cols-3 sm:gap-4">
+                {[
+                  { label: "Configuration", value: "3 BHK Apartment", icon: <RedBedIcon /> },
+                  { label: "Carpet Area", value: "1850 sqft", icon: <RedAreaIcon /> },
+                  {
+                    label: "Facing",
+                    value: "East Facing",
+                    icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" />,
+                  },
+                  { label: "Status", value: "Ready to Move", icon: <PromiseIcon /> },
                 ].map((item) => (
-                <div key={item.label} className="rounded-[14px] border border-[#E5E7EB] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                  <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">
+                <div key={item.label} className={["rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-[14px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-4 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]", item.label === "Status" ? "sm:hidden" : ""].join(" ")}>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] sm:text-[12px]">
                     {item.label}
                   </div>
-                  <div className="mt-2 flex items-center gap-2 text-[16px] font-bold text-[#111827]">
+                  <div className="mt-2 flex items-center gap-2 text-[12px] font-bold text-[#111827] sm:text-[16px]">
                     {item.icon}
                     <span>{item.value}</span>
                   </div>
@@ -402,16 +461,33 @@ function PropertyDetailPage() {
               ))}
             </div>
 
-                        <section className="mt-10 w-full lg:max-w-[1024px]">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">About this Property</h2>
-              <div className="mt-4 space-y-8 text-[15px] leading-8 text-[#4B5563] text-justify">
-                <p className="w-full">
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-5 border-y border-[#F3F4F6] py-4 sm:hidden">
+              {[
+                { label: "Bedrooms", value: "3 BHK", icon: <RedBedIcon /> },
+                { label: "Super Area", value: "1850 sqft", icon: <RedAreaIcon /> },
+                { label: "Orientation", value: "West Facing", icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" /> },
+                { label: "Status", value: "Ready to Move", icon: <RedKeyIcon /> },
+              ].map((item) => (
+                <div key={item.label} className="min-w-0">
+                  <div className="flex items-center gap-2 text-[13px] font-bold leading-5 text-[#111827]">
+                    {item.icon}
+                    <span className="truncate">{item.value}</span>
+                  </div>
+                  <div className="ml-6 text-[10px] leading-4 text-[#6B7280]">{item.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <section className="mt-8 w-full lg:mt-10 lg:max-w-[1024px]">
+              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
+              <div className="mt-4 space-y-8 text-[13px] leading-6 text-[#4B5563] sm:text-[15px] sm:leading-8">
+                <p className="w-full max-h-[144px] overflow-hidden sm:max-h-none">
                   {property.title} is a landmark residential development in {property.location.split(",")[0]},
                   thoughtfully spread across 25 acres of beautifully planned landscapes, open spaces, and world-class
                   lifestyle amenities. Designed for modern urban living, the project seamlessly blends luxury,
                   comfort, and convenience while offering breathtaking views of the surrounding cityscape.
                 </p>
-                <p className="w-full">
+                <p className="hidden w-full sm:block">
                   This spacious {property.details.toLowerCase()} residence features intelligently planned interiors,
                   expansive living and dining areas, premium finishes, large windows for abundant natural light, and
                   well-appointed bedrooms that maximize comfort and functionality. Every detail has been carefully
@@ -439,9 +515,9 @@ function PropertyDetailPage() {
                 </span>
               </button>
             </section>
-            <div className="mt-10 rounded-[16px] bg-[#F9FAFB] p-8">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Property Details</h2>
-              <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
+            <div className="relative left-1/2 mx-0 mt-8 h-[420px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
+              <h2 className="flex items-center gap-2 text-[20px] font-extrabold leading-tight text-[#111827]"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E51C23] text-[12px] font-bold text-white">i</span>Property Details</h2>
+              <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-2 sm:gap-y-8">
                 {[
                   { label: "Status", value: "Ready to Move" },
                   { label: "Floor", value: "24th of 60 Floors" },
@@ -450,9 +526,9 @@ function PropertyDetailPage() {
                   { label: "Age of Property", value: "New Construction" },
                   { label: "Gated Community", value: "Yes" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-end justify-between border-b border-[#E5E7EB] pb-4">
+                  <div key={item.label} className="mt-4 flex h-[33px] items-center justify-between border-b border-[#E5E7EB] pb-2 first:mt-0 last:border-b-0 sm:h-auto sm:items-end sm:pb-4 sm:first:mt-4 sm:last:border-b">
                     <div className="pr-4 text-[13px] leading-tight text-[#6B7280]">{item.label}</div>
-                    <div className="whitespace-nowrap text-right text-[16px] font-bold leading-tight text-[#111827]">
+                    <div className="whitespace-nowrap text-right text-[14px] font-bold leading-tight text-[#111827] sm:text-[16px]">
                       {item.value}
                     </div>
                   </div>
@@ -460,37 +536,37 @@ function PropertyDetailPage() {
               </div>
             </div>
 
-            <div className="mt-8 rounded-[16px] border border-[#E5E7EB] bg-white p-4 sm:p-5">
+            <div className="mx-0 mt-8 rounded-none border-0 bg-transparent p-0 sm:mx-0 sm:rounded-[16px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-5">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Amenities &amp; Lifestyle</h2>
+                <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Amenities &amp; Lifestyle</h2>
                 <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">
                   32 Total
                 </span>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-1 md:mt-6 md:grid-cols-4 md:gap-4">
                 {AMENITY_LIFESTYLE.map((amenity) => (
                   <div
                     key={amenity.label}
-                    className="flex min-h-[136px] flex-col items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-3 py-5 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                    className="flex min-h-[86px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-white px-2 py-3 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:min-h-[136px] md:rounded-[14px] md:px-3 md:py-5"
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F9FAFB]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9FAFB] md:h-14 md:w-14">
                       {amenity.icon}
                     </div>
-                    <div className="mt-4 text-[16px] font-semibold leading-tight text-[#111827]">{amenity.label}</div>
+                    <div className="mt-2 text-[12px] font-semibold leading-tight text-[#111827] md:mt-4 md:text-[16px]">{amenity.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-10 rounded-[18px] border border-[#E5E7EB] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Market Trends & Insights</h2>
-              <p className="mt-1 text-[14px] text-[#6B7280]">
+            <div className="relative left-1/2 mt-8 h-[352.48px] w-[402px] -translate-x-1/2 rounded-none border-0 bg-transparent p-6 shadow-none sm:relative sm:left-auto sm:mt-10 sm:h-auto sm:w-auto sm:translate-x-0 sm:rounded-[18px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-8 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Market Trends &amp; Insights</h2>
+              <p className="mt-1 text-[11px] text-[#6B7280] sm:text-[14px]">
                 How has {property.location.split(",")[0]} performed over the last 3 years?
               </p>
 
-              <div className="mt-8 overflow-hidden rounded-[12px] bg-white">
-                <svg viewBox="0 0 880 320" className="h-auto w-full" fill="none" aria-hidden="true">
+              <div className="mt-[12.68px] h-[148.48px] w-full overflow-hidden rounded-[12px] bg-white sm:mt-8 sm:h-auto">
+                <svg viewBox="0 0 880 320" className="h-full w-full" fill="none" aria-hidden="true">
                   <defs>
                     <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#FDECEC" stopOpacity="0.7" />
@@ -559,27 +635,27 @@ function PropertyDetailPage() {
                 </svg>
               </div>
 
-              <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] font-semibold text-[#6B7280]">Annual Appreciation</div>
-                  <div className="mt-2 text-[26px] font-black leading-tight text-[#16A34A]">+8.4%</div>
+              <div className="mt-4 grid h-[96px] grid-cols-3 gap-6 sm:mt-8 sm:h-auto sm:gap-4">
+                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
+                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Annual Appreciation</div>
+                  <div className="mt-2 text-[13px] font-black leading-tight text-[#16A34A] sm:text-[26px]">+8.4%</div>
                 </div>
-                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] font-semibold text-[#6B7280]">Estimated Rent</div>
-                  <div className="mt-2 text-[26px] font-black leading-tight text-[#111827]">₹1.2L / mo</div>
+                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
+                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Estimated Rent</div>
+                  <div className="mt-2 text-[13px] font-black leading-tight text-[#111827] sm:text-[26px]">₹1.2L / mo</div>
                 </div>
-                <div className="rounded-[14px] bg-[#F9FAFB] p-4">
-                  <div className="text-[12px] font-semibold text-[#6B7280]">Locality Rating</div>
-                  <div className="mt-2 flex items-center gap-1 text-[26px] font-black leading-tight text-[#111827]">
+                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
+                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Locality Rating</div>
+                  <div className="mt-2 flex items-center gap-1 text-[13px] font-black leading-tight text-[#111827] sm:text-[26px]">
                     <span>4.5</span>
-                    <img src="/icons/star.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
+                    <img src="/icons/star.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-10">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">Frequently Asked Questions</h2>
+            <div className="mt-4">
+              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Frequently Asked Questions</h2>
               <div className="mt-4 space-y-3">
                 {FAQS.map((item, index) => {
                   const isOpen = openFaqIndex === index;
@@ -588,10 +664,10 @@ function PropertyDetailPage() {
                       key={item.question}
                       type="button"
                       onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                      className="w-full rounded-[14px] border border-[#F3F4F6] bg-white px-5 py-4 text-left transition hover:border-[#E5E7EB]"
+                      className="w-full rounded-[14px] border border-[#F3F4F6] bg-white px-4 py-4 text-left transition hover:border-[#E5E7EB] sm:px-5"
                     >
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-[14px] font-semibold text-[#111827]">{item.question}</span>
+                        <span className="text-[12px] font-semibold text-[#111827] sm:text-[14px]">{item.question}</span>
                         <span className="text-[18px] font-bold leading-none text-[#9CA3AF]">{isOpen ? "−" : "+"}</span>
                       </div>
                       {isOpen ? <p className="mt-3 text-[14px] leading-7 text-[#6B7280]">{item.answer}</p> : null}
@@ -599,7 +675,7 @@ function PropertyDetailPage() {
                   );
                 })}
               </div>
-              <p className="mt-6 text-[11px] uppercase leading-5 tracking-[0.08em] text-[#CBD5E1]">
+              <p className="mt-6 text-[8px] uppercase leading-4 tracking-[0.08em] text-[#CBD5E1] sm:text-[11px] sm:leading-5">
                 Disclaimer: The information provided on this page is based on data collected from the builder or primary
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
                 verify details with the developer before making any financial commitment.
@@ -608,7 +684,7 @@ function PropertyDetailPage() {
           </div>
 
           {/* RIGHT */}
-          <div>
+          <div className="hidden lg:block">
             <div className="flex flex-col gap-4 lg:sticky lg:top-24">
               <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-6 shadow-[0_18px_36px_rgba(15,23,42,0.08)]">
               <h2 className="text-[24px] font-black leading-tight text-[#111827]">
@@ -715,17 +791,18 @@ function PropertyDetailPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-full px-4 pb-16 sm:px-6 lg:px-12">
+      <section className="mx-auto max-w-full px-4 sm:px-6 lg:px-12">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-[22px] font-extrabold leading-tight text-[#111827]">Similar Properties</h2>
-            <p className="mt-1 text-[14px] text-[#6B7280]">Curated listings matching your search criteria</p>
+            <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[22px]">Similar Properties</h2>
+            <p className="mt-1 text-[12px] text-[#6B7280] sm:text-[14px]">Curated listings matching your search criteria</p>
           </div>
-          <Link to="/properties" className="text-[14px] font-semibold text-[#E51C23]">
+          <Link to="/properties" className="mb-5 inline-flex items-center gap-2 text-[12px] font-semibold text-[#E51C23] sm:text-[14px]">
             View All
+            <img src="/icons/Img%20(1).png" alt="" aria-hidden="true" className="h-[12px] w-[7.5px] shrink-0 object-contain" />
           </Link>
         </div>
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="scrollbar-hide mt-5 flex gap-4 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible xl:grid-cols-4">
           {SIMILAR_PROPERTIES.map((item, index) => (
             <SimilarPropertyCard key={`${item.title}-${item.location}-${index}`} item={item} />
           ))}
