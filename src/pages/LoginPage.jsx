@@ -4,29 +4,6 @@ import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
 import { useAuth } from "../context/AuthContext";
 
-const LEFT_FEATURES = [
-  {
-    title: "Save Properties",
-    description: "Save your favourite properties and find them easily later",
-  },
-  {
-    title: "Get Better Matches",
-    description: "See properties that match what you're looking for",
-  },
-  {
-    title: "Track Your Enquiries",
-    description: "Keep all your property enquiries in one place",
-  },
-  {
-    title: "Manage Site Visits",
-    description: "Book and keep track of your property visits",
-  },
-  {
-    title: "Connect Safely",
-    description: "Contact property professionals without sharing your details publicly",
-  },
-];
-
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -70,7 +47,6 @@ function LoginPage() {
     <AuthShell
       leftTitle="Log in or create your account"
       leftSubtitle="Create a free PropertySerch account to get more from every search."
-      features={LEFT_FEATURES}
       cardKicker="Welcome back"
       cardTitle="Log In"
       cardBadge="Quick access"
@@ -95,7 +71,7 @@ function LoginPage() {
                   value={item}
                   checked={role === item}
                   onChange={() => setRole(item)}
-                  className="h-4 w-4 accent-[#E51C23]"
+                  className="h-[18px] w-[18px] accent-[#E51C23] sm:h-4 sm:w-4"
                 />
                 <span>{item}</span>
               </label>

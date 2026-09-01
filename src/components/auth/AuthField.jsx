@@ -7,7 +7,7 @@ function AuthField({ label, error, endAdornment, className = "", ...props }) {
       <span className="relative flex items-center">
         <input
           className={[
-            "h-10 w-full rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[14px] text-[#111827] outline-none transition placeholder:text-[#9CA3AF] focus:border-red-400 focus:ring-4 focus:ring-red-500/10",
+            "h-[38px] w-full rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[14px] text-[#111827] outline-none transition placeholder:text-[#9CA3AF] focus:border-red-400 focus:ring-4 focus:ring-red-500/10 sm:h-10",
             endAdornment ? "pr-16" : "",
             error ? "border-red-400" : "",
           ].join(" ")}

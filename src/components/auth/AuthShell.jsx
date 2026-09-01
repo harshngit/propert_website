@@ -51,7 +51,7 @@ function AuthShell({
       </div>
 
       <section className="relative mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-4 py-6 sm:px-6 lg:px-10">
-        <div className="grid flex-1 items-center gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 px-10">
+        <div className="grid flex-1 items-center gap-5 px-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:px-10">
           <div className="max-w-[720px] lg:pb-12">
             <div className="mb-5">
               <BrandLogo />
@@ -80,11 +80,11 @@ function AuthShell({
           </div>
 
           <div className="flex justify-center lg:justify-end">
-            <div className="w-full max-w-[530px] rounded-[28px] border border-[#E5E7EB] bg-white px-6 py-2 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8 sm:py-4">
+            <div className="w-full max-w-[530px] rounded-[28px] border border-[#E5E7EB] bg-white px-8 py-2 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8 sm:py-4">
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   {/* <p className="my-2 text-[15px] font-bold uppercase tracking-[0.18em] text-[#E51C23]">{cardKicker}</p> */}
-                  <p className="mt-1 text-[24px] font-black leading-tight text-[#111827]">{cardTitle}</p>
+                  <p className="mt-5 text-[24px] font-black leading-tight text-[#111827]">{cardTitle}</p>
                 </div>
                 {/* <div className="hidden rounded-[16px] bg-[#FFF1F1] px-3 py-2 text-[12px] font-bold text-[#E51C23] sm:block">
                   {cardBadge}
