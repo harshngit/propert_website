@@ -884,7 +884,7 @@ function ResultTileCard({
     <div
   className={[
     "flex flex-1 flex-col",
-    item.context === "institutional" || item.context === "auction" ? "hidden md:flex" : "",
+    item.context === "institutional" || item.context === "auction" || item.context === "special" ? "hidden md:flex" : "",
     featuredLayout ? "p-[16px] sm:p-[20px]" : "gap-[8px] p-[16px] sm:gap-[12px]",
   ].join(" ")}
 >
