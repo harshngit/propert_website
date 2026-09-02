@@ -1332,20 +1332,68 @@ function PropertiesPage({
   const navigate = useNavigate();
   const results =
     resultContext === "institutional"
-      ? propertyResults.map((item) => ({
+      ? propertyResults.map((item, index) => {
+          const institutionalContexts = [
+            {
+              priceDisplay: "₹350 Cr – ₹400 Cr",
+              rateDisplay: "Est. Yield: 8.5% - 9%",
+              title: "Industrial Warehouse Portfolio",
+              location: "Navi Mumbai",
+              details: "Industrial / Warehousing",
+              area: "850,000 sq.ft (Leased)",
+              status: "98% Occupied Tenants",
+              match: "89% Match",
+            },
+            {
+              priceDisplay: "₹420 Cr – ₹470 Cr",
+              rateDisplay: "Est. Yield: 9% - 9.5%",
+              title: "Bangalore Office Park Portfolio",
+              location: "Bangalore Outer Ring Road",
+              details: "Office Space",
+              area: "1,200,000 sq.ft",
+              status: "Nearing Completion",
+              match: "91% Match",
+            },
+            {
+              priceDisplay: "₹280 Cr – ₹320 Cr",
+              rateDisplay: "Est. Yield: 8% - 8.7%",
+              title: "Delhi NCR Industrial Portfolio",
+              location: "Delhi NCR",
+              details: "Industrial / Warehousing",
+              area: "750,000 sq.ft (Leased)",
+              status: "Entity Level / Asset Sale",
+              match: "85% Match",
+            },
+            {
+              priceDisplay: "₹500 Cr – ₹550 Cr",
+              rateDisplay: "Est. Yield: 9.2% - 9.8%",
+              title: "Chennai IT Corridor Portfolio",
+              location: "Chennai IT Corridor",
+              details: "Commercial Office",
+              area: "1,000,000 sq.ft (Leased)",
+              status: "97% Occupied Tenants",
+              match: "88% Match",
+            },
+            {
+              priceDisplay: "₹610 Cr – ₹680 Cr",
+              rateDisplay: "Est. Yield: 10% - 10.8%",
+              title: "Hyderabad Data Center Campus",
+              location: "Hyderabad Financial District",
+              details: "Data Center",
+              area: "620,000 sq.ft (Operational)",
+              status: "Fully Commissioned",
+              match: "92% Match",
+            },
+          ];
+
+          return {
           ...item,
-          priceDisplay: "₹350 Cr – ₹400 Cr",
-          rateDisplay: "Est. Yield: 8.5% - 9%",
-          title: "Industrial Warehouse Portfolio",
-          location: "Navi Mumbai",
           context: "institutional",
-          details: "Industrial / Warehousing",
-          area: "850,000 sq.ft (Leased)",
-          status: "98% Occupied Tenants",
-          match: "89% Match",
+          ...institutionalContexts[index % institutionalContexts.length],
           tags: ["PRE-LEASED", "RERA REGISTERED"],
           actionLabel: "Verify & Request Access",
-        }))
+          };
+        })
       : propertyResults;
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);
