@@ -159,7 +159,7 @@ function HomeHeroSection({
       </div>
 
       <form
-  className={`mx-auto mt-6 w-full px-1 sm:mt-12 sm:px-0 ${cityLandingMobile ? "h-[272px] max-w-[350px] sm:h-auto sm:max-w-[896px]" : "max-w-[896px]"}`}
+  className={`mx-auto mt-6 w-full px-1 sm:mt-12 sm:px-0 ${cityLandingMobile ? "h-[272px] max-w-[896px] sm:h-auto sm:max-w-[896px]" : "max-w-[896px]"}`}
   onSubmit={handleSearch}
 >
   {/* Tabs */}
