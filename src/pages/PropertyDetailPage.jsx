@@ -409,17 +409,17 @@ function PropertyDetailPage() {
                   </span>
                 </div>
 
-                <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#6B7280] sm:text-[15px]">
+                <p className="mt-2 flex items-center gap-1.5 text-[12px] text-[#6B7280] sm:text-[15px]">
                   <LocationIcon />
                   {property.location}
                 </p>
               </div>
 
               <div className="flex items-baseline gap-3 text-left sm:block lg:text-right">
-                <div className="text-[20px] font-black leading-none text-[#111827] sm:text-[30px]">
+                <div className="text-[24px] font-black leading-none text-[#111827] sm:text-[30px]">
                   ₹{formatRupeeValue(property.price)}
                 </div>
-                <div className="mt-0 whitespace-nowrap text-[11px] leading-[18px] text-[#9CA3AF] sm:mt-1 sm:text-[13px]">
+                <div className="mt-0 whitespace-nowrap text-[12px] leading-[18px] text-[#9CA3AF] sm:mt-1 sm:text-[13px]">
                   ₹{formatRupeeValue(property.rate)}
                 </div>
               </div>
@@ -481,18 +481,18 @@ function PropertyDetailPage() {
                 { label: "Status", value: "Ready to Move", icon: <RedKeyIcon /> },
               ].map((item) => (
                 <div key={item.label} className="min-w-0">
-                  <div className="flex items-center gap-2 text-[13px] font-bold leading-5 text-[#111827]">
+                  <div className="flex items-center gap-2 text-[14px] font-bold leading-5 text-[#111827]">
                     {item.icon}
                     <span className="truncate">{item.value}</span>
                   </div>
-                  <div className="ml-6 text-[10px] leading-4 text-[#6B7280]">{item.label}</div>
+                  <div className="ml-6 text-[11px] leading-4 text-[#6B7280]">{item.label}</div>
                 </div>
               ))}
             </div>
 
             <section className="mt-8 w-full lg:mt-10 lg:max-w-[1024px]">
-              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
-              <div className="mt-4 space-y-8 text-[13px] leading-6 text-[#4B5563] sm:text-[15px] sm:leading-8">
+              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
+              <div className="mt-4 space-y-8 text-[14px] leading-6 text-[#4B5563] sm:text-[15px] sm:leading-8">
                 <p className="w-full max-h-[144px] overflow-hidden sm:max-h-none">
                   {property.title} is a landmark residential development in {property.location.split(",")[0]},
                   thoughtfully spread across 25 acres of beautifully planned landscapes, open spaces, and world-class
@@ -527,8 +527,8 @@ function PropertyDetailPage() {
                 </span>
               </button>
             </section>
-            <div className="relative left-1/2 mx-0 mt-8 h-[420px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] px-6 pt-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
-              <h2 className="flex items-center gap-2 text-[20px] font-extrabold leading-tight text-[#111827]"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E51C23] text-[12px] font-bold text-white">i</span>Property Details</h2>
+            <div className="relative left-1/2 mx-0 mt-8 h-[415px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] px-8 pt-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
+              <h2 className="flex items-center gap-2 text-[18px] font-extrabold leading-tight text-[#111827]"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E51C23] text-[12px] font-bold text-white">i</span>Property Details</h2>
               <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-2 sm:gap-y-8">
                 {[
                   { label: "Status", value: "Ready to Move" },
@@ -539,7 +539,7 @@ function PropertyDetailPage() {
                   { label: "Gated Community", value: "Yes" },
                 ].map((item) => (
                   <div key={item.label} className="mt-4 flex h-[33px] items-center justify-between border-b border-[#E5E7EB] first:mt-0 last:border-b-0 sm:h-auto sm:items-end sm:pb-4 sm:first:mt-4 sm:last:border-b">
-                    <div className="pr-4 text-[13px] leading-tight text-[#6B7280]">{item.label}</div>
+                    <div className="pr-4 text-[14px] leading-tight text-[#6B7280] sm:text-[16px]">{item.label}</div>
                     <div className="whitespace-nowrap text-right text-[14px] font-bold leading-tight text-[#111827] sm:text-[16px]">
                       {item.value}
                     </div>
@@ -550,8 +550,8 @@ function PropertyDetailPage() {
 
             <div className="mx-0 mt-8 rounded-none border-0 bg-transparent p-0 sm:mx-0 sm:rounded-[16px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-5">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Amenities &amp; Lifestyle</h2>
-                <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">
+                <h2 className="text-[20px] font-bold leading-[28px] tracking-[-0.0088em] text-[#111827] sm:text-[20px] sm:font-extrabold sm:leading-tight sm:tracking-normal">Amenities &amp; Lifestyle</h2>
+                <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">
                   32 Total
                 </span>
               </div>
@@ -565,20 +565,20 @@ function PropertyDetailPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9FAFB] md:h-14 md:w-14">
                       {amenity.icon}
                     </div>
-                    <div className="mt-2 text-[12px] font-semibold leading-tight text-[#111827] md:mt-4 md:text-[16px]">{amenity.label}</div>
+                    <div className="mt-2 text-[14px] font-semibold leading-tight text-[#111827] md:mt-4 md:text-[16px]">{amenity.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="relative left-1/2 mt-8 h-[352.48px] w-[402px] -translate-x-1/2 rounded-none border-0 bg-transparent p-6 shadow-none sm:relative sm:left-auto sm:mt-10 sm:h-auto sm:w-auto sm:translate-x-0 sm:rounded-[18px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-8 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Market Trends &amp; Insights</h2>
-              <p className="mt-1 text-[11px] text-[#6B7280] sm:text-[14px]">
+            <div className="relative left-1/2 mt-8 h-[352.48px] w-[402px] -translate-x-1/2 rounded-none border-0 bg-transparent px-7 py-6 shadow-none sm:relative sm:left-auto sm:mt-10 sm:h-auto sm:w-auto sm:translate-x-0 sm:rounded-[18px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-8 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Market Trends &amp; Insights</h2>
+              <p className="mt-1 text-[12px] text-[#6B7280] sm:text-[14px]">
                 How has {property.location.split(",")[0]} performed over the last 3 years?
               </p>
 
-              <div className="mt-[12.68px] h-[148.48px] w-full overflow-hidden rounded-[12px] bg-white sm:mt-8 sm:h-auto">
-                <svg viewBox="0 0 880 320" className="h-full w-full" fill="none" aria-hidden="true">
+              <div className="mt-[12.68px] h-[135.8px] w-[337.086px] max-w-full overflow-hidden rounded-[12px] bg-white sm:mt-8 sm:h-auto sm:w-full">
+                <svg viewBox="0 0 880 320" className="h-[135.8px] w-full sm:h-full" fill="none" aria-hidden="true">
                   <defs>
                     <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#FDECEC" stopOpacity="0.7" />
@@ -667,7 +667,7 @@ function PropertyDetailPage() {
             </div>
 
             <div className="mt-4">
-              <h2 className="text-[18px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Frequently Asked Questions</h2>
+              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Frequently Asked Questions</h2>
               <div className="mt-4 space-y-3">
                 {FAQS.map((item, index) => {
                   const isOpen = openFaqIndex === index;
@@ -679,7 +679,7 @@ function PropertyDetailPage() {
                       className="w-full rounded-[14px] border border-[#F3F4F6] bg-white px-4 py-4 text-left transition hover:border-[#E5E7EB] sm:px-5"
                     >
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-[12px] font-semibold text-[#111827] sm:text-[14px]">{item.question}</span>
+                        <span className="text-[14px] font-semibold text-[#111827] sm:text-[14px]">{item.question}</span>
                         <span className="text-[18px] font-bold leading-none text-[#9CA3AF]">{isOpen ? "−" : "+"}</span>
                       </div>
                       {isOpen ? <p className="mt-3 text-[14px] leading-7 text-[#6B7280]">{item.answer}</p> : null}
@@ -687,7 +687,7 @@ function PropertyDetailPage() {
                   );
                 })}
               </div>
-              <p className="mt-6 text-[8px] uppercase leading-4 tracking-[0.08em] text-[#CBD5E1] sm:text-[11px] sm:leading-5">
+              <p className="mt-6 w-[370px] max-w-full text-justify text-[8px] font-normal uppercase leading-[16.25px] tracking-[1px] text-[#9CA3AF] sm:w-auto sm:text-left sm:text-[11px] sm:leading-5 sm:tracking-[0.08em] sm:text-[#CBD5E1]">
                 Disclaimer: The information provided on this page is based on data collected from the builder or primary
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
                 verify details with the developer before making any financial commitment.
