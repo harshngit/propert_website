@@ -437,14 +437,16 @@ function CityLandingPage() {
   return (
     <main className="min-h-screen bg-white text-[#111827]">
       <SiteHeader />
-      <HomeHeroSection
-        currentCity={cityLabel}
-        showBadge={false}
-        cityLandingMobile
-        titlePrefix="Real Estate in"
-        titleHighlight={cityLabel}
-        descriptionLines={profile.heroDescriptionLines || [profile.heroDescription]}
-      />
+      <section className="bg-white px-4 sm:px-0">
+        <HomeHeroSection
+          currentCity={cityLabel}
+          showBadge={false}
+          cityLandingMobile
+          titlePrefix="Real Estate in"
+          titleHighlight={cityLabel}
+          descriptionLines={profile.heroDescriptionLines || [profile.heroDescription]}
+        />
+      </section>
 
       
 
