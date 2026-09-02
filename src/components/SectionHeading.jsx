@@ -52,6 +52,8 @@ function SectionHeading({
       </div>
       <button
         className={`inline-flex h-6 w-[77.5px] flex-nowrap items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] font-bold leading-6 tracking-[0.0049em] text-[#E51C23] transition hover:text-red-600 ${
+          cityLandingMobile ? "gap-1 sm:gap-2" : ""
+        } ${
           cityLandingMobile
             ? "mt-5 mb-0 w-auto text-[12px] sm:mt-0 sm:w-[77.5px] sm:mb-5 sm:text-[12px]"
             : mobileSmall
@@ -72,7 +74,11 @@ function SectionHeading({
           src="/icons/Img%20(1).png"
           alt=""
           aria-hidden="true"
-          className="h-[10px] w-[7.5px] shrink-0 object-contain"
+          className={
+            cityLandingMobile
+              ? "h-[11px] w-[8.5px] shrink-0 scale-[1.05] object-contain sm:h-[10px] sm:w-[7.5px] sm:scale-100"
+              : "h-[10px] w-[7.5px] shrink-0 object-contain"
+          }
         />
       </button>
     </div>
