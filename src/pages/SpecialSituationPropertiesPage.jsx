@@ -237,7 +237,10 @@ function SpecialSituationPropertiesPage() {
     <PropertiesPage
       heroTitle="Special Situation Opportunities"
       heroDescription="Exclusive access to high-yield distressed assets, insolvency cases (NCLT), and structured exits for professional investors and funds"
+      mobileHeroTitle
+      hideMobileHeroDescription
       showTopSearchBar={false}
+      resultContext="special"
       initialDrawerState={createInvestmentDrawerState}
       renderSidebar={(props) => <InvestmentSidebar {...props} />}
     />
