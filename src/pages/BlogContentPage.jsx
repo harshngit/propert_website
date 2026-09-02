@@ -54,17 +54,17 @@ function BlogContentPage() {
           </h1>
 
           <div className="mt-4 flex items-start justify-between gap-6 border-b border-[#EEF2F7] pb-4 md:border-b-0 md:border-t md:pb-0 md:pt-6">
-            <div className="flex items-start gap-4 md:gap-2">
+            <div className="flex items-start gap-2 md:gap-2">
               <img
                 src="/images/avatar-5.png"
                 alt="Vikram Malhotra"
                 className="h-[56px] w-[56px] rounded-full object-cover"
               />
               <div className="pt-1.5">
-                <div className="text-[14px] font-bold leading-[22px] text-[#111827] md:text-[16px]">
+                <div className="text-[16px] font-bold leading-[22px] text-[#111827] md:text-[16px]">
                   Vikram Malhotra
                 </div>
-                <div className="mt-1 text-[10px] leading-[10px] text-[#94A3B8] md:text-[13px]">
+                <div className="mt-1 text-[12px] leading-[16px] text-[#94A3B8] md:text-[13px] md:leading-[10px]">
                   Senior Market Analyst • May 14, 2026
                 </div>
               </div>
