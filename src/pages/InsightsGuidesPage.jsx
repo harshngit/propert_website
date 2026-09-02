@@ -10,39 +10,42 @@ function FeaturedArticleSection() {
 
   return (
     <section className="w-full bg-white">
-      <div className="w-full py-8">
+      <div className="w-full pb-0 md:pb-8">
         <Link
           to={buildBlogArticlePath(featuredArticle)}
           state={featuredArticle}
           className="block"
         >
-        <article className="grid w-full items-center gap-6 overflow-hidden bg-[#111827] px-6 py-6 text-white md:grid-cols-[500px_minmax(0,1fr)] md:gap-8 md:px-8 md:py-12">
-          <div className="overflow-hidden rounded-[10px] bg-[#0F172A]">
-            <img
-              src="/images/buy or sell.png"
-              alt="Premium real estate"
-              className="h-[300px] w-[600px] max-w-full object-cover object-center"
-            />
+        <article className="grid w-full items-center gap-6 overflow-hidden bg-[#111827] px-5 pb-10 pt-11 text-white md:grid-cols-[500px_minmax(0,1fr)] md:gap-8 md:px-8 md:py-12">
+          <div className="overflow-hidden rounded-[16px] bg-[#0F172A]">
+            <picture>
+              <source media="(min-width: 768px)" srcSet="/images/buy or sell.png" />
+              <img
+                src="/images/blog mobile view.png"
+                alt="Premium real estate"
+                className="h-[263px] w-full object-cover object-center md:h-[300px] md:w-[600px]"
+              />
+            </picture>
           </div>
 
-          <div className="ml-[40px] min-w-0">
-            <span className="inline-flex h-[20px] items-center rounded-full bg-white/10 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
+          <div className="ml-0 min-w-0 md:ml-[40px]">
+            <span className="inline-flex h-[25px] items-center rounded-full bg-white/10 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75 md:h-[20px]">
               Featured
             </span>
 
-            <h2 className=" mt-4 max-w-[800px] font-['Plus_Jakarta_Sans'] text-[26px] font-extrabold leading-[1.15] tracking-[-0.03em] text-white sm:text-[30px] md:text-[36px]">
+            <h2 className="mt-4 max-w-[800px] font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[35px] tracking-[-0.03em] text-white sm:text-[30px] md:text-[36px] md:leading-[1.15]">
               The 2024 Institutional Real Estate Outlook:
-              <br />
+              <br className="hidden md:block" />
               Why Private Equity is Pivoting to School Assets
             </h2>
 
-            <p className="mt-4 max-w-[760px] text-[15px] leading-[26px] text-white/55 sm:text-[16px]">
+            <p className="mt-4 max-w-[760px] text-[12px] leading-[26px] text-white/55 sm:text-[16px]">
               An in-depth analysis of why K-12 education infrastructure has become the most
               resilient real estate asset class in India, and how fractional ownership is changing
               the entry barrier.
             </p>
 
-            <div className="mt-6 inline-flex h-[48px] items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[14px] font-bold text-white transition hover:bg-[#cf171d]">
+            <div className="mt-6 inline-flex h-[56px] w-full items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[16px] font-bold text-white transition hover:bg-[#cf171d] md:h-[48px] md:w-auto md:text-[14px]">
               Read Full Article
             </div>
           </div>
@@ -61,6 +64,14 @@ function LatestArticlesSection() {
   return (
     <section className="w-full bg-white">
       <div className="mx-auto w-full max-w-[1440px] px-4 pt-4 pb-4 sm:px-6 lg:px-8 xl:px-[9px]">
+        <div className="mb-6">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[32px] tracking-[-0.03em] text-[#111827]">
+            Latest Articles
+          </h2>
+          <p className="mt-1 text-[12px] leading-[20px] text-[#667085]">
+            Stay updated with the latest in real estate
+          </p>
+        </div>
         <div className="grid gap-6 lg:grid-cols-3">
           {articles.map((article) => (
             <Link
@@ -80,23 +91,23 @@ function LatestArticlesSection() {
 
                 <div className="px-5 pb-5 pt-4">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#E51C23]">
+                    <span className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#E51C23]">
                       {article.category}
                     </span>
-                    <span className="text-[12px] font-medium text-[#98A2B3]">{article.readTime}</span>
+                    <span className="text-[10px] font-medium text-[#98A2B3]">{article.readTime}</span>
                   </div>
 
-                  <h3 className="mt-3 min-h-[82px] font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-[1.35] tracking-[-0.02em] text-[#1E293B]">
+                  <h3 className="mt-3 min-h-[65px] font-['Plus_Jakarta_Sans'] text-[18px] font-bold leading-[1.35] tracking-[-0.02em] text-[#1E293B]">
                     {article.title}
                   </h3>
 
-                  <p className="mt-3 min-h-[72px] text-[14px] leading-[22px] text-[#667085]">
+                  <p className=" min-h-[55px] text-[12px] leading-[22px] text-[#667085]">
                     {article.description}
                   </p>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-[#F1F5F9] pt-4">
-                    <span className="text-[13px] text-[#98A2B3]">{article.date}</span>
-                    <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-[#E51C23]">
+                  <div className=" flex items-center justify-between border-t border-[#F1F5F9] pt-4">
+                    <span className="text-[10px] text-[#98A2B3]">{article.date}</span>
+                    <span className="inline-flex items-center gap-1 text-[12px] font-bold text-[#E51C23]">
                       <span>Read More</span>
                       <span aria-hidden="true">›</span>
                     </span>
@@ -202,7 +213,7 @@ function LatestArticlesPagination() {
 
 function CityGuideCard({ image, title, count }) {
   return (
-    <article className="group relative h-[235px] overflow-hidden rounded-[20px] bg-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+    <article className="group relative h-[293px] w-[calc(100vw-36px)] shrink-0 snap-start overflow-hidden rounded-[20px] bg-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)] md:h-[235px] md:w-auto md:shrink">
       <img
         src={image}
         alt={title}
@@ -238,15 +249,15 @@ function UltimateCityGuidesSection() {
     <section className="w-full bg-white">
       <div className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 xl:px-[9px]">
         <div className="mb-6 max-w-[900px]">
-          <h2 className="font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#111827] sm:text-[32px]">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#111827] sm:text-[32px]">
             Ultimate City Guides
           </h2>
-          <p className="mt-2 text-[16px] leading-[24px] text-[#667085]">
+          <p className="mt-2 text-[14px] leading-[24px] text-[#667085]">
             Master the micro-markets with our comprehensive neighborhood intelligence reports
           </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="flex w-full snap-x snap-mandatory gap-5 overflow-x-auto px-0 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
           {cities.map((city) => (
             <CityGuideCard key={city.title} {...city} />
           ))}
@@ -258,35 +269,35 @@ function UltimateCityGuidesSection() {
 
 function SubscribeBannerSection() {
   return (
-    <section className="w-full bg-white pb-8">
+    <section className="w-full bg-white ">
       <div className="w-full bg-[#111827] px-6 py-10 text-white sm:px-8 lg:px-12 xl:px-16">
         <div className="mx-auto flex w-full max-w-[1440px] flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
           <div className="max-w-[560px]">
-            <h2 className="font-['Plus_Jakarta_Sans'] text-[26px] font-extrabold leading-[1.15] tracking-[-0.03em] text-white sm:text-[30px]">
+            <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[1.15] tracking-[-0.03em] text-white sm:text-[30px]">
               Stay ahead of the market
             </h2>
-            <p className="mt-4 max-w-[520px] text-[15px] leading-[24px] text-white/62 sm:text-[16px]">
+            <p className="mt-4 max-w-[520px] text-[14px] leading-[24px] text-white/62 sm:text-[16px]">
               Get exclusive market reports, legal updates, and high-yield institutional
               opportunities delivered once a week. No spam.
             </p>
           </div>
 
           <div className="w-full max-w-[430px] lg:pt-1">
-            <div className="flex h-[56px] w-full max-w-[400px] items-stretch rounded-[16px] border border-[#FFFFFF33] bg-[#FFFFFF1A] p-[4px] backdrop-blur-[4px]">
+            <div className="flex h-[48px] w-full items-stretch rounded-[16px] border border-[#FFFFFF33] bg-[#FFFFFF1A] p-[4px] backdrop-blur-[4px]">
               <input
                 type="email"
                 placeholder="Your email address"
-                className="min-w-0 flex-1 bg-transparent px-5 text-[18px] font-normal text-white outline-none placeholder:font-normal placeholder:text-[18px] placeholder:opacity-100 placeholder:text-[#808899]"
+                className="min-w-0 flex-1 bg-transparent px-5 text-[18px] font-normal text-white outline-none placeholder:font-normal placeholder:text-[14px] placeholder:opacity-100 placeholder:text-[#808899]"
               />
               <button
                 type="button"
-                className="ml-[4px] inline-flex h-full w-[43%] min-w-[130px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[18px] font-medium text-white transition hover:bg-[#cf171d]"
+                className="ml-[4px] inline-flex h-full w-[43%] min-w-[130px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[14px] font-medium text-white transition hover:bg-[#cf171d]"
               >
                 Subscribe
               </button>
             </div>
 
-            <p className="mt-3 text-right text-[11px] leading-[16px] text-white/34">
+            <p className="mt-3 text-right font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[18px] tracking-[0] text-[#6B7280]">
               By subscribing, you agree to our Privacy Policy and Terms
             </p>
           </div>

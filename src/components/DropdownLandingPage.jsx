@@ -275,41 +275,41 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
 function GuidesSearchSection({ title, description }) {
   return (
     <section className="w-full border-b border-[#E5E7EB] bg-white text-[#111827]">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-4 py-8 text-center sm:px-6 lg:px-8 xl:px-[9px]">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-start px-5 pb-5 pt-5 text-left sm:items-center sm:px-6 sm:py-8 sm:text-center lg:px-8 xl:px-[9px]">
         <div className="max-w-[900px]">
-          <h1 className="font-['Plus_Jakarta_Sans'] text-[34px] font-extrabold leading-[42px] tracking-[-0.03em] text-[#111827] sm:text-[40px] sm:leading-[48px]">
+          <h1 className="h-[40px] font-['Plus_Jakarta_Sans'] text-[22px] font-bold leading-[40px] tracking-[0] text-[#111827] sm:h-auto sm:text-[40px] sm:font-extrabold sm:leading-[48px] sm:tracking-[-0.03em]">
             {title}
           </h1>
-          <p className="mt-2 text-[18px] font-normal leading-[28px] text-[#667085]">
+          <p className="mt-2 hidden text-[18px] font-normal leading-[28px] text-[#667085] sm:block">
             {description}
           </p>
         </div>
 
-        <div className="mt-8 flex w-full flex-col gap-3 md:flex-row md:items-center">
-          <div className="flex h-[52px] min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
-            <SearchIcon className="text-[#9CA3AF]" />
+        <div className="mt-4 flex h-[48px] w-full items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 shadow-none md:mt-8 md:h-auto md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+          <div className="flex h-full min-w-0 flex-1 items-center gap-3 overflow-hidden md:h-[52px] md:rounded-[12px] md:border md:border-[#E5E7EB] md:bg-[#F9FAFB] md:px-4 md:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
+            <SearchIcon className="h-4 w-4 text-[#9CA3AF]" />
             <input
               type="text"
               aria-label="Search guides"
               placeholder="Search for guides, laws, or market reports..."
-              className="min-w-0 flex-1 bg-transparent font-['Lato'] text-[14px] font-normal leading-[20px] text-[#111827] outline-none placeholder:text-[#94A3B8]"
+              className="min-w-0 flex-1 bg-transparent font-['Roboto'] text-[14px] font-normal leading-[21px] text-[#111827] outline-none placeholder:text-[#9CA3AF] md:font-['Lato'] md:leading-[20px] md:placeholder:text-[#94A3B8]"
             />
           </div>
 
           <button
             type="button"
-            className="inline-flex h-[52px] shrink-0 items-center justify-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-5 text-[14px] font-bold text-[#111827] md:w-[108px]"
+            className="inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center gap-2 rounded-[8px] bg-[#111827] text-[14px] font-bold text-white md:h-[52px] md:w-[108px] md:rounded-[12px] md:border md:border-[#E5E7EB] md:bg-white md:text-[#111827]"
           >
-            <TopicsIcon />
-            <span>Topics</span>
+            <FiltersIcon />
+            <span className="hidden md:inline">Topics</span>
           </button>
 
           <button
             type="button"
             aria-label="Search"
-            className="inline-flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] text-white"
+            className="inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-[8px] bg-[#E51C23] text-white md:h-[52px] md:w-[52px] md:rounded-[12px]"
           >
-            <SearchIcon className="text-white" />
+            <SearchIcon className="h-4 w-4 text-white" />
           </button>
         </div>
       </div>
