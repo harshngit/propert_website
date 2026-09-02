@@ -574,6 +574,26 @@ function SiteHeader() {
                 <div className="mt-3 grid gap-2 rounded-[12px] bg-slate-50 p-3">
                   {(navDropdowns[item.label] || []).map((option) => {
                     const label = typeof option === "string" ? option : option.label;
+                    const optionContent = (
+                      <span className="block">{label}</span>
+                    );
+
+                    if (typeof option !== "string") {
+                      return (
+                        <NavLink
+                          key={label}
+                          to={option.to}
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileNavOpen(null);
+                          }}
+                          className="rounded-[10px] px-3 py-2 text-left text-[13px] font-semibold text-[#374151] hover:bg-white hover:text-slate-950"
+                        >
+                          {optionContent}
+                        </NavLink>
+                      );
+                    }
+
                     return (
                       <button
                         key={label}
@@ -584,7 +604,7 @@ function SiteHeader() {
                         }}
                         className="rounded-[10px] px-3 py-2 text-left text-[13px] font-semibold text-[#374151] hover:bg-white hover:text-slate-950"
                       >
-                        {label}
+                        {optionContent}
                       </button>
                     );
                   })}

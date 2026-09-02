@@ -237,6 +237,8 @@ function InstitutionalPropertiesPage() {
     <PropertiesPage
       heroTitle="Institutional Opportunities"
       heroDescription="Exclusive access to high-value portfolios, commercial assets, and distressed debt opportunities for qualified institutional investors"
+      mobileHeroTitle
+      hideMobileHeroDescription
       showTopSearchBar={false}
       initialDrawerState={createInvestmentDrawerState}
       renderSidebar={(props) => <InvestmentSidebar {...props} />}

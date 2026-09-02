@@ -209,15 +209,33 @@ function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = 
   );
 }
 
-function HeroSearchSection({ title, description, areaLabel, filtersOpen, onToggleFilters }) {
+function HeroSearchSection({
+  title,
+  description,
+  areaLabel,
+  filtersOpen,
+  onToggleFilters,
+  mobileTitleStyle = false,
+  hideMobileDescription = false,
+}) {
   return (
     <section className="w-full border-b border-[#2A3343] bg-[#111827] text-white">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8 xl:px-[9px]">
         <div className="max-w-[1120px]">
-          <h1 className="text-[34px] font-semibold leading-[1.15] text-white sm:text-[40px]">
+          <h1
+            className={
+              mobileTitleStyle
+                ? "font-['Plus_Jakarta_Sans'] text-[22px] font-bold leading-[40px] tracking-[0] text-white sm:text-[40px] sm:font-semibold sm:leading-[1.15]"
+                : "text-[34px] font-semibold leading-[1.15] text-white sm:text-[40px]"
+            }
+          >
             {title}
           </h1>
-          <p className="mt-2 max-w-[1120px] text-[18px] font-normal leading-[1.45] text-white/85">
+          <p
+            className={`mt-2 max-w-[1120px] text-[18px] font-normal leading-[1.45] text-white/85 ${
+              hideMobileDescription ? "hidden sm:block" : ""
+            }`}
+          >
             {description}
           </p>
         </div>
@@ -1257,6 +1275,8 @@ function PropertiesPage({
   heroTitle,
   heroDescription,
   heroAreaLabel = "Mumbai, Andheri West",
+  mobileHeroTitle = false,
+  hideMobileHeroDescription = false,
 }) {
   const navigate = useNavigate();
   const areaLabel = "Mumbai, Andheri West";
@@ -1465,6 +1485,8 @@ function PropertiesPage({
             areaLabel={heroAreaLabel}
             filtersOpen={filtersOpen}
             onToggleFilters={() => setFiltersOpen((current) => !current)}
+            mobileTitleStyle={mobileHeroTitle}
+            hideMobileDescription={hideMobileHeroDescription}
           />
         )}
 
