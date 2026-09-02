@@ -29,7 +29,14 @@ function SectionHeading({
                 : "text-[30px]"
           }`}
         >
-          {title} {accent ? <span className="text-red-500">{accent}</span> : null}
+          {cityLandingMobile ? (
+            <>
+              <span className="sm:hidden">{title.replace(" Properties", "")}</span>
+              <span className="hidden sm:inline">{title}</span>
+            </>
+          ) : (
+            title
+          )} {accent ? <span className="text-red-500">{accent}</span> : null}
         </h2>
         <p
           className={`font-['Plus_Jakarta_Sans'] font-normal leading-6 text-[#6B7280] ${
