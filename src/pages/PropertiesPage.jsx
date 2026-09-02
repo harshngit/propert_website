@@ -459,10 +459,10 @@ function ResultCard({
       className={[
         item.context === "institutional"
           ? "flex h-[272px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+          : item.context === "auction"
+            ? "flex h-[215px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
           : "flex h-[203px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
-        selected
-          ? "border-[#FFEBEB] bg-[#FFF9F9]"
-          : "border-[#E5E7EB] bg-[#FFFFFF]",
+        "border-[#E5E7EB] bg-[#FFFFFF] hover:border-[#FFEBEB] hover:bg-[#FFF9F9] hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
     >
@@ -553,7 +553,7 @@ function ResultCard({
         <div className={`flex min-w-0 flex-1 flex-col justify-between ${item.context === "institutional" ? "h-full" : ""}`}>
           {/* PRICE / TITLE / LOCATION */}
           <div className="min-w-0">
-            <div className={item.context === "institutional" ? "flex items-baseline gap-[12px]" : ""}>
+            <div className={item.context === "institutional" || item.context === "auction" ? "flex items-baseline gap-[12px]" : ""}>
               <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[22px] text-[#111827]">
                 {item.priceDisplay || `₹${item.price}`}
               </h3>
@@ -563,7 +563,7 @@ function ResultCard({
               </span>
             </div>
 
-            <h4 className="mt-[9px] text-[18px] font-bold leading-[20px] text-[#111827]">
+            <h4 className="mt-[11px] text-[18px] font-bold leading-[20px] text-[#111827]">
               {item.title}
             </h4>
 
@@ -575,14 +575,21 @@ function ResultCard({
           </div>
 
           {/* PROPERTY TAGS */}
-          <div className={item.context === "institutional" ? "flex translate-y-[7.5px] flex-wrap items-center gap-x-[24px] gap-y-[8px]" : "flex flex-wrap items-center gap-x-[24px] gap-y-[8px]"}>
-            {item.tags.map((tag) => (
+          <div className={item.context === "institutional" ? "flex translate-y-[7.5px] flex-wrap items-center gap-x-[24px] gap-y-[8px]" : "mt-10 flex flex-wrap items-center gap-x-[24px] gap-y-[8px]"}>
+            {item.context === "auction" ? (
+              <>
+                <span className="auction-date inline-flex items-center gap-[8px] whitespace-nowrap font-['Inter'] text-[14px] font-medium leading-[20px] tracking-[0] text-[#111827]">
+                  <img src="/icons/auction icon.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" />
+                  {item.auctionDate}
+                </span>
+                <span className="inline-flex items-center rounded-[6px] bg-[#F9FAFB] px-[14px] py-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] tracking-[0] text-[#4B5563]">
+                  E-Auction
+                </span>
+              </>
+            ) : item.tags.map((tag) => (
               <span
                 key={tag}
-                className={[
-                  "whitespace-nowrap rounded-[6px] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-[16px]",
-                  "bg-[#F9FAFB] text-[#6B7280]",
-                ].join(" ")}
+                className="whitespace-nowrap rounded-[6px] bg-[#F9FAFB] px-[10px] py-[6px] text-[10px] font-semibold uppercase leading-[16px] text-[#6B7280]"
               >
                 {tag}
               </span>
@@ -601,9 +608,23 @@ function ResultCard({
             </div>
           ) : null}
 
-          {/* INSTITUTIONAL METADATA / RESIDENTIAL SUMMARY */}
+          {/* OPPORTUNITY METADATA */}
           <div className={item.context === "institutional" ? "absolute left-[20px] right-[20px] top-[112px] flex h-[60px] items-start border-b border-[#F3F4F6] pb-[12px]" : "flex h-[43px] items-center gap-[16px] border-b border-[#F3F4F6] pb-[12px]"}>
-            {item.context === "institutional" ? (
+            {item.context === "auction" ? (
+              <>
+                <span className="inline-flex items-center gap-[6px] whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-medium leading-[21px] tracking-[0] text-[#111827]">
+                  <BedIcon />
+                  {item.details}
+                </span>
+                <span className="inline-flex items-center gap-[6px] whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-medium leading-[21px] tracking-[0.59%] text-[#111827]">
+                  <AreaIcon />
+                  {item.area}
+                </span>
+                <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-semibold leading-[15px] text-white">
+                  {item.match}
+                </div>
+              </>
+            ) : item.context === "institutional" ? (
               <div className="mt-2 grid w-full grid-cols-3 gap-4 text-left">
                 <div>
                   <div className="font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Asset Type</div>
@@ -635,12 +656,19 @@ function ResultCard({
             )}
           </div>
 
+          {item.context === "auction" ? (
+            <div className="mt-[16px] flex flex-col items-end gap-[6px] text-right">
+              <div className="source-bank-label text-[10px] font-medium uppercase leading-[16px] tracking-[0.6px] text-[#9CA3AF]">Source Bank</div>
+              <div className="flex items-center justify-end gap-[8px] font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-[20px] text-[#1E293B]"><img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[32px] shrink-0 rounded-[2px] object-contain" />{item.sourceBank}</div>
+            </div>
+          ) : null}
+
           {/* ENQUIRE + PHONE BUTTON */}
-          <div className={item.context === "institutional" ? "pointer-events-auto absolute bottom-[20px] right-[20px] flex items-center gap-[12px]" : "flex items-center gap-[12px]"}>
+          <div className={item.context === "institutional" ? "pointer-events-auto absolute bottom-[20px] right-[20px] flex items-center gap-[12px]" : "mt-4 flex items-center gap-[12px]"}>
             <button
               type="button"
               onClick={(event) => event.stopPropagation()}
-              className="cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
+              className={item.context === "auction" ? "cta-red inline-flex h-[48px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white" : "cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"}
             >
               {item.actionLabel || "Enquire Now"}
             </button>
@@ -681,14 +709,14 @@ function ResultTileCard({
         onClick={onClick}
         className={[
           "flex flex-col overflow-hidden border",
-          item.context === "institutional"
+          item.context === "auction"
+            ? "h-[530px] w-full min-w-0 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[510px]"
+            : item.context === "institutional"
             ? "h-[510px] w-full min-w-0 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[500.5px]"
             : featuredLayout
             ? "h-[460px] w-full min-w-0 flex-1 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[500.5px]"
             : "h-[460px] rounded-[16px] shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:h-[500.5px]",
-          selected
-            ? "border-[#FFEBEB] bg-[#FFF9F9]"
-          : "border-[#E5E7EB] bg-white",
+          "border-[#E5E7EB] bg-white hover:border-[#FFEBEB] hover:bg-[#FFF9F9] hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
         onClick ? "cursor-pointer" : "",
       ].join(" ")}
     >
@@ -758,7 +786,7 @@ function ResultTileCard({
             )}
           </div>
 
-          {showMatchBadge && item.context !== "institutional" && (
+          {showMatchBadge && item.context !== "institutional" && item.context !== "auction" && (
             <span
               className={[
                 "inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px] text-[10px] font-bold leading-[15px] text-white shadow-sm",
@@ -783,11 +811,21 @@ function ResultTileCard({
         </button>
       </div>
 
-    {item.context === "institutional" ? (
+    {item.context === "auction" ? (
+      <div className="flex h-[315px] flex-1 flex-col bg-white p-[16px] md:hidden">
+        <div className="flex items-baseline justify-between"><div className="flex items-baseline gap-[12px]"><div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div><div className="text-[12px] leading-[18px] text-[#6B7280]">{item.rateDisplay}</div></div><div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div></div>
+        <h4 className="mt-[10px] block min-h-[24px] whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[15px] font-bold leading-[24px] text-[#111827]">{item.title}</h4>
+        <div className="mt-[4px] flex items-center gap-[5px] text-[12px] leading-[18px] text-[#6B7280]"><ResultPinIcon /><span>{item.location}</span></div>
+        <div className="mt-[20px] flex items-center gap-[18px] border-y border-[#F3E4E4] py-[12px] text-[12px] font-semibold leading-[20px] text-[#111827]"><span className="inline-flex items-center gap-[6px] whitespace-nowrap"><BedIcon />{item.details}</span><span className="inline-flex items-center gap-[6px] whitespace-nowrap"><AreaIcon />{item.area}</span></div>
+        <div className="mt-[16px] flex items-center gap-[10px] text-[12px] font-medium leading-[20px] text-[#111827]"><img src="/icons/auction icon.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" /><span className="auction-date">{item.auctionDate}</span><span className="rounded-[6px] bg-[#F9FAFB] px-[8px] py-[5px] text-[10px] font-semibold uppercase text-[#475569]">E-Auction</span></div>
+        <div className="mt-[16px] flex items-center justify-between"><span className="source-bank-label text-[10px] font-medium uppercase leading-[16px] tracking-[0.6px] text-[#9CA3AF]">Source Bank</span><span className="flex items-center gap-[8px] text-[12px] font-semibold leading-[20px] text-[#111827]"><img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[24px] shrink-0 rounded-[2px] object-contain" />{item.sourceBank}</span></div>
+        <div className="mt-3 flex items-center gap-[10px]"><button type="button" onClick={(event) => event.stopPropagation()} className="cta-red inline-flex h-[48px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[14px] font-bold leading-[20px] text-white">{item.actionLabel}</button><button type="button" aria-label="Call" onClick={(event) => event.stopPropagation()} className="inline-flex h-[48px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button></div>
+      </div>
+    ) : item.context === "institutional" ? (
       <div className="flex h-[315px] flex-1 flex-col bg-white p-[16px] md:hidden">
         <div className="flex items-start justify-between">
           <div>
-            <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div>
+            <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div>
             <div className="text-[9px] leading-[14px] text-[#6B7280]">{item.rateDisplay}</div>
           </div>
           <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div>
@@ -815,7 +853,7 @@ function ResultTileCard({
     <div
   className={[
     "flex flex-1 flex-col",
-    item.context === "institutional" ? "hidden md:flex" : "",
+    item.context === "institutional" || item.context === "auction" ? "hidden md:flex" : "",
     featuredLayout ? "p-[16px] sm:p-[20px]" : "gap-[8px] p-[16px] sm:gap-[12px]",
   ].join(" ")}
 >
@@ -1394,6 +1432,69 @@ function PropertiesPage({
           actionLabel: "Verify & Request Access",
           };
         })
+      : resultContext === "auction"
+        ? propertyResults.map((item, index) => {
+            const auctionContexts = [
+              {
+                priceDisplay: "₹2.1 Cr",
+                rateDisplay: "₹22,400/sq.ft",
+                title: "Lodha World One",
+                location: "Lower Parel, Mumbai - 400013",
+                details: "3 BHK",
+                area: "1850 sqft",
+                match: "95% Match",
+                auctionDate: "Auction: Oct 28, 2023 | 11:30 AM",
+              },
+              {
+                priceDisplay: "₹4.8 Cr",
+                rateDisplay: "₹19,800/sq.ft",
+                title: "DLF Commercial Tower",
+                location: "Gurugram, Haryana - 122002",
+                details: "Office Space",
+                area: "2420 sqft",
+                match: "91% Match",
+                auctionDate: "Auction: Nov 06, 2023 | 12:00 PM",
+              },
+              {
+                priceDisplay: "₹1.6 Cr",
+                rateDisplay: "₹12,500/sq.ft",
+                title: "Green Valley Residency",
+                location: "Bengaluru, Karnataka - 560103",
+                details: "3 BHK",
+                area: "1280 sqft",
+                match: "88% Match",
+                auctionDate: "Auction: Nov 14, 2023 | 10:30 AM",
+              },
+              {
+                priceDisplay: "₹3.2 Cr",
+                rateDisplay: "₹15,600/sq.ft",
+                title: "Marina Business Centre",
+                location: "Chennai, Tamil Nadu - 600018",
+                details: "Commercial Office",
+                area: "2050 sqft",
+                match: "86% Match",
+                auctionDate: "Auction: Nov 21, 2023 | 02:00 PM",
+              },
+              {
+                priceDisplay: "₹95 Lakh",
+                rateDisplay: "₹8,900/sq.ft",
+                title: "Skyline Heights",
+                location: "Pune, Maharashtra - 411045",
+                details: "2 BHK",
+                area: "1065 sqft",
+                match: "84% Match",
+                auctionDate: "Auction: Nov 29, 2023 | 11:00 AM",
+              },
+            ];
+
+            return {
+              ...item,
+              context: "auction",
+              ...auctionContexts[index % auctionContexts.length],
+              sourceBank: "State Bank of India",
+              actionLabel: "Enquire Now",
+            };
+          })
       : propertyResults;
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);

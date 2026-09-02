@@ -37,6 +37,27 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("./Web Fonts/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.bank-auction-page,
+.bank-auction-page * {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+
+.bank-auction-page .source-bank-label {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+
+.bank-auction-page .auction-date {
+  font-family: "Inter", sans-serif !important;
+}
+
 :root {
   color-scheme: light;
   --font-sans: "Plus Jakarta Sans", sans-serif;
