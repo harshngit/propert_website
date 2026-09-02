@@ -457,7 +457,9 @@ function ResultCard({
     <article
       onClick={onClick}
       className={[
-        "flex h-[203px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
+        item.context === "institutional"
+          ? "flex h-[272px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+          : "flex h-[203px] w-full overflow-hidden rounded-[16px] border shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
         selected
           ? "border-[#FFEBEB] bg-[#FFF9F9]"
           : "border-[#E5E7EB] bg-[#FFFFFF]",
@@ -543,21 +545,21 @@ function ResultCard({
       </div>
 
       {/* PROPERTY CONTENT */}
-      <div className="flex min-w-0 flex-1 justify-between p-[24px]">
+      <div className={`flex min-w-0 flex-1 justify-between ${item.context === "institutional" ? "relative p-[20px]" : "p-[24px]"}`}>
         {/* ================================================================ */}
         {/* LEFT SIDE                                                        */}
         {/* ================================================================ */}
 
-        <div className="flex min-w-0 flex-1 flex-col justify-between">
+        <div className={`flex min-w-0 flex-1 flex-col justify-between ${item.context === "institutional" ? "h-full" : ""}`}>
           {/* PRICE / TITLE / LOCATION */}
           <div className="min-w-0">
-            <div className="">
+            <div className={item.context === "institutional" ? "flex items-baseline gap-[12px]" : ""}>
               <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[22px] text-[#111827]">
-                ₹{item.price}
+                {item.priceDisplay || `₹${item.price}`}
               </h3>
 
               <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
-                ₹{item.rate}
+                {item.rateDisplay || `₹${item.rate}`}
               </span>
             </div>
 
@@ -573,7 +575,7 @@ function ResultCard({
           </div>
 
           {/* PROPERTY TAGS */}
-          <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[8px]">
+          <div className={item.context === "institutional" ? "flex translate-y-[7.5px] flex-wrap items-center gap-x-[24px] gap-y-[8px]" : "flex flex-wrap items-center gap-x-[24px] gap-y-[8px]"}>
             {item.tags.map((tag) => (
               <span
                 key={tag}
@@ -592,37 +594,55 @@ function ResultCard({
         {/* RIGHT SIDE                                                       */}
         {/* ================================================================ */}
 
-        <div className="ml-[24px] flex shrink-0 flex-col items-end justify-between">
-          {/* BHK / AREA / MATCH */}
-          <div className="flex h-[43px] items-center gap-[16px] border-b border-[#F3F4F6] pb-[12px]">
-            {/* BHK */}
-            <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
-              <BedIcon />
-
-              {item.details}
-            </span>
-
-            {/* AREA */}
-            <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
-              <AreaIcon />
-
-              {item.area}
-            </span>
-
-            {/* MATCH */}
-            <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
+        <div className={item.context === "institutional" ? "pointer-events-none absolute inset-0 m-0 block" : "ml-[24px] flex shrink-0 flex-col items-end justify-between"}>
+          {item.context === "institutional" ? (
+            <div className="absolute right-[20px] top-[20px] whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
               {item.match}
             </div>
+          ) : null}
+
+          {/* INSTITUTIONAL METADATA / RESIDENTIAL SUMMARY */}
+          <div className={item.context === "institutional" ? "absolute left-[20px] right-[20px] top-[112px] flex h-[60px] items-start border-b border-[#F3F4F6] pb-[12px]" : "flex h-[43px] items-center gap-[16px] border-b border-[#F3F4F6] pb-[12px]"}>
+            {item.context === "institutional" ? (
+              <div className="mt-2 grid w-full grid-cols-3 gap-4 text-left">
+                <div>
+                  <div className="font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Asset Type</div>
+                  <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-medium leading-[20px] tracking-[0] text-[#111827]">{item.details}</div>
+                </div>
+                <div>
+                  <div className="font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Total Area</div>
+                  <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-medium leading-[20px] tracking-[0] text-[#111827]">{item.area}</div>
+                </div>
+                <div>
+                  <div className="font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Status</div>
+                  <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[14px] font-medium leading-[20px] tracking-[0] text-[#111827]">{item.status}</div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
+                  <BedIcon />
+                  {item.details}
+                </span>
+                <span className="inline-flex items-center gap-[6px] whitespace-nowrap text-[14px] font-semibold uppercase leading-[16px] text-[#111827]">
+                  <AreaIcon />
+                  {item.area}
+                </span>
+                <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
+                  {item.match}
+                </div>
+              </>
+            )}
           </div>
 
           {/* ENQUIRE + PHONE BUTTON */}
-          <div className="flex items-center gap-[12px]">
+          <div className={item.context === "institutional" ? "pointer-events-auto absolute bottom-[20px] right-[20px] flex items-center gap-[12px]" : "flex items-center gap-[12px]"}>
             <button
               type="button"
               onClick={(event) => event.stopPropagation()}
               className="cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"
             >
-              Enquire Now
+              {item.actionLabel || "Enquire Now"}
             </button>
 
             <button
@@ -661,7 +681,9 @@ function ResultTileCard({
         onClick={onClick}
         className={[
           "flex flex-col overflow-hidden border",
-          featuredLayout
+          item.context === "institutional"
+            ? "h-[510px] w-full min-w-0 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[500.5px]"
+            : featuredLayout
             ? "h-[460px] w-full min-w-0 flex-1 rounded-[16px] shadow-[0_4px_20px_0_rgba(15,23,42,0.05)] sm:h-[500.5px]"
             : "h-[460px] rounded-[16px] shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:h-[500.5px]",
           selected
@@ -736,7 +758,7 @@ function ResultTileCard({
             )}
           </div>
 
-          {showMatchBadge && (
+          {showMatchBadge && item.context !== "institutional" && (
             <span
               className={[
                 "inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px] text-[10px] font-bold leading-[15px] text-white shadow-sm",
@@ -761,9 +783,39 @@ function ResultTileCard({
         </button>
       </div>
 
+    {item.context === "institutional" ? (
+      <div className="flex h-[315px] flex-1 flex-col bg-white p-[16px] md:hidden">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div>
+            <div className="text-[9px] leading-[14px] text-[#6B7280]">{item.rateDisplay}</div>
+          </div>
+          <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div>
+        </div>
+        <h4 className="mt-[7px] truncate text-[15px] font-bold leading-[20px] text-[#111827]">{item.title}</h4>
+        <div className="mt-[4px] flex items-center gap-[5px] text-[12px] leading-[15px] text-[#6B7280]">
+          <ResultPinIcon />
+          <span>{item.location}</span>
+        </div>
+        <div className="mt-[20px] grid grid-cols-3 gap-[10px] border-y border-[#F3F4F6] py-[10px]">
+          <div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Asset Type</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] tracking-[0] text-[#111827]">Industrial /<br />Warehousing</div></div>
+          <div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Total Area</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] tracking-[0] text-[#111827]">850,000 sq.ft<br />(Leased)</div></div>
+          <div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] tracking-[0] text-[#475569CC]">Status</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] tracking-[0] text-[#111827]">98% Occupied<br />Tenants</div></div>
+        </div>
+        <div className="mt-[12px] flex items-center gap-[8px]">
+          {item.tags.map((tag) => <span key={tag} className="inline-flex h-[24px] items-center rounded-[5px] bg-[#F9FAFB] px-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] tracking-[0] text-[#4B5563]">{tag}</span>)}
+        </div>
+        <div className="mt-auto flex items-center gap-[10px]">
+          <button type="button" onClick={(event) => event.stopPropagation()} className="cta-red inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[12px] font-bold leading-[18px] text-white">{item.actionLabel}</button>
+          <button type="button" aria-label="Call" onClick={(event) => event.stopPropagation()} className="inline-flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button>
+        </div>
+      </div>
+    ) : null}
+
     <div
   className={[
     "flex flex-1 flex-col",
+    item.context === "institutional" ? "hidden md:flex" : "",
     featuredLayout ? "p-[16px] sm:p-[20px]" : "gap-[8px] p-[16px] sm:gap-[12px]",
   ].join(" ")}
 >
@@ -785,7 +837,7 @@ function ResultTileCard({
             : "text-[17px] leading-[22px]",
         ].join(" ")}
       >
-        ₹{item.price}
+        {item.priceDisplay || `₹${item.price}`}
       </h3>
 
       <span
@@ -796,7 +848,7 @@ function ResultTileCard({
             : "text-[12px] leading-[18px]",
         ].join(" ")}
       >
-        ₹{item.rate}
+        {item.rateDisplay || `₹${item.rate}`}
       </span>
     </div>
 
@@ -900,7 +952,7 @@ function ResultTileCard({
           : "h-[36px] text-[14px] sm:h-[40px]",
       ].join(" ")}
     >
-      Enquire Now
+      {item.actionLabel || "Enquire Now"}
     </button>
 
     {/* PHONE */}
@@ -1076,11 +1128,11 @@ function MapResultCard({
       <div className="flex min-w-0 flex-1 flex-col gap-[8px] p-[12px]">
         <div className="flex items-baseline justify-between gap-[8px]">
           <h3 className="whitespace-nowrap text-[18px] font-extrabold leading-[24px] text-[#111827]">
-            ₹{item.price}
+            {item.priceDisplay || `₹${item.price}`}
           </h3>
 
           <span className="whitespace-nowrap text-[11px] leading-[18px] text-[#6B7280]">
-            ₹{item.rate}
+            {item.rateDisplay || `₹${item.rate}`}
           </span>
         </div>
 
@@ -1127,7 +1179,7 @@ function MapResultCard({
             onClick={(event) => event.stopPropagation()}
             className="cta-red inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
           >
-            Enquire Now
+            {item.actionLabel || "Enquire Now"}
           </button>
 
           <button
@@ -1262,8 +1314,6 @@ function parsePriceValue(label) {
 /*                                  DATA                                      */
 /* -------------------------------------------------------------------------- */
 
-const results = propertyResults;
-
 /* -------------------------------------------------------------------------- */
 /*                                    PAGE                                    */
 /* -------------------------------------------------------------------------- */
@@ -1277,8 +1327,26 @@ function PropertiesPage({
   heroAreaLabel = "Mumbai, Andheri West",
   mobileHeroTitle = false,
   hideMobileHeroDescription = false,
+  resultContext = "residential",
 }) {
   const navigate = useNavigate();
+  const results =
+    resultContext === "institutional"
+      ? propertyResults.map((item) => ({
+          ...item,
+          priceDisplay: "₹350 Cr – ₹400 Cr",
+          rateDisplay: "Est. Yield: 8.5% - 9%",
+          title: "Industrial Warehouse Portfolio",
+          location: "Navi Mumbai",
+          context: "institutional",
+          details: "Industrial / Warehousing",
+          area: "850,000 sq.ft (Leased)",
+          status: "98% Occupied Tenants",
+          match: "89% Match",
+          tags: ["PRE-LEASED", "RERA REGISTERED"],
+          actionLabel: "Verify & Request Access",
+        }))
+      : propertyResults;
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);
   const [maxPrice, setMaxPrice] = React.useState(82);

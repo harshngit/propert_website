@@ -239,6 +239,7 @@ function InstitutionalPropertiesPage() {
       heroDescription="Exclusive access to high-value portfolios, commercial assets, and distressed debt opportunities for qualified institutional investors"
       mobileHeroTitle
       hideMobileHeroDescription
+      resultContext="institutional"
       showTopSearchBar={false}
       initialDrawerState={createInvestmentDrawerState}
       renderSidebar={(props) => <InvestmentSidebar {...props} />}
