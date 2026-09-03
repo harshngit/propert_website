@@ -26,30 +26,33 @@ function BusinessGrowthPromoSection() {
 
   return (
     <section className="w-full bg-white">
-      <div className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 xl:px-[9px]">
-        <h2 className="text-center font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[1.2] tracking-[-0.03em] text-[#111827] sm:text-[28px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 pt-4 pb-8 sm:px-6 lg:px-8 lg:py-8 xl:px-[9px]">
+        <h2 className="text-center font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[30px] tracking-[0] text-[#111827] sm:text-[28px] sm:leading-[1.2] sm:tracking-[-0.03em]">
           Grow Your Business with PropertySerch
         </h2>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+       <div className="mt-5 grid gap-5 lg:mt-8 lg:grid-cols-3">
           {cards.map((card) => (
             <article
               key={card.title}
               className="flex h-full flex-col rounded-[22px] border border-[#E5E7EB] bg-white px-7 py-8 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
             >
-              <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-[1.25] tracking-[-0.02em] text-[#111827]">
+              <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-[25px] tracking-[-0.39%] text-[#111827] lg:leading-[1.25] lg:tracking-[-0.02em]">
                 {card.title}
               </h3>
 
-              <p className="mt-4 whitespace-pre-line text-[14px] leading-[24px] text-[#667085]">
+              <p className="mt-4 whitespace-pre-line font-['Plus_Jakarta_Sans'] text-[14px] leading-[22.75px] tracking-[-3.13%] text-[#6B7280] lg:leading-[24px] lg:tracking-normal">
                 {card.body}
               </p>
 
               <button
                 type="button"
-                className="mt-10 inline-flex items-center gap-2 whitespace-nowrap text-[14px] font-semibold text-[#E51C23] transition hover:text-[#cc171d]"
+                className="mt-5 inline-flex items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[16px] font-semibold leading-[24px] tracking-[-0.78%] text-[#E51C23] transition hover:text-[#cc171d] lg:mt-10 lg:text-[14px] lg:leading-normal lg:tracking-normal"
               >
-                <span>{card.action}</span>
+                <span className="lg:hidden">
+                  {card.title === "Become Builder Partner" || card.title === "Become Franchise Partner" ? "Grow Business" : card.action}
+                </span>
+                <span className="hidden lg:inline">{card.action}</span>
                 <span aria-hidden="true">→</span>
               </button>
             </article>
@@ -84,34 +87,34 @@ function CareersPromoSection() {
 
   return (
     <section className="w-full bg-white">
-      <div className="relative left-1/2 w-screen -translate-x-1/2 bg-[#0F172A] px-4 py-10 text-white sm:px-6 lg:px-8 lg:py-14">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 bg-[#111827] px-4 py-6 text-white sm:px-6 lg:px-8 lg:py-14">
         <div className="mx-auto grid w-full max-w-[1270px] gap-8 lg:grid-cols-[minmax(0,1fr)_374px] lg:items-center lg:gap-10 xl:gap-12">
           <div className=" max-w-[720px]">
-            <span className="inline-flex h-[22px] items-center rounded-full bg-white/10 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white/80">
+            <span className="inline-flex h-[22px] items-center rounded-full bg-white/10 px-3 font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] tracking-[1px] text-white/80">
               Careers at PropertySerch
             </span>
 
-            <h2 className="mt-5 max-w-[720px] font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[1.22] tracking-[-0.01em] text-white sm:text-[34px] lg:text-[36px]">
+            <h2 className="mt-5 max-w-[720px] font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[36px] tracking-[0] text-white sm:text-[34px] lg:text-[36px] lg:leading-[1.22] lg:tracking-[-0.01em]">
               Join Our Team to that&apos;s building the Future
               <span className="block">of Real Estate</span>
             </h2>
 
-            <p className="mt-5 max-w-[720px] text-[16px] leading-[28px] text-[#9CA3AF] sm:text-[18px]">
+            <p className="mt-5 max-w-[720px] font-['Plus_Jakarta_Sans'] text-[12px] leading-[18px] text-[#9CA3AF] sm:text-[18px] lg:text-[16px] lg:leading-[28px]">
               We&apos;re more than a portal, We&apos;re an operating system. We hire builders, thinkers,
               and executors who are passionate about transparency and efficiency in real estate
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row lg:mt-8">
               <button
                 type="button"
-                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] bg-[#E51C23] px-7 text-[16px] font-extrabold text-white transition hover:bg-[#FFFFFF] sm:w-auto sm:min-w-[255px] sm:text-[16px]"
+                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] bg-[#E51C23] px-7 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[24px] text-white transition hover:bg-[#FFFFFF] sm:w-auto sm:min-w-[255px] sm:text-[16px] lg:font-extrabold"
               >
                 Contact Institutional Desk
               </button>
 
               <button
                 type="button"
-                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] border border-white/15 bg-transparent px-7 text-[16px] font-extrabold text-white transition hover:bg-white sm:w-auto sm:min-w-[205px] sm:text-[16px]"
+                className="dark-hover-btn inline-flex h-[54px] w-full items-center justify-center rounded-[14px] border border-white/15 bg-transparent px-7 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[24px] text-white transition hover:bg-white sm:w-auto sm:min-w-[205px] sm:text-[16px] lg:font-extrabold"
               >
                 Sample Data Room
               </button>
@@ -128,24 +131,22 @@ function CareersPromoSection() {
           >
             <form className="flex flex-col gap-4" onSubmit={(event) => event.preventDefault()}>
               <label className="block">
-                <span className="mb-2 block text-[12px] font-bold leading-4 text-white/95">
+                <span className="mb-2 block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-white/95 lg:leading-4">
                   Full Name
                 </span>
                 <input
                   type="text"
                   placeholder="Enter your full name"
-                  className="h-[34px] w-full rounded-[8px] border border-white/0 bg-white/8 px-4 text-[12px] text-white outline-none placeholder:text-white/45 focus:border-white/15 focus:ring-1 focus:ring-white/10"
-                  style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+                  className="h-[34px] w-full rounded-[8px] border border-white/10 bg-white/10 px-4 font-['Lato'] text-[14px] leading-[21px] text-white outline-none placeholder:text-[#9CA3AF] focus:border-white/15 focus:ring-1 focus:ring-white/10 lg:border-white/0 lg:bg-white/8 lg:font-sans lg:text-[12px] lg:leading-normal lg:placeholder:text-white/45"
                 />
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-[12px] font-bold leading-4 text-white/95">
+                <span className="mb-2 block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-white/95 lg:leading-4">
                   Mobile Number
                 </span>
                 <div
-                  className="flex h-[34px] items-center overflow-hidden rounded-[8px] border border-white/0 px-0 text-[12px] text-white/45 focus-within:ring-1 focus-within:ring-white/10"
-                  style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+                  className="flex h-[34px] items-center overflow-hidden rounded-[8px] border border-white/10 bg-white/10 px-0 font-['Lato'] text-[14px] leading-[21px] text-white/45 focus-within:ring-1 focus-within:ring-white/10 lg:border-white/0 lg:bg-white/8 lg:font-sans lg:text-[12px] lg:leading-normal"
                 >
                   <span className="shrink-0 border-r border-white/10 px-4 text-white/55">
                     +91
@@ -153,25 +154,24 @@ function CareersPromoSection() {
                   <input
                     type="tel"
                     placeholder="Enter your mobile number"
-                    className="min-w-0 flex-1 bg-transparent px-3 text-white outline-none placeholder:text-white/45"
+                    className="min-w-0 flex-1 bg-transparent px-3 text-white outline-none placeholder:text-[#9CA3AF] lg:placeholder:text-white/45"
                   />
                 </div>
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-[12px] font-bold leading-4 text-white/95">
+                <span className="mb-2 block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-white/95 lg:leading-4">
                   Email Address
                 </span>
                 <input
                   type="email"
                   placeholder="Enter your email address"
-                  className="h-[34px] w-full rounded-[8px] border border-white/0 bg-white/8 px-4 text-[12px] text-white outline-none placeholder:text-white/45 focus:border-white/15 focus:ring-1 focus:ring-white/10"
-                  style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+                  className="h-[34px] w-full rounded-[8px] border border-white/10 bg-white/10 px-4 font-['Lato'] text-[14px] leading-[21px] text-white outline-none placeholder:text-[#9CA3AF] focus:border-white/15 focus:ring-1 focus:ring-white/10 lg:border-white/0 lg:bg-white/8 lg:font-sans lg:text-[12px] lg:leading-normal lg:placeholder:text-white/45"
                 />
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-[12px] font-bold leading-4 text-white/95">
+                <span className="mb-2 block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-white/95 lg:leading-4">
                   Position of Interest
                 </span>
                 <div className="relative" ref={positionFieldRef}>
@@ -201,12 +201,11 @@ function CareersPromoSection() {
                     aria-expanded={positionOpen}
                     onClick={() => setPositionOpen((open) => !open)}
                     className={[
-                      "flex h-[34px] w-full items-center rounded-[8px] border bg-white/8 px-4 pl-9 text-left text-[12px] text-white outline-none transition",
+                      "flex h-[34px] w-full items-center rounded-[8px] border bg-white/10 px-4 pl-9 text-left font-['Lato'] text-[14px] leading-[21px] text-white outline-none transition lg:bg-white/8 lg:font-sans lg:text-[12px] lg:leading-normal",
                       positionOpen
                         ? "border-white/20 ring-1 ring-white/10"
-                        : "border-white/0 hover:border-white/10",
+                        : "border-white/10 hover:border-white/10 lg:border-white/0",
                     ].join(" ")}
-                    style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
                   >
                     <span className={positionOfInterest ? "text-white" : "text-white/45"}>
                       {positionOfInterest || "Select the role you're applying for"}
@@ -265,14 +264,14 @@ function CareersPromoSection() {
                   defaultChecked
                   className="mt-[1px] h-[16px] w-[16px] shrink-0 cursor-pointer rounded-[2px] border-[#E51C23] accent-[#E51C23]"
                 />
-                <span className="text-[9px] leading-[14px] text-white/60">
+                <span className="font-['Plus_Jakarta_Sans'] text-[10px] leading-[14px] text-white/60 lg:text-[9px] lg:leading-[14px]">
                   I agree to be contacted regarding my application and accept the Privacy Policy
                 </span>
               </label>
 
               <button
                 type="button"
-                className="dark-hover-btn mt-2 inline-flex h-[36px] w-full items-center justify-center rounded-[8px] bg-[#E51C23] text-[14px] font-bold text-white transition"
+                className="dark-hover-btn mt-2 inline-flex h-[36px] w-full items-center justify-center rounded-[8px] bg-[#E51C23] font-['Inter'] text-[14px] font-bold leading-[21px] text-white transition lg:font-bold"
               >
                 Submit Application
               </button>
@@ -298,10 +297,10 @@ function GuidesSearchBenefitsSection() {
 
   return (
     <section className="w-full bg-white">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pt-[90px] sm:px-6 lg:px-8 xl:px-[9px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 pt-[40px] sm:px-6 lg:px-8 xl:px-[9px]">
         <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
           <div>
-            <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[1.2] tracking-[-0.02em] text-[#111827]">
+            <h3 className="font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[28px] tracking-[0] text-[#111827] lg:text-[20px] lg:leading-[1.2] lg:tracking-[-0.02em]">
               Popular Real Estate Guides
             </h3>
 
@@ -317,10 +316,10 @@ function GuidesSearchBenefitsSection() {
                   </div>
 
                   <div className="min-w-0">
-                    <h4 className="font-['Plus_Jakarta_Sans'] text-[15px] font-bold leading-[1.3] text-[#111827]">
+                    <h4 className="font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[17.5px] text-[#111827] lg:text-[15px] lg:leading-[1.3]">
                       {item.title}
                     </h4>
-                    <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.08em] text-[#98A2B3]">
+                    <p className="mt-1 font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] tracking-[1.17%] text-[#9CA3AF]">
                       {item.meta}
                     </p>
                   </div>
@@ -330,7 +329,7 @@ function GuidesSearchBenefitsSection() {
           </div>
 
           <div>
-            <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[1.2] tracking-[-0.02em] text-[#111827]">
+            <h3 className="font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[28px] tracking-[0] text-[#111827] lg:text-[20px] lg:leading-[1.2] lg:tracking-[-0.02em]">
               Popular Searches
             </h3>
 
@@ -347,7 +346,7 @@ function GuidesSearchBenefitsSection() {
           </div>
 
           <div>
-            <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[1.2] tracking-[-0.02em] text-[#111827]">
+            <h3 className="font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[28px] tracking-[0] text-[#111827] lg:text-[20px] lg:leading-[1.2] lg:tracking-[-0.02em]">
               Why PropertySerch
             </h3>
 
@@ -355,7 +354,7 @@ function GuidesSearchBenefitsSection() {
               {benefits.map((benefit) => (
                 <div
                   key={benefit}
-                  className="flex h-[44px] items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-5 text-center font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-[#4B5563] shadow-[0_1px_2px_rgba(15,23,42,0.03)]"
+                  className="flex h-[44px] items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-5 text-center font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[24px] text-[#4B5563] shadow-[0_1px_2px_rgba(15,23,42,0.03)] lg:text-[14px] lg:leading-normal"
                 >
                   {benefit}
                 </div>
@@ -423,32 +422,34 @@ function GetInvolvedPage() {
       <SiteHeader />
 
       <section className="w-full border-y border-slate-200 bg-white">
-        <div className="mx-auto flex w-full max-w-[1180px] flex-col items-center px-4 py-10 text-center sm:px-6 lg:px-8">
-          <h1 className="font-['Plus_Jakarta_Sans'] text-[34px] font-extrabold leading-[1.15] tracking-[-0.04em] text-[#111827] sm:text-[38px] lg:text-[42px]">
+        <div className="mx-auto flex w-full max-w-[1180px] flex-col items-start px-[20px] pb-[18px] pt-[25px] text-left sm:items-center sm:px-6 sm:py-10 sm:text-center lg:px-8">
+          <h1 className="font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[40px] tracking-[0] text-[#111827] sm:text-[38px] lg:text-[42px] lg:leading-[1.15] lg:tracking-[-0.04em]">
             Get Involved with PropertySerch
           </h1>
 
-          <p className="mt-3 w-full max-w-[720px] text-[18px] leading-[30px] text-[#667085] sm:text-[19px]">
-            Whether you&apos;re an investor, developer, or industry professional, PropertySerch
-            connects you with the tools and opportunities to grow
+          <p className=" w-full max-w-[720px] font-['Plus_Jakarta_Sans'] text-[10px] leading-[15px] text-[#6B7280] sm:mt-3 sm:text-[19px] sm:leading-[30px] lg:text-[18px]">
+            Whether you&apos;re an investor, developer, or industry
+            professional, PropertySerch connects you with the tools and
+            opportunities to grow
           </p>
         </div>
       </section>
 
       <section className="w-full bg-white">
-        <div className="mx-auto w-full max-w-[1350px] px-5 py-14 lg:px-8 lg:py-[30px]">
-          <div className="mx-auto mb-[50px] flex w-full max-w-[1270px] flex-col gap-12 lg:h-[349.5839px] lg:w-[1270px] lg:max-w-none lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="mx-auto w-full max-w-[1350px] px-5 pt-5 lg:px-8 lg:py-[30px]">
+          <div className="mx-auto mb-[50px] flex w-full max-w-[1270px] flex-col gap-6 lg:h-[349.5839px] lg:w-[1270px] lg:max-w-none lg:flex-row lg:items-center lg:justify-between lg:gap-0">
             <div className="flex w-full min-w-0 flex-col gap-[8px] lg:h-[257px] lg:w-[632px] lg:flex-none lg:justify-center">
-              <h2 className="mt-[20px] font-['Plus_Jakarta_Sans'] text-[32px] font-extrabold leading-[35px] tracking-[-0.030em] text-[#111827]">
+              <h2 className="mt-[20px] font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[32px] tracking-[0] text-[#111827] lg:text-[32px] lg:leading-[35px] lg:tracking-[-0.030em]">
                 Help Us Expand
               </h2>
 
-              <p className="m-0 max-w-[586px] font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[26px] text-[#667085]">
-                Don&apos;t see your city yet? Let us know. We&apos;re continuously expanding our coverage
-                based on demand and market opportunities.
+              <p className="m-0 max-w-[586px] font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[22px] text-[#6B7280] lg:text-[12px] lg:leading-[26px]">
+                Don&apos;t see your city yet? Let us know. We&apos;re
+                continuously expanding our coverage based on demand and market
+                opportunities.
               </p>
 
-              <div className="mt-[15px] flex flex-col gap-[20px]">
+              <div className="mt-[10px] lg:mt-[15px] flex flex-col gap-[20px]">
                 <div className="flex items-start gap-[16px]">
                   <div className="mt-[3px] flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-full bg-[#FFF1F1] text-[#E51C23]">
                     <img
@@ -460,12 +461,13 @@ function GetInvolvedPage() {
                   </div>
 
                   <div className="min-w-0 pt-[1px]">
-                    <h3 className="m-0 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[20px] text-[#111827]">
+                    <h3 className="m-0 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[24px] tracking-[0.29%] text-[#111827] lg:leading-[20px] lg:tracking-[0]">
                       Market Analysis
                     </h3>
 
-                    <p className="mt-[2px] mb-5 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[20px] text-[#667085]">
-                      We conduct deep legal and valuation audits in every new city.
+                    <p className="mt-[2px] lg:mb-5 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[20px] text-[#6B7280]">
+                      We conduct deep legal and valuation audits in every new
+                      city.
                     </p>
                   </div>
                 </div>
@@ -481,7 +483,7 @@ function GetInvolvedPage() {
                   </div>
 
                   <div className="min-w-0 pt-[1px]">
-                    <h3 className="m-0 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[20px] text-[#111827]">
+                    <h3 className="m-0 font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[24px] tracking-[0.29%] text-[#111827] lg:leading-[20px] lg:tracking-[0]">
                       Partner Onboarding
                     </h3>
 
@@ -508,7 +510,7 @@ function GetInvolvedPage() {
                 onSubmit={(event) => event.preventDefault()}
               >
                 <label className="block">
-                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[13px] text-[#111827]">
+                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-[#111827] lg:leading-[13px]">
                     Full Name
                   </span>
 
@@ -516,17 +518,17 @@ function GetInvolvedPage() {
                     type="text"
                     name="fullName"
                     placeholder="Enter your full name"
-                    className="h-[34px] w-full rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] px-[13px] font-['Plus_Jakarta_Sans'] text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#E51C23] focus:ring-1 focus:ring-[#E51C23]/20"
+                    className="h-[34px] w-full rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] px-[13px] font-['Lato'] text-[14px] leading-[21px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#E51C23] focus:ring-1 focus:ring-[#E51C23]/20 lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal"
                   />
                 </label>
 
                 <label className="block">
-                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[13px] text-[#111827]">
+                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-[#111827] lg:leading-[13px]">
                     Mobile Number
                   </span>
 
-                  <div className="flex h-[30px] w-full items-center overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] focus-within:border-[#E51C23] focus-within:ring-1 focus-within:ring-[#E51C23]/20">
-                    <span className="shrink-0 border-r border-[#E5E7EB] px-[13px] font-['Plus_Jakarta_Sans'] text-[10px] text-[#94A3B8]">
+                  <div className="flex h-[30px] w-full items-center overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] font-['Lato'] text-[14px] leading-[21px] focus-within:border-[#E51C23] focus-within:ring-1 focus-within:ring-[#E51C23]/20 lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal">
+                    <span className="shrink-0 border-r border-[#E5E7EB] px-[13px] font-['Lato'] text-[14px] leading-[21px] text-[#9CA3AF] lg:font-['Plus_Jakarta_Sans'] lg:text-[10px] lg:leading-normal">
                       +91
                     </span>
 
@@ -535,18 +537,22 @@ function GetInvolvedPage() {
                       name="mobileNumber"
                       inputMode="numeric"
                       placeholder="Enter your mobile number"
-                      className="h-[34px] min-w-0 flex-1 border-0 bg-transparent px-[9px] font-['Plus_Jakarta_Sans'] text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:ring-0"
+                      className="h-[34px] min-w-0 flex-1 border-0 bg-transparent px-[9px] font-['Lato'] text-[14px] leading-[21px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:ring-0 lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal"
                     />
                   </div>
                 </label>
 
                 <label className="block">
-                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[13px] text-[#111827]">
+                  <span className="mb-[8px] block font-['Plus_Jakarta_Sans'] text-[12px] font-bold leading-[18px] text-[#111827] lg:leading-[13px]">
                     Desired City
                   </span>
 
                   <div className="relative" ref={cityFieldRef}>
-                    <input type="hidden" name="desiredCity" value={desiredCity} />
+                    <input
+                      type="hidden"
+                      name="desiredCity"
+                      value={desiredCity}
+                    />
 
                     <button
                       type="button"
@@ -554,7 +560,7 @@ function GetInvolvedPage() {
                       aria-expanded={cityOpen}
                       onClick={() => setCityOpen((open) => !open)}
                       className={[
-                        "flex h-[34px] w-full items-center rounded-[8px] border bg-[#F9FAFB] px-[12px] text-left font-['Plus_Jakarta_Sans'] text-[12px] outline-none transition",
+                        "flex h-[34px] w-full items-center rounded-[8px] border bg-[#F9FAFB] px-[12px] text-left font-['Lato'] text-[14px] leading-[21px] outline-none transition lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal",
                         cityOpen
                           ? "border-[#E51C23] ring-1 ring-[#E51C23]/20"
                           : "border-[#E5E7EB] hover:border-[#D1D5DB]",
@@ -578,7 +584,11 @@ function GetInvolvedPage() {
                         />
                       </svg>
 
-                      <span className={desiredCity ? "text-[#111827]" : "text-[#9CA3AF]"}>
+                      <span
+                        className={
+                          desiredCity ? "text-[#111827]" : "text-[#9CA3AF]"
+                        }
+                      >
                         {desiredCity || "Select or enter your city"}
                       </span>
                     </button>
@@ -683,14 +693,16 @@ function GetInvolvedPage() {
                     className="mt-[1px] h-[16px] w-[16px] shrink-0 cursor-pointer rounded-[2px] border-[#E51C23] accent-[#E51C23]"
                   />
 
-                  <span className="max-w-[270px] font-['Plus_Jakarta_Sans'] text-[10px] font-normal leading-[12px] text-[#334155]">
-                    I agree to be contacted by PropertySerch regarding availability in my requested city and accept the Privacy Policy
+                  <span className="max-w-[270px] font-['Plus_Jakarta_Sans'] text-[10px] font-normal leading-[14px] tracking-[0.1%] text-[#374151]">
+                    I agree to be contacted by PropertySerch regarding
+                    availability in my requested city and accept the Privacy
+                    Policy
                   </span>
                 </label>
 
                 <button
                   type="submit"
-                  className="cta-red mt-auto inline-flex h-[35px] w-full shrink-0 items-center justify-center rounded-[7px] border-0 font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition focus:outline-none focus:ring-2 focus:ring-[#E51C23]/30"
+                  className="cta-red mt-auto inline-flex h-[35px] w-full shrink-0 items-center justify-center rounded-[7px] border-0 font-['Inter'] text-[14px] font-bold leading-[21px] text-white transition focus:outline-none focus:ring-2 focus:ring-[#E51C23]/30"
                 >
                   Request City
                 </button>
