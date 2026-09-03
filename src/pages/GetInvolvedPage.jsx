@@ -451,7 +451,7 @@ function GetInvolvedPage() {
 
               <div className="mt-[10px] lg:mt-[15px] flex flex-col gap-[20px]">
                 <div className="flex items-start gap-[16px]">
-                  <div className="mt-[3px] flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-full bg-[#FFF1F1] text-[#E51C23]">
+                  <div className="mt-[3px] flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FFF1F1] text-[#E51C23] lg:h-[45px] lg:w-[45px]">
                     <img
                       src="/icons/Img.png"
                       alt=""
@@ -473,7 +473,7 @@ function GetInvolvedPage() {
                 </div>
 
                 <div className="flex items-start gap-[16px]">
-                  <div className="mt-[3px] flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-full bg-[#FFF1F1] text-[#E51C23]">
+                  <div className="mt-[3px] flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FFF1F1] text-[#E51C23] lg:h-[45px] lg:w-[45px]">
                     <img
                       src="/icons/people.png"
                       alt=""
