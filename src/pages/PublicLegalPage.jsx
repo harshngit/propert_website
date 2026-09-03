@@ -223,32 +223,31 @@ function PublicLegalPage() {
     <main className="flex min-h-screen w-full flex-col bg-[#F8FAFC] text-slate-900">
       <SiteHeader />
 
-      <section className=" w-full border-0 border-t border-[#E5E7EB] bg-white">
-        <div className="mx-auto w-full max-w-[1180px] px-4 py-11 text-center sm:px-6 lg:px-8 lg:py-12">
-          <h1 className="font-['Plus_Jakarta_Sans'] text-[32px] font-extrabold leading-[1.15] tracking-[-0.04em] text-[#111827] sm:text-[36px] lg:text-[38px]">
-            Legal Documentation
-          </h1>
+     <section className="w-full border-t border-[#E5E7EB] bg-white">
+  <div className="mx-auto w-full max-w-[1180px] px-[17px] pt-[30px] pb-[20px] text-left sm:px-[40px] sm:py-[42px] lg:px-8 lg:py-12">
+    <h1 className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold leading-[36px] tracking-[-0.04em] text-[#111827] sm:text-[36px] sm:leading-[44px]">
+      Legal Documentation
+    </h1>
 
-          <p className="mt-3 text-[15px] leading-[26px] text-[#667085] sm:text-[16px]">
-            Our terms, policies, and notices to ensure a transparent and secure experience for all
-            users
-          </p>
-        </div>
-      </section>
+    <p className="mt-[10px] max-w-[680px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[23px] text-[#6B7280] sm:text-[18px] sm:leading-[31px]">
+      Our terms, policies, and notices to ensure a transparent and secure experience for all users
+    </p>
+  </div>
+</section>
 
       <div aria-hidden="true" className="h-px w-full bg-[#E5E7EB]" />
 
       <section className="bg-[#F8FAFC]">
         <div className="mx-auto w-full max-w-[1440px]">
-          <div className="flex w-full items-start">
+          <div className="flex w-full flex-col items-stretch lg:flex-row lg:items-start">
             {/* Documentation sidebar */}
-            <aside className="mt-[10px] ml-[60px] w-[370px] shrink-0">
-        <div className="w-[300px] pt-[42px]">
-          <p className="font-['Plus_Jakarta_Sans'] text-[14px] font-bold uppercase leading-[20px] tracking-[0.08em] text-[#111827]">
+            <aside className="w-full shrink-0 lg:mt-[10px] lg:ml-[60px] lg:w-[370px]">
+        <div className="w-full px-5 pt-[1px] lg:w-[300px] lg:px-0 lg:pt-[42px]">
+          <p className="hidden font-['Plus_Jakarta_Sans'] text-[14px] font-bold uppercase leading-[20px] tracking-[0.08em] text-[#111827] lg:block">
            Documentation
           </p>
 
-          <nav className="mt-[22px] flex flex-col gap-[4px]">
+          <nav className="mt-[12px] flex flex-col gap-[4px] lg:mt-[22px]">
             {documentationNav.map((item) => {
               const isActive = item.id === activeId;
 
@@ -290,7 +289,7 @@ function PublicLegalPage() {
                     />
                   </span>
 
-                  <span className="font-['Plus_Jakarta_Sans'] text-[16px] font-medium leading-[22px]">
+                  <span className="font-['Plus_Jakarta_Sans'] text-[13px] font-semibold leading-[19.5px] tracking-[-0.59%] lg:text-[16px] lg:font-medium lg:leading-[22px] lg:tracking-normal">
                     {item.label}
                   </span>
                 </Link>
@@ -299,7 +298,7 @@ function PublicLegalPage() {
           </nav>
 
           {/* Legal support card */}
-          <div className="relative my-12 h-[180px] w-[280px] overflow-hidden rounded-[16px] bg-[#0F172A] py-[18px] text-white">
+          <div className="relative my-12 hidden h-[180px] w-full max-w-none overflow-hidden rounded-[16px] bg-[#0F172A] py-[18px] text-white lg:block lg:max-w-[280px]">
             <img
               src="/images/support card.png"
               alt=""
@@ -329,27 +328,28 @@ function PublicLegalPage() {
         </div>
             </aside>
 
-            <main className="mt-[50px] mx-[20px] min-w-0">
-              <article className="w-[930px] rounded-[21.33px] border border-[#1118271A] bg-white p-[42.67px] pb-[56px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
+            <main className="mx-4 mt-8 min-w-0 lg:mt-[50px] lg:mx-[20px]">
+              <article className="w-full rounded-[21.33px] border-0 bg-transparent p-0 pb-0 shadow-none lg:w-[930px] lg:rounded-[21.33px] lg:border lg:border-[#1118271A] lg:bg-white lg:p-[42.67px] lg:pb-[56px] lg:shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)]">
+                <div className="rounded-[21.33px] border border-[#1118271A] bg-white px-[25px] pt-[32px] pb-8 shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)] lg:contents">
                 <div
                   id="terms"
-                  className="scroll-mt-[120px] flex items-start justify-between border-b border-[#E5E7EB] pb-[14px]"
+                  className="scroll-mt-[120px] flex flex-col items-start justify-between border-b border-[#E5E7EB] pb-[14px] md:flex-row"
                 >
-                  <h2 className="font-['Plus_Jakarta_Sans'] text-[26.67px] font-semibold leading-[28px] text-[#111827]">
+                  <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-bold leading-[34px] text-[#111827] md:text-[26.67px] md:leading-[28px]">
                     Terms of Service
                   </h2>
-                  <p className="pt-[3px] font-['Plus_Jakarta_Sans'] text-[12.67px] font-medium leading-[16px] text-[#94A3B8]">
+                  <p className=" pt-[3px] font-['Plus_Jakarta_Sans'] text-[12px] font-medium leading-[21px] text-[#94A3B8] md:mt-0 md:text-[12.67px] md:leading-[16px]">
                     Last Updated: August 5, 2026
                   </p>
                 </div>
 
-                <div className="mt-[18px] space-y-[21px] font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14.22px] font-normal leading-[21.33px] text-[#111827] lg:font-['Lato']">
                   {termsSections.map((section) => (
                     <section key={section.title} className="space-y-[10px]">
-                      <h3 className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                      <h3 className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px] tracking-[0] text-[#111827] lg:font-['Lato'] lg:text-[14.22px] lg:font-normal lg:leading-[21.33px]">
                         {section.number} {section.title}
                       </h3>
-                      <div className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                      <div className="font-['Plus_Jakarta_Sans'] text-[14.22px] font-normal leading-[21.33px] text-[#111827] lg:font-['Lato']">
                         {section.list ? (
                           <>
                             <p className="mb-[6px]">{section.body[0]}</p>
@@ -366,19 +366,20 @@ function PublicLegalPage() {
                     </section>
                   ))}
                 </div>
+                </div>
 
-                <div id="privacy" className="mt-[28px] border-t border-[#E5E7EB] pt-[26px]">
-                  <h2 className="font-['Lato'] text-[26.67px] font-semibold leading-[28px] text-[#111827]">
+                <div id="privacy" className="mt-[16px] rounded-[21.33px] border border-[#1118271A] bg-white px-[25px] py-[24px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)] lg:mt-[28px] lg:rounded-none lg:border-x-0 lg:border-b-0 lg:border-t lg:px-0 lg:py-0 lg:pt-[26px] lg:shadow-none">
+                  <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-bold leading-[32px] text-[#111827] lg:font-['Lato'] lg:text-[26.67px] lg:leading-[28px]">
                     Privacy Policy
                   </h2>
 
-                  <div className="mt-[18px] space-y-[21px] font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                  <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14.22px] font-normal leading-[21.33px] text-[#111827] lg:font-['Lato']">
                     {privacySections.map((section) => (
                       <section key={section.title} className="space-y-[10px]">
-                        <h3 className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                        <h3 className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px] tracking-[0] text-[#111827] lg:font-['Lato'] lg:text-[14.22px] lg:font-normal lg:leading-[21.33px]">
                           {section.number} {section.title}
                         </h3>
-                        <div className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                        <div className="font-['Plus_Jakarta_Sans'] text-[14.22px] font-normal leading-[21.33px] text-[#111827] lg:font-['Lato']">
                           {section.list ? (
                             <>
                               <p className="mb-[6px]">{section.body[0]}</p>
@@ -392,7 +393,7 @@ function PublicLegalPage() {
                             <>
                               <p>{section.body[0]}</p>
                               <div className="mt-[18px] rounded-[8px] border border-[#E5E7EB] bg-[#F8FAFC] px-[16px] py-[18px]">
-                                <p className="font-['Lato'] text-[14.22px] font-normal leading-[21.33px] text-[#111827]">
+                                <p className="font-['Plus_Jakarta_Sans'] text-[14.22px] font-normal leading-[21.33px] text-[#111827] lg:font-['Lato']">
                                   Email:{" "}
                                   <span className="text-[#E31B23]">{section.body[1].replace("Email: ", "")}</span>
                                 </p>
@@ -407,15 +408,15 @@ function PublicLegalPage() {
                   </div>
                 </div>
 
-                <div className="mt-[28px] border-t border-[#E5E7EB] pt-[26px]" id="rera">
-                  <h2 className="font-['Plus_Jakarta_Sans'] text-[18.67px] font-semibold leading-[28px] text-[#111827]">
+                <div className="mt-[16px] rounded-[21.33px] border border-[#1118271A] bg-white px-[25px] py-[24px] shadow-[0px_0.89px_1.78px_0px_rgba(0,0,0,0.05)] lg:mt-[28px] lg:rounded-none lg:border-x-0 lg:border-b-0 lg:border-t lg:px-0 lg:py-0 lg:pt-[26px] lg:shadow-none" id="rera">
+                  <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-bold leading-[28px] text-[#111827]">
                     RERA Compliance
                   </h2>
 
                   <div className="mt-[18px] space-y-[21px] font-['Plus_Jakarta_Sans'] text-[14px] leading-[22px] text-[#111827]">
                     {reraSections.map((section) => (
                       <section key={section.title} className="space-y-[10px]">
-                        <h3 className="text-[13.33px] font-normal leading-[20px] text-[#111827]">
+                        <h3 className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px] tracking-[0] text-[#111827] lg:text-[13.33px] lg:font-normal lg:leading-[20px]">
                           {section.number} {section.title}
                         </h3>
                         <div className="text-[13.33px] leading-[21.33px] text-[#111827]">
@@ -429,10 +430,38 @@ function PublicLegalPage() {
                 </div>
               </article>
             </main>
+
+            <div className="relative mx-5 my-8 h-[180px] overflow-hidden rounded-[16px] bg-[#0F172A] py-[18px] text-white lg:hidden">
+              <img
+                src="/images/support card.png"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-0 right-0 h-[40px] w-[40px] select-none object-contain"
+              />
+
+              <div className="relative z-10 flex h-[165px] w-full flex-col items-start gap-[6px]">
+                <p className="ml-5 w-[350px] text-start font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px]">
+                  Need Legal Help?
+                </p>
+
+                <p className="mx-5 font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[22px] text-[#AAB2C2]">
+                  Have questions regarding our terms
+                  <br />
+                  or how we handle your data?
+                </p>
+
+                <a
+                  href="mailto:support@propertyserch.com"
+                  className="mx-3 mt-5 flex h-[39.333335876464844px] w-[260px] items-center justify-center rounded-[10.67px] bg-[#E31B23] px-0 font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition-colors hover:bg-[#c9151d]"
+                >
+                  Message Legal Support
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-      <CompanyFooterSection />
+      <CompanyFooterSection className="!mt-0 lg:!mt-12" />
     </main>
   );
 }

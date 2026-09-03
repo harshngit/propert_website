@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function CompanyFooterSection() {
+function CompanyFooterSection({ className = "" }) {
   const columns = [
     {
       title: "Platform",
@@ -25,7 +25,7 @@ function CompanyFooterSection() {
   ];
 
   return (
-    <div className="mt-12 border-t border-slate-100">
+    <div className={["mt-12 border-t border-slate-100", className].filter(Boolean).join(" ")}>
       <div className="px-4 pt-8 sm:px-6 lg:px-12">
         <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_repeat(3,1fr)]">
           <div>
