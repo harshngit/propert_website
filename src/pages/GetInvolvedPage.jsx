@@ -554,13 +554,9 @@ function GetInvolvedPage() {
                       value={desiredCity}
                     />
 
-                    <button
-                      type="button"
-                      aria-haspopup="listbox"
-                      aria-expanded={cityOpen}
-                      onClick={() => setCityOpen((open) => !open)}
+                    <div
                       className={[
-                        "flex h-[34px] w-full items-center rounded-[8px] border bg-[#F9FAFB] px-[12px] text-left font-['Lato'] text-[14px] leading-[21px] outline-none transition lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal",
+                        "flex h-[34px] w-full items-center rounded-[8px] border bg-[#F9FAFB] px-[12px] text-left transition",
                         cityOpen
                           ? "border-[#E51C23] ring-1 ring-[#E51C23]/20"
                           : "border-[#E5E7EB] hover:border-[#D1D5DB]",
@@ -584,14 +580,30 @@ function GetInvolvedPage() {
                         />
                       </svg>
 
-                      <span
-                        className={
-                          desiredCity ? "text-[#111827]" : "text-[#9CA3AF]"
-                        }
-                      >
-                        {desiredCity || "Select or enter your city"}
-                      </span>
-                    </button>
+                      <input
+                        ref={cityInputRef}
+                        type="text"
+                        aria-label="Desired City"
+                        aria-haspopup="listbox"
+                        aria-expanded={cityOpen}
+                        value={cityOpen ? cityInput : desiredCity}
+                        onFocus={() => setCityOpen(true)}
+                        onChange={(event) => {
+                          setCityInput(event.target.value);
+                          setCityOpen(true);
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            const trimmed = cityInput.trim();
+                            if (trimmed) commitCity(trimmed);
+                          }
+                          if (event.key === "Escape") setCityOpen(false);
+                        }}
+                        placeholder="Select or enter your city"
+                        className="min-w-0 flex-1 bg-transparent font-['Lato'] text-[14px] leading-[21px] text-[#111827] outline-none placeholder:text-[#9CA3AF] lg:font-['Plus_Jakarta_Sans'] lg:text-[12px] lg:leading-normal"
+                      />
+                    </div>
 
                     <div
                       className={[
@@ -601,49 +613,6 @@ function GetInvolvedPage() {
                           : "pointer-events-none -translate-y-1 opacity-0",
                       ].join(" ")}
                     >
-                      <div className="border-b border-[#F3F4F6] p-2">
-                        <div className="flex h-[34px] items-center rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 focus-within:border-[#E51C23] focus-within:ring-1 focus-within:ring-[#E51C23]/20">
-                          <svg
-                            aria-hidden="true"
-                            viewBox="0 0 16 16"
-                            className="mr-2 h-3.5 w-3.5 shrink-0 text-[#94A3B8]"
-                            fill="none"
-                          >
-                            <path
-                              d="M7 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0 0 4 4"
-                              stroke="currentColor"
-                              strokeWidth="1.4"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-
-                          <input
-                            ref={cityInputRef}
-                            type="text"
-                            value={cityInput}
-                            onChange={(event) => {
-                              setCityInput(event.target.value);
-                              setCityOpen(true);
-                            }}
-                            onKeyDown={(event) => {
-                              if (event.key === "Enter") {
-                                event.preventDefault();
-                                const trimmed = cityInput.trim();
-                                if (trimmed) {
-                                  commitCity(trimmed);
-                                }
-                              }
-                              if (event.key === "Escape") {
-                                setCityOpen(false);
-                              }
-                            }}
-                            placeholder="Select or enter your city"
-                            className="h-full w-full bg-transparent text-[10px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-                          />
-                        </div>
-                      </div>
-
                       <div className="max-h-[180px] overflow-auto p-1">
                         {filteredCities.length ? (
                           filteredCities.map((city) => {
