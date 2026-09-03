@@ -270,11 +270,28 @@ function PublicLegalPage() {
                     ].join(" ")}
                     aria-hidden="true"
                   >
+                    <span
+                      className={[
+                        "block h-full w-full bg-current lg:hidden",
+                        item.id === "rera" ? "h-[22px] w-[22px]" : "",
+                        isActive ? "text-[#E51C23]" : "text-[#7B8798]",
+                      ].join(" ")}
+                      style={{
+                        maskImage: `url(${item.icon})`,
+                        WebkitMaskImage: `url(${item.icon})`,
+                        maskRepeat: "no-repeat",
+                        WebkitMaskRepeat: "no-repeat",
+                        maskPosition: "center",
+                        WebkitMaskPosition: "center",
+                        maskSize: "contain",
+                        WebkitMaskSize: "contain",
+                      }}
+                    />
                     <img
                       src={item.icon}
                       alt=""
                       className={[
-                        "object-contain transition-[filter,opacity] duration-150",
+                        "hidden object-contain transition-[filter,opacity] duration-150 lg:block",
                         item.id === "rera" ? "h-[22px] w-[22px]" : "h-[18px] w-[18px]",
                       ].join(" ")}
                       style={
@@ -431,7 +448,7 @@ function PublicLegalPage() {
               </article>
             </main>
 
-            <div className="relative mx-5 my-8 h-[180px] overflow-hidden rounded-[16px] bg-[#0F172A] py-[18px] text-white lg:hidden">
+            <div className="relative mx-5 my-8 h-[185px] overflow-hidden rounded-[20px] bg-[#0F172A] py-[30px] text-white lg:hidden">
               <img
                 src="/images/support card.png"
                 alt=""
@@ -439,12 +456,12 @@ function PublicLegalPage() {
                 className="pointer-events-none absolute bottom-0 right-0 h-[40px] w-[40px] select-none object-contain"
               />
 
-              <div className="relative z-10 flex h-[165px] w-full flex-col items-start gap-[6px]">
-                <p className="ml-5 w-[350px] text-start font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-[22px]">
+              <div className="relative z-10 flex h-full w-full flex-col items-start gap-0">
+                <p className="ml-8 text-start font-['Plus_Jakarta_Sans'] text-[18px] font-bold leading-[24px] tracking-[0]">
                   Need Legal Help?
                 </p>
 
-                <p className="mx-5 font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[22px] text-[#AAB2C2]">
+                <p className="mx-8 mt-2 font-['Plus_Jakarta_Sans'] text-[14px] font-normal leading-[20px] tracking-[0] text-[#94A3B8]">
                   Have questions regarding our terms
                   <br />
                   or how we handle your data?
@@ -452,7 +469,7 @@ function PublicLegalPage() {
 
                 <a
                   href="mailto:support@propertyserch.com"
-                  className="mx-3 mt-5 flex h-[39.333335876464844px] w-[260px] items-center justify-center rounded-[10.67px] bg-[#E31B23] px-0 font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-white transition-colors hover:bg-[#c9151d]"
+                  className="mx-8 mt-5 flex h-[62px] w-[calc(100%-64px)] items-center justify-center rounded-[14px] bg-[#E31B23] px-0 font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] tracking-[-1.37%] text-white transition-colors hover:bg-[#c9151d]"
                 >
                   Message Legal Support
                 </a>
