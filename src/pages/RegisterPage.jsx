@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
+import GoogleLoginButton from "../components/auth/GoogleLoginButton";
 import { useAuth } from "../context/AuthContext";
 
 function RegisterPage() {
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -17,6 +18,17 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("Buyer/Tenant/Owner");
   const [agreed, setAgreed] = useState(true);
+  const [googleError, setGoogleError] = useState("");
+
+  const handleGoogleCredential = async (idToken) => {
+    setGoogleError("");
+    try {
+      await loginWithGoogle(idToken);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setGoogleError(err.message || "Could not sign up with Google.");
+    }
+  };
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -187,6 +199,20 @@ function RegisterPage() {
           {submitting ? "Signing up..." : "Sign Up"}
         </button>
       </form>
+
+      <div className="flex items-center gap-3 py-1 pt-4">
+        <span className="h-px flex-1 bg-[#E5E7EB]" />
+        <span className="text-[12px] text-[#9CA3AF]">Or sign up with</span>
+        <span className="h-px flex-1 bg-[#E5E7EB]" />
+      </div>
+
+      {googleError ? (
+        <p className="mb-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-[13px] font-medium text-red-600">
+          {googleError}
+        </p>
+      ) : null}
+
+      <GoogleLoginButton onCredential={handleGoogleCredential} text="signup_with" />
     </AuthShell>
   );
 }

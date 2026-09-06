@@ -131,6 +131,66 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const sendLoginOtp = useCallback(async (identifier) => {
+    setError(null);
+    try {
+      await apiRequest("/auth/otp/send", {
+        method: "POST",
+        body: { identifier, purpose: "login" },
+        skipAuthRefresh: true,
+      });
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, []);
+
+  // /auth/otp/verify only returns tokens for purpose "login" (no user
+  // object, unlike /auth/login) - so the user is fetched separately via
+  // /auth/me straight after, the same way hydrate() does on page load.
+  const loginWithOtp = useCallback(async ({ identifier, otp }) => {
+    setError(null);
+    try {
+      const res = await apiRequest("/auth/otp/verify", {
+        method: "POST",
+        body: { identifier, otp, purpose: "login" },
+        skipAuthRefresh: true,
+      });
+      const me = await apiRequest("/auth/me", { token: res.data.accessToken });
+      const loggedInUser = normalizeUser(me.data);
+      setUser(loggedInUser);
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
+      return loggedInUser;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, []);
+
+  // Unlike password/OTP login, /auth/google returns a full user object
+  // directly (no separate /auth/me round trip needed) - it's one flow that
+  // covers both login and signup, since allowSelfRegister: true here means
+  // a brand-new Google email creates a `customer` account server-side.
+  const loginWithGoogle = useCallback(async (idToken) => {
+    setError(null);
+    try {
+      const res = await apiRequest("/auth/google", {
+        method: "POST",
+        body: { idToken, allowSelfRegister: true },
+        skipAuthRefresh: true,
+      });
+      const loggedInUser = normalizeUser(res.data.user);
+      setUser(loggedInUser);
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
+      return loggedInUser;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, []);
+
   // Registration alone doesn't establish a session (the API only returns
   // the created user, no tokens) - so a successful signup is immediately
   // followed by a real login with the same credentials, giving the
@@ -181,11 +241,14 @@ export function AuthProvider({ children }) {
       isReady: status === "ready",
       error,
       login,
+      sendLoginOtp,
+      loginWithOtp,
+      loginWithGoogle,
       register,
       logout,
       clearError,
     }),
-    [user, accessToken, status, error, login, register, logout, clearError]
+    [user, accessToken, status, error, login, sendLoginOtp, loginWithOtp, loginWithGoogle, register, logout, clearError]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
