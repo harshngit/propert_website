@@ -452,16 +452,18 @@ function PropertyDetailPage() {
                 <div className="text-[24px] font-black leading-none text-[#111827] sm:text-[30px]">
                   ₹{formatRupeeValue(property.price)}
                 </div>
-                <div className="mt-0 whitespace-nowrap text-[12px] leading-[18px] text-[#9CA3AF] sm:mt-1 sm:text-[13px]">
-                  ₹{formatRupeeValue(property.rate)}
-                </div>
+                {property.rate && (
+                  <div className="mt-0 whitespace-nowrap text-[12px] leading-[18px] text-[#9CA3AF] sm:mt-1 sm:text-[13px]">
+                    ₹{formatRupeeValue(property.rate)}
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="mt-6 hidden flex-col border-y border-[#F3F4F6] py-5 sm:flex sm:flex-row sm:items-stretch sm:gap-0">
               {[
                 { label: "RERA Approved", value: "P51800003521" },
-                { label: "Top Builder", value: "Oberoi Realty" },
+                { label: "Top Builder", value: property.builderName || "—" },
                 { label: "95% Match", value: "For your profile" },
               ].map((item) => (
                 <div
@@ -781,10 +783,12 @@ function PropertyDetailPage() {
               <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-[0_16px_32px_rgba(15,23,42,0.08)]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] border border-[#F3F4F6] bg-[#FAFAFA] text-[11px] font-bold uppercase tracking-[0.14em] text-[#C4B5A5]">
-                    OR
+                    {property.builderName
+                      ? property.builderName.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("")
+                      : "—"}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[18px] font-bold leading-tight text-[#111827]">Oberoi Realty</div>
+                    <div className="text-[18px] font-bold leading-tight text-[#111827]">{property.builderName || "Builder details unavailable"}</div>
                     <div className="mt-1 flex items-center gap-1.5 text-[13px] font-semibold text-[#6B7280]">
                       <div className="flex items-center gap-0.5">
                         <StarIcon />

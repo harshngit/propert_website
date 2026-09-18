@@ -503,7 +503,7 @@ function ResultCard({
                 NEW LISTING
               </span>
             </span>
-          ) : item.badge !== "VERIFIED" ? (
+          ) : item.badge && item.badge !== "VERIFIED" ? (
             <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
               {item.badge}
             </span>
@@ -569,14 +569,22 @@ function ResultCard({
                 {item.priceDisplay || `₹${item.price}`}
               </h3>
 
-              <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
-                {item.rateDisplay || `₹${item.rate}`}
-              </span>
+              {(item.rateDisplay || item.rate) && (
+                <span className="whitespace-nowrap text-[12px] leading-[18px] text-[#6B7280]">
+                  {item.rateDisplay || `₹${item.rate}`}
+                </span>
+              )}
             </div>
 
             <h4 className="mt-[11px] text-[18px] font-bold leading-[20px] text-[#111827]">
               {item.title}
             </h4>
+
+            {item.builderName && (
+              <p className="mt-[2px] text-[12px] font-medium leading-[18px] text-[#6B7280]">
+                By {item.builderName}
+              </p>
+            )}
 
             <div className="mt-[6px] flex w-full items-center gap-[6px] font-['Plus_Jakarta_Sans'] text-[13px] font-normal leading-[19.5px] tracking-normal text-[#6B7280]">
               <ResultPinIcon />
@@ -669,9 +677,11 @@ function ResultCard({
                   <AreaIcon />
                   {item.area}
                 </span>
-                <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
-                  {item.match}
-                </div>
+                {item.match && (
+                  <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-[10px] font-bold text-white">
+                    {item.match}
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -780,7 +790,7 @@ function ResultTileCard({
               <span className="inline-flex h-[23px] w-[79px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
                 FEATURED
               </span>
-            ) : !hidePrimaryBadgeWhenVerified || !item.verified ? (
+            ) : item.badge && (!hidePrimaryBadgeWhenVerified || !item.verified) ? (
               <span className="inline-flex h-[23px] w-[71px] items-center justify-center rounded-[9999px] bg-[#EF4444] px-[8px] py-[4px] text-[10px] font-bold leading-[15px] text-white">
                 {item.badge}
               </span>
@@ -810,7 +820,7 @@ function ResultTileCard({
             )}
           </div>
 
-          {showMatchBadge && item.context !== "institutional" && item.context !== "auction" && item.context !== "special" && (
+          {showMatchBadge && item.match && item.context !== "institutional" && item.context !== "auction" && item.context !== "special" && (
             <span
               className={[
                 "inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px] text-[10px] font-bold leading-[15px] text-white shadow-sm",
@@ -911,16 +921,18 @@ function ResultTileCard({
         {item.priceDisplay || `₹${item.price}`}
       </h3>
 
-      <span
-        className={[
-          "ml-auto whitespace-nowrap text-[#6B7280]",
-          featuredLayout
-            ? "text-[12px] leading-[18px]"
-            : "text-[12px] leading-[18px]",
-        ].join(" ")}
-      >
-        {item.rateDisplay || `₹${item.rate}`}
-      </span>
+      {(item.rateDisplay || item.rate) && (
+        <span
+          className={[
+            "ml-auto whitespace-nowrap text-[#6B7280]",
+            featuredLayout
+              ? "text-[12px] leading-[18px]"
+              : "text-[12px] leading-[18px]",
+          ].join(" ")}
+        >
+          {item.rateDisplay || `₹${item.rate}`}
+        </span>
+      )}
     </div>
 
     {/* TITLE */}
@@ -934,6 +946,10 @@ function ResultTileCard({
     >
       {item.title}
     </h4>
+
+    {item.builderName && (
+      <p className="mt-[2px] text-[12px] font-medium leading-[18px] text-[#6B7280]">By {item.builderName}</p>
+    )}
 
     {/* LOCATION */}
     <div
@@ -974,16 +990,18 @@ function ResultTileCard({
     </span>
 
     {/* MATCH BADGE */}
-    <span
-      className={[
-        "whitespace-nowrap rounded-[8px] bg-[#111827] font-bold normal-case text-white",
-        featuredLayout
-          ? "px-[8px] py-[6px] text-[9px] sm:px-[10px] sm:py-[8px] sm:text-[10px]"
-          : "px-[8px] py-[6px] text-[9px]",
-      ].join(" ")}
-    >
-      {item.match}
-    </span>
+    {item.match && (
+      <span
+        className={[
+          "whitespace-nowrap rounded-[8px] bg-[#111827] font-bold normal-case text-white",
+          featuredLayout
+            ? "px-[8px] py-[6px] text-[9px] sm:px-[10px] sm:py-[8px] sm:text-[10px]"
+            : "px-[8px] py-[6px] text-[9px]",
+        ].join(" ")}
+      >
+        {item.match}
+      </span>
+    )}
   </div>
 
   {/* TAGS */}
