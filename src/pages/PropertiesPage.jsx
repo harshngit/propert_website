@@ -1,9 +1,11 @@
 ﻿import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import SiteHeader from "../components/SiteHeader";
 import { propertyResults } from "../data/propertyResults";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
+import { searchProperties } from "../api/properties";
+import { normalizeProperty } from "../utils/normalizeProperty";
 
 /* -------------------------------------------------------------------------- */
 /*                                   ICONS                                    */
@@ -1399,7 +1401,9 @@ function PropertiesPage({
   resultContext = "residential",
 }) {
   const navigate = useNavigate();
-  const results =
+  const [searchParams] = useSearchParams();
+  const isResidential = resultContext === "residential";
+  const baseResults =
     resultContext === "institutional"
       ? propertyResults.map((item, index) => {
           const institutionalContexts = [
@@ -1545,6 +1549,13 @@ function PropertiesPage({
             };
           })
       : propertyResults;
+
+  const [apiItems, setApiItems] = React.useState([]);
+  const [apiPagination, setApiPagination] = React.useState({ page: 1, totalPages: 1 });
+  const [apiLoading, setApiLoading] = React.useState(false);
+  const [apiError, setApiError] = React.useState(null);
+
+  const results = isResidential ? apiItems : baseResults;
   const areaLabel = "Mumbai, Andheri West";
   const [minPrice, setMinPrice] = React.useState(18);
   const [maxPrice, setMaxPrice] = React.useState(82);
@@ -1663,7 +1674,16 @@ function PropertiesPage({
     return () => document.removeEventListener("mousedown", handleDocumentClick);
   }, []);
 
+  const itemsPerPage = 5;
+
+  // Real backend data already arrives sorted/paginated by the `sort`/
+  // `page` params sent below, so it's used as-is; the client-side sort and
+  // fake page-cycling further down stay exactly as they were for the
+  // institutional/special/auction marketing contexts, which are still
+  // static mock data.
   const sortedResults = React.useMemo(() => {
+    if (isResidential) return results;
+
     const nextResults = [...results];
 
     if (sortValue === "price-low") {
@@ -1677,12 +1697,13 @@ function PropertiesPage({
     }
 
     return nextResults;
-  }, [sortValue]);
+  }, [results, sortValue, isResidential]);
 
-  const totalPages = 42;
-  const itemsPerPage = 5;
+  const totalPages = isResidential ? apiPagination.totalPages || 1 : 42;
 
   const pagedResults = React.useMemo(() => {
+    if (isResidential) return sortedResults;
+
     if (sortedResults.length === 0) {
       return [];
     }
@@ -1703,7 +1724,48 @@ function PropertiesPage({
         detailId: source.id,
       };
     });
-  }, [currentPage, sortedResults]);
+  }, [currentPage, sortedResults, isResidential]);
+
+  // Fetches the real property search results for the plain residential
+  // /properties page (institutional/special/auction stay on static mock
+  // data - see the ternary above). Reads `city` from the URL so a search
+  // from the homepage hero carries through.
+  React.useEffect(() => {
+    if (!isResidential) return undefined;
+    let cancelled = false;
+    setApiLoading(true);
+    setApiError(null);
+
+    const sortParam =
+      sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : "newest";
+
+    searchProperties({
+      city: searchParams.get("city") || undefined,
+      page: currentPage,
+      limit: itemsPerPage,
+      sort: sortParam,
+    })
+      .then((data) => {
+        if (cancelled) return;
+        setApiItems((data.items || []).map(normalizeProperty));
+        setApiPagination({
+          page: data.pagination?.page || 1,
+          totalPages: data.pagination?.totalPages || 1,
+        });
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setApiError(err.message || "Failed to load properties.");
+        setApiItems([]);
+      })
+      .finally(() => {
+        if (!cancelled) setApiLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isResidential, searchParams, currentPage, sortValue, itemsPerPage]);
 
   const goToPage = (pageNumber) => {
     const nextPage = Math.min(Math.max(pageNumber, 1), totalPages);
@@ -2312,7 +2374,23 @@ function PropertiesPage({
                   )}
                 </div>
 
-                {viewMode === "list" && (
+                {isResidential && apiLoading && (
+                  <div className="mt-[20px] w-full rounded-2xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-500">
+                    Loading properties…
+                  </div>
+                )}
+                {isResidential && !apiLoading && apiError && (
+                  <div className="mt-[20px] w-full rounded-2xl border border-red-200 bg-red-50 py-12 text-center text-sm text-red-600">
+                    {apiError}
+                  </div>
+                )}
+                {isResidential && !apiLoading && !apiError && pagedResults.length === 0 && (
+                  <div className="mt-[20px] w-full rounded-2xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-500">
+                    No listings match your search yet.
+                  </div>
+                )}
+
+                {viewMode === "list" && (!isResidential || (!apiLoading && !apiError && pagedResults.length > 0)) && (
                   <>
                     <div className="mt-[20px] flex w-full flex-col gap-[12px] md:hidden">
                       {pagedResults.map((item, index) => (
@@ -2354,7 +2432,7 @@ function PropertiesPage({
                   </>
                 )}
 
-                {viewMode === "tile" && (
+                {viewMode === "tile" && (!isResidential || (!apiLoading && !apiError && pagedResults.length > 0)) && (
                   <>
                     {/* PROPERTY TILES */}
                     <div className="mx-auto w-full max-w-[1440px] xl:px-[9px]">

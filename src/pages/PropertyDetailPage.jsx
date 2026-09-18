@@ -1,10 +1,12 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import PropertyGallery from "../components/PropertyGallery";
 import { propertyResults } from "../data/propertyResults";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
+import { getPropertyById } from "../api/properties";
+import { normalizeProperty } from "../utils/normalizeProperty";
 
 function LocationIcon({ className = "text-[#E51C23]" }) {
   return (
@@ -289,7 +291,38 @@ function PropertyDetailPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const routeProperty = propertyResults.find((item) => String(item.id) === id);
-  const property = routeProperty || location.state?.property;
+  const [fetchedProperty, setFetchedProperty] = useState(null);
+  const [fetchFailed, setFetchFailed] = useState(false);
+  const property = routeProperty || location.state?.property || fetchedProperty;
+
+  // Real listings (a UUID id, not one of the small mock array's numeric
+  // ids) aren't in `propertyResults` and only arrive via route state when
+  // navigated to from a PropertyCard click - a direct visit/refresh needs
+  // to fetch it from the real backend instead.
+  useEffect(() => {
+    if (routeProperty || location.state?.property || !id) return undefined;
+    let cancelled = false;
+    getPropertyById(id)
+      .then((data) => {
+        if (!cancelled) setFetchedProperty(normalizeProperty(data));
+      })
+      .catch(() => {
+        if (!cancelled) setFetchFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, routeProperty, location.state]);
+
+  if (!property && !fetchFailed) {
+    return (
+      <main className="min-h-screen w-full bg-white text-[#0F172A]">
+        <SiteHeader />
+        <div className="flex items-center justify-center px-4 py-24 text-sm text-slate-500">Loading listing…</div>
+        <CompanyFooterSection />
+      </main>
+    );
+  }
 
   if (!property) {
     return (
