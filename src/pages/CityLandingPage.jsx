@@ -11,6 +11,8 @@ import PopularNeighborhoodsSection from "../components/home/PopularNeighborhoods
 import TrustSection from "../components/home/TrustSection";
 import { fromCitySlug } from "../utils/city";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
+import { searchProperties } from "../api/properties";
+import { normalizeProperty } from "../utils/normalizeProperty";
 
 const IMAGE_POOL = ["/images/1st,4th.png", "/images/2nd.png", "/images/3rd.png"];
 
@@ -246,98 +248,6 @@ const CITY_PROFILES = {
   },
 };
 
-function buildFeaturedListings(cityLabel, areas) {
-  return [
-    {
-      title: `${cityLabel} Signature Heights`,
-      location: `${areas[0] || cityLabel} • ${cityLabel}`,
-      price: "₹2.1 Cr",
-      rate: "₹22,400/sq.ft",
-      details: "3 BHK",
-      sqft: "1850 sq.ft",
-      image: IMAGE_POOL[0],
-      badge: "FEATURED",
-      match: "95% Match",
-    },
-    {
-      title: `${cityLabel} Palm Residency`,
-      location: `${areas[1] || cityLabel} • ${cityLabel}`,
-      price: "₹1.75 Cr",
-      rate: "₹19,200/sq.ft",
-      details: "2 BHK",
-      sqft: "1245 sq.ft",
-      image: IMAGE_POOL[1],
-      badge: "NEW LAUNCH",
-      match: "89% Match",
-    },
-    {
-      title: `${cityLabel} Skyline Estate`,
-      location: `${areas[2] || cityLabel} • ${cityLabel}`,
-      price: "₹4.2 Cr",
-      rate: "₹24,700/sq.ft",
-      details: "4 BHK",
-      sqft: "2600 sq.ft",
-      image: IMAGE_POOL[2],
-      badge: "VERIFIED",
-      match: "92% Match",
-    },
-  ];
-}
-
-function buildVerifiedListings(cityLabel, areas) {
-  const area1 = areas[0] || cityLabel;
-  const area2 = areas[1] || cityLabel;
-  const area3 = areas[2] || cityLabel;
-  const area4 = areas[3] || cityLabel;
-
-  return [
-    {
-      badge: "VERIFIED",
-      image: "/images/1st,4th.png",
-      price: "₹2.1 Cr",
-      rate: "₹16,200/sq.ft",
-      title: `3BHK Apartment in ${area1}`,
-      location: `${area1}, ${cityLabel}`,
-      details: "3 BHK",
-      area: "1,720 sqft",
-      tone: "linear-gradient(135deg, #eef2ff 0%, #c7d2fe 100%)",
-    },
-    {
-      badge: "NEW LAUNCH",
-      image: "/images/2nd.png",
-      price: "₹95 Lakh",
-      rate: "₹7,100/sq.ft",
-      title: `2BHK Builder Flat in ${area2}`,
-      location: `${area2}, ${cityLabel}`,
-      details: "2 BHK",
-      area: "1,340 sqft",
-      tone: "linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%)",
-    },
-    {
-      badge: "VERIFIED",
-      image: "/images/3rd.png",
-      price: "₹4.6 Cr",
-      rate: "₹19,800/sq.ft",
-      title: `Commercial Office Space in ${area3}`,
-      location: `${area3}, ${cityLabel}`,
-      details: "2,320 sqft",
-      area: "4th Floor",
-      tone: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%)",
-    },
-    {
-      badge: "VERIFIED",
-      image: "/images/1st,4th.png",
-      price: "₹1.75 Cr",
-      rate: "₹14,500/sq.ft",
-      title: `3BHK Apartment in ${area4}`,
-      location: `${area4}, ${cityLabel}`,
-      details: "3 BHK",
-      area: "1,650 sqft",
-      tone: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-    },
-  ];
-}
-
 function CityListingCard({ item }) {
   const detailPath = buildPropertyDetailPath(item);
 
@@ -419,8 +329,18 @@ function CityLandingPage() {
     highlights: ["Curated inventory", "High-intent buyers", "Dynamic market snapshot"],
   };
   
-  const featuredListings = buildFeaturedListings(cityLabel, profile.areas);
-  const verifiedListings = buildVerifiedListings(cityLabel, profile.areas);
+  // Live listings for this city (verified first); the strip is hidden when
+  // the city has none yet rather than showing sample cards.
+  const [cityListings, setCityListings] = React.useState({ items: [], total: 0 });
+  React.useEffect(() => {
+    let cancelled = false;
+    searchProperties({ city: cityLabel, limit: 4, sort: "verified" })
+      .then((data) => !cancelled && setCityListings({ items: (data.items || []).map(normalizeProperty), total: data.pagination?.total || 0 }))
+      .catch(() => !cancelled && setCityListings({ items: [], total: 0 }));
+    return () => {
+      cancelled = true;
+    };
+  }, [cityLabel]);
   const marketLabels = profile.areas.slice(0, 5);
   const neighborhoodItems =
     profile.neighborhoods ||
@@ -452,14 +372,22 @@ function CityLandingPage() {
 
       <section className="px-4 pb-7 sm:px-6 lg:px-12">
         <div className="mx-auto max-w-[1440px]">
-          <VerifiedListingsSection
-            title="Exclusive Properties in"
-            accent={cityLabel}
-            cityLandingMobile
-            subtitle="Curated properties with verified details in your city"
-            items={verifiedListings}
-            showMessage={false}
-          />
+          {cityListings.items.length > 0 ? (
+            <VerifiedListingsSection
+              title="Exclusive Properties in"
+              accent={cityLabel}
+              cityLandingMobile
+              subtitle={`${cityListings.total} live listing${cityListings.total === 1 ? "" : "s"} with verified details in ${cityLabel}`}
+              items={cityListings.items}
+              showMessage={false}
+              viewAllTo={`/properties?purpose=all&city=${encodeURIComponent(cityLabel)}`}
+            />
+          ) : (
+            <p className="mt-8 rounded-[16px] border border-dashed border-[#E5E7EB] px-6 py-8 text-center text-[14px] text-[#6B7280]">
+              New listings in {cityLabel} are on their way.{" "}
+              <Link to="/post-requirement" className="font-bold text-[#E51C23]">Post your requirement</Link> and we'll alert you first.
+            </p>
+          )}
         </div>
       </section>
 

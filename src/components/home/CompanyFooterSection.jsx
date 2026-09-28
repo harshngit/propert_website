@@ -2,18 +2,39 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function CompanyFooterSection({ className = "" }) {
+  // Footer links go to the page for each item; items whose page / module
+  // isn't live yet (e.g. Media & Press) render as plain text.
+  const CONSOLE_URL = "https://property-dashboard-one-navy.vercel.app/";
   const columns = [
     {
       title: "Platform",
-      items: ["Post Property", "Post Requirements", "Broker CRM", "Property Management", "Institutional Marketplace"],
+      items: [
+        { label: "Post Property", to: "/sell/list-property" },
+        { label: "Post Requirements", to: "/post-requirement" },
+        { label: "Broker CRM", href: CONSOLE_URL },
+        { label: "Property Management", to: "/account/investor-profile" },
+        { label: "Institutional Marketplace", to: "/buy/institutional-properties" },
+      ],
     },
     {
       title: "Services",
-      items: ["Home Loans & Financing", "Legal Assistance", "Special Situation Properties", "Fractional Ownership", "Investment Intelligence"],
+      items: [
+        { label: "Bank Auction Properties", to: "/buy/bank-auction-properties" },
+        { label: "Special Situation Properties", to: "/buy/special-situation-properties" },
+        { label: "NRI & HNI Investors", to: "/account/investor-profile" },
+        { label: "Investment Calculators", to: "/tools" },
+        { label: "Legal & Compliance", to: "/legal" },
+      ],
     },
     {
       title: "Partner with us",
-      items: ["Become a Broker Partner", "Become a Builder Partner", "Become a Franchise Partner", "Institutional Partnerships", "Media & Press"],
+      items: [
+        { label: "Become a Broker Partner", to: "/services/get-involved" },
+        { label: "Become a Builder Partner", to: "/services/get-involved" },
+        { label: "Become a Franchise Partner", to: "/services/get-involved" },
+        { label: "Request Your City", to: "/services/get-involved" },
+        { label: "Media & Press" },
+      ],
     },
   ];
 
@@ -53,9 +74,19 @@ function CompanyFooterSection({ className = "" }) {
             <div key={column.title}>
               <div className="text-[14px] font-black text-slate-900 sm:text-[16px]">{column.title}</div>
               <div className="mt-4 grid gap-3 text-[14px] text-slate-500">
-                {column.items.map((item) => (
-                  <div key={item}>{item}</div>
-                ))}
+                {column.items.map((item) =>
+                  item.to ? (
+                    <Link key={item.label} to={item.to} className="transition hover:text-slate-900">
+                      {item.label}
+                    </Link>
+                  ) : item.href ? (
+                    <a key={item.label} href={item.href} target="_blank" rel="noreferrer" className="transition hover:text-slate-900">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <div key={item.label}>{item.label}</div>
+                  )
+                )}
               </div>
             </div>
           ))}

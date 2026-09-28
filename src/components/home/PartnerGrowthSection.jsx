@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { partnerCards } from "../../data/homeContent";
 
 function PartnerGrowthSection() {
@@ -61,10 +62,10 @@ function PartnerGrowthSection() {
               <p className="mt-4 max-w-[320px] flex-1 text-[16px] leading-7 text-[#5b6b86]">
                 {card.body}
               </p>
-              <button className="mt-8 inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-[15px] font-extrabold text-[#E51C23] transition hover:text-[#cc1820]">
+              <Link to="/services/get-involved" className="mt-8 inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-[15px] font-extrabold text-[#E51C23] transition hover:text-[#cc1820]">
                 <span>{card.action}</span>
                 <span aria-hidden="true">→</span>
-              </button>
+              </Link>
             </article>
           ))}
         </div>

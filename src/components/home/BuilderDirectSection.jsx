@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function BuilderDirectSection({
   badgeText = "Builder Direct",
@@ -6,7 +7,9 @@ function BuilderDirectSection({
   titleHighlight = "by A R Buildwel",
   description = "RERA registered residences with construction progress tracking. No middlemen, direct from builder.",
   buttonText = "Know More",
+  buttonHref = "/properties",
 }) {
+  const navigate = useNavigate();
   const heroImage =
     "/images/super%20luxury%20contemporary%20waterfront%20mansion%20architectural%20visualization,%20cinematic%20lighting.png";
 
@@ -36,7 +39,7 @@ function BuilderDirectSection({
           <p className="mt-4 h-auto w-full font-['Lato'] text-[13px] font-normal leading-[18px] tracking-[0] text-[#E5E7EB] sm:h-[48px] sm:w-[544px] sm:leading-6">
             {description}
           </p>
-          <button className="ml-2 cta-red cta-red-on-dark mt-5 inline-flex h-[50px] w-[293px] items-center justify-center rounded-[16px] px-8 py-3 text-white sm:h-[48px] sm:w-[153px] sm:rounded-[12px]">
+          <button type="button" onClick={() => navigate(buttonHref)} className="ml-2 cta-red cta-red-on-dark mt-5 inline-flex h-[50px] w-[293px] items-center justify-center rounded-[16px] px-8 py-3 text-white sm:h-[48px] sm:w-[153px] sm:rounded-[12px]">
             <span className="inline-flex h-[24px] w-[89px] items-center justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[16px] font-bold leading-6 tracking-[0.0068em] text-inherit">
               {buttonText}
             </span>

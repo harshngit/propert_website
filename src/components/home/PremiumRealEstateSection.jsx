@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function PremiumRealEstateSection() {
+function PremiumRealEstateSection({ onRegisterInterest }) {
+  const navigate = useNavigate();
   const chips = [
     "By invitation, subject to eligibility",
     "Assets in the Rs10 Cr - Rs100 Cr range",
@@ -66,12 +68,12 @@ function PremiumRealEstateSection() {
 
       {/* Buttons */}
       <div className="flex flex-col gap-[12px] sm:flex-row">
-        <button className="cta-red-on-dark inline-flex h-[50px] w-full flex-none items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition sm:w-auto sm:flex-1">
+        <button type="button" onClick={onRegisterInterest} className="cta-red-on-dark inline-flex h-[50px] w-full flex-none items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-[#E51C23] px-[14px] text-[13px] font-extrabold text-white transition sm:w-auto sm:flex-1">
           <span>Register Your Interest</span>
           <span aria-hidden="true">&rarr;</span>
         </button>
 
-        <button className="inline-flex h-[50px] w-full flex-none items-center justify-center whitespace-nowrap rounded-[12px] border border-white/15 px-[12px] text-[12px] font-extrabold text-white transition hover:bg-white/5 sm:w-auto sm:flex-1">
+        <button type="button" onClick={() => navigate("/account/investor-profile")} className="inline-flex h-[50px] w-full flex-none items-center justify-center whitespace-nowrap rounded-[12px] border border-white/15 px-[12px] text-[12px] font-extrabold text-white transition hover:bg-white/5 sm:w-auto sm:flex-1">
           For NRI &amp; HNI Investors
         </button>
       </div>

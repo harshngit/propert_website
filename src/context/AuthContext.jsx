@@ -196,12 +196,20 @@ export function AuthProvider({ children }) {
   // followed by a real login with the same credentials, giving the
   // "register -> already signed in" flow users expect.
   const register = useCallback(
-    async ({ fullName, email, mobile, password }) => {
+    async ({ fullName, email, mobile, password, referralCode }) => {
       setError(null);
       try {
         await apiRequest("/auth/register", {
           method: "POST",
-          body: { fullName, email: email || undefined, mobile: mobile || undefined, password, role: "customer", tenantId: null },
+          body: {
+            fullName,
+            email: email || undefined,
+            mobile: mobile || undefined,
+            password,
+            role: "customer",
+            tenantId: null,
+            referralCode: referralCode || undefined,
+          },
           skipAuthRefresh: true,
         });
         return await login({ identifier: email || mobile, password });

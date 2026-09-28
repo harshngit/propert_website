@@ -2,10 +2,45 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import SiteHeader from "../components/SiteHeader";
-import { propertyResults } from "../data/propertyResults";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
 import { searchProperties } from "../api/properties";
+import { listOpportunities, listPublicOpportunities } from "../api/opportunities";
 import { normalizeProperty } from "../utils/normalizeProperty";
+import { normalizeOpportunity } from "../utils/normalizeOpportunity";
+import { useAuth } from "../context/AuthContext";
+import { useFavourites } from "../hooks/useFavourites";
+import { portal } from "../api/portal";
+import EnquiryModal from "../components/EnquiryModal";
+
+// Deal cards (auction / special situation / institutional) open the deal
+// page on CTA click. Residential "Enquire Now" and the phone buttons open
+// the enquiry form for that listing, which creates a CRM lead against it.
+// The page registers the opener below (one listings page at a time).
+const DEAL_CONTEXTS = new Set(["auction", "special", "institutional"]);
+let openEnquiryFor = null;
+const ctaClick = (item) => (event) => {
+  if (DEAL_CONTEXTS.has(item?.context)) return;
+  event.preventDefault();
+  event.stopPropagation();
+  openEnquiryFor?.(item, "enquiry");
+};
+const callClick = (item) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  openEnquiryFor?.(item, "callback");
+};
+
+// Page numbers to show: first, last, and a window around the current page.
+function pageWindow(current, total) {
+  const pages = new Set([1, total, current - 1, current, current + 1]);
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b);
+  const out = [];
+  sorted.forEach((p, i) => {
+    if (i > 0 && p - sorted[i - 1] > 1) out.push("gap-" + p);
+    out.push(p);
+  });
+  return out;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                   ICONS                                    */
@@ -154,7 +189,7 @@ function Divider() {
   return <span className="h-6 w-px shrink-0 bg-slate-200" />;
 }
 
-function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = "light" }) {
+function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = "light", summary = {} }) {
   const isDark = variant === "dark";
 
   return (
@@ -171,15 +206,15 @@ function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = 
 
         <span className="hidden md:inline-flex"><Divider /></span>
 
-        <span className="hidden md:inline-flex"><FilterField label="Type:" value="Buy" /></span>
+        <span className="hidden md:inline-flex"><FilterField label="Type:" value={summary.type || "Buy"} /></span>
 
         <span className="hidden md:inline-flex"><Divider /></span>
 
-        <span className="hidden md:inline-flex"><FilterField label="Property:" value="Flat" /></span>
+        <span className="hidden md:inline-flex"><FilterField label="Property:" value={summary.property || "All"} /></span>
 
         <span className="hidden md:inline-flex"><Divider /></span>
 
-        <span className="hidden md:inline-flex"><FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" /></span>
+        <span className="hidden md:inline-flex"><FilterField label="Budget:" value={summary.budget || "Any"} /></span>
       </div>
 
       <div className="flex shrink-0 items-center gap-2 md:gap-4">
@@ -201,7 +236,8 @@ function SearchControlsRow({ areaLabel, filtersOpen, onToggleFilters, variant = 
 
         <button
           type="button"
-          aria-label="Search"
+          aria-label="Refine search"
+          onClick={onToggleFilters}
           className="cta-red-on-dark inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[#E51C23] text-white md:h-[44px] md:w-[44px] md:rounded-[12px]"
         >
           <SearchIcon />
@@ -219,6 +255,7 @@ function HeroSearchSection({
   onToggleFilters,
   mobileTitleStyle = false,
   hideMobileDescription = false,
+  summary,
 }) {
   return (
     <section className="w-full border-b border-[#2A3343] bg-[#111827] text-white">
@@ -247,6 +284,7 @@ function HeroSearchSection({
           filtersOpen={filtersOpen}
           onToggleFilters={onToggleFilters}
           variant="dark"
+          summary={summary}
         />
       </div>
     </section>
@@ -365,7 +403,19 @@ function AmenityChip({ label, active = false, onClick }) {
   );
 }
 
-function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
+// Slider positions (0-100) -> rupees. 0 = no minimum, 100 = no maximum.
+const PRICE_SCALES = {
+  buy: { from: 5e6, to: 1e8, fromLabel: "₹50 Lakh", toLabel: "₹10 Cr+" },
+  rent: { from: 5e3, to: 2e5, fromLabel: "₹5,000", toLabel: "₹2 Lakh+ / month" },
+};
+const sliderToInr = (value, purpose) => {
+  const scale = PRICE_SCALES[purpose === "rent" ? "rent" : "buy"];
+  return Math.round(scale.from + (value / 100) * (scale.to - scale.from));
+};
+const shortRupees = (n) => (n >= 1e7 ? `₹${Number((n / 1e7).toFixed(2))} Cr` : n >= 1e5 ? `₹${Number((n / 1e5).toFixed(2))} L` : `₹${n.toLocaleString("en-IN")}`);
+
+function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange, purpose = "buy" }) {
+  const scale = PRICE_SCALES[purpose === "rent" ? "rent" : "buy"];
   const min = 0;
   const max = 100;
   const minPercent = (minValue / max) * 100;
@@ -411,8 +461,8 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
       </div>
 
       <div className="mt-[4px] flex justify-between text-[12px] text-[#6B7280]">
-        <span>₹50 Lakh</span>
-        <span>₹10 Cr+</span>
+        <span>{minValue > 0 ? shortRupees(sliderToInr(minValue, purpose)) : scale.fromLabel}</span>
+        <span>{maxValue < 100 ? shortRupees(sliderToInr(maxValue, purpose)) : scale.toLabel}</span>
       </div>
 
       <style>{`
@@ -623,7 +673,7 @@ function ResultCard({
         {/* ================================================================ */}
 
         <div className={item.context === "institutional" || item.context === "special" ? "pointer-events-none absolute inset-0 m-0 block" : "ml-[24px] flex shrink-0 flex-col items-end justify-between"}>
-          {item.context === "institutional" || item.context === "special" ? (
+          {(item.context === "institutional" || item.context === "special") && item.match ? (
             <div className="absolute right-[20px] top-[20px] whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] text-center font-['Plus_Jakarta_Sans'] text-[10px] font-semibold leading-[15px] text-white">
               {item.match}
             </div>
@@ -641,9 +691,11 @@ function ResultCard({
                   <AreaIcon />
                   {item.area}
                 </span>
-                <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-semibold leading-[15px] text-white">
-                  {item.match}
-                </div>
+                {item.match && (
+                  <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-semibold leading-[15px] text-white">
+                    {item.match}
+                  </div>
+                )}
               </>
             ) : item.context === "institutional" ? (
               <div className="mt-2 grid w-full grid-cols-3 gap-4 text-left">
@@ -689,7 +741,7 @@ function ResultCard({
           {item.context === "auction" ? (
             <div className="mt-[16px] flex flex-col items-end gap-[6px] text-right">
               <div className="source-bank-label text-[10px] font-medium uppercase leading-[16px] tracking-[0.6px] text-[#9CA3AF]">Source Bank</div>
-              <div className="flex items-center justify-end gap-[8px] font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-[20px] text-[#1E293B]"><img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[32px] shrink-0 rounded-[2px] object-contain" />{item.sourceBank}</div>
+              <div className="flex items-center justify-end gap-[8px] font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-[20px] text-[#1E293B]">{/state bank|\bsbi\b/i.test(item.sourceBank || "") && <img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[32px] shrink-0 rounded-[2px] object-contain" />}{item.sourceBank}</div>
             </div>
           ) : null}
 
@@ -697,7 +749,7 @@ function ResultCard({
           <div className={item.context === "institutional" || item.context === "special" ? "pointer-events-auto absolute bottom-[20px] right-[20px] flex items-center gap-[12px]" : "mt-4 flex items-center gap-[12px]"}>
             <button
               type="button"
-              onClick={(event) => event.stopPropagation()}
+              onClick={ctaClick(item)}
               className={item.context === "auction" ? "cta-red inline-flex h-[48px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white" : "cta-red inline-flex h-[45px] items-center justify-center whitespace-nowrap rounded-[10px] px-[22px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[21px] text-white"}
             >
               {item.actionLabel || "Enquire Now"}
@@ -706,7 +758,7 @@ function ResultCard({
             <button
               type="button"
               aria-label="Call"
-              onClick={(event) => event.stopPropagation()}
+              onClick={callClick(item)}
               className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-[12px] border border-[#E51C23] bg-white text-[#E51C23]"
             >
               <img
@@ -847,22 +899,22 @@ function ResultTileCard({
 
     {item.context === "auction" ? (
       <div className="flex h-[315px] flex-1 flex-col bg-white p-[16px] md:hidden">
-        <div className="flex items-baseline justify-between"><div className="flex items-baseline gap-[12px]"><div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div><div className="text-[12px] leading-[18px] text-[#6B7280]">{item.rateDisplay}</div></div><div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div></div>
+        <div className="flex items-baseline justify-between"><div className="flex items-baseline gap-[12px]"><div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div><div className="text-[12px] leading-[18px] text-[#6B7280]">{item.rateDisplay}</div></div>{item.match && <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div>}</div>
         <h4 className="mt-[10px] block min-h-[24px] whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[15px] font-bold leading-[24px] text-[#111827]">{item.title}</h4>
         <div className="mt-[4px] flex items-center gap-[5px] text-[12px] leading-[18px] text-[#6B7280]"><ResultPinIcon /><span>{item.location}</span></div>
         <div className="mt-[20px] flex items-center gap-[18px] border-y border-[#F3E4E4] py-[12px] text-[12px] font-semibold leading-[20px] text-[#111827]"><span className="inline-flex items-center gap-[6px] whitespace-nowrap"><BedIcon />{item.details}</span><span className="inline-flex items-center gap-[6px] whitespace-nowrap"><AreaIcon />{item.area}</span></div>
         <div className="mt-[16px] flex items-center gap-[10px] text-[12px] font-medium leading-[20px] text-[#111827]"><img src="/icons/auction icon.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" /><span className="auction-date">{item.auctionDate}</span><span className="rounded-[6px] bg-[#F9FAFB] px-[8px] py-[5px] text-[10px] font-semibold uppercase text-[#475569]">E-Auction</span></div>
-        <div className="mt-[16px] flex items-center justify-between"><span className="source-bank-label text-[10px] font-medium uppercase leading-[16px] tracking-[0.6px] text-[#9CA3AF]">Source Bank</span><span className="flex items-center gap-[8px] text-[12px] font-semibold leading-[20px] text-[#111827]"><img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[24px] shrink-0 rounded-[2px] object-contain" />{item.sourceBank}</span></div>
-        <div className="mt-auto flex items-center gap-[10px]"><button type="button" onClick={(event) => event.stopPropagation()} className="cta-red inline-flex h-[48px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[14px] font-bold leading-[20px] text-white">{item.actionLabel}</button><button type="button" aria-label="Call" onClick={(event) => event.stopPropagation()} className="inline-flex h-[48px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button></div>
+        <div className="mt-[16px] flex items-center justify-between"><span className="source-bank-label text-[10px] font-medium uppercase leading-[16px] tracking-[0.6px] text-[#9CA3AF]">Source Bank</span><span className="flex items-center gap-[8px] text-[12px] font-semibold leading-[20px] text-[#111827]">{/state bank|\bsbi\b/i.test(item.sourceBank || "") && <img src="/icons/sbi bank.png" alt="SBI" className="h-[24px] w-[24px] shrink-0 rounded-[2px] object-contain" />}{item.sourceBank}</span></div>
+        <div className="mt-auto flex items-center gap-[10px]"><button type="button" onClick={ctaClick(item)} className="cta-red inline-flex h-[48px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[14px] font-bold leading-[20px] text-white">{item.actionLabel}</button><button type="button" aria-label="Call" onClick={callClick(item)} className="inline-flex h-[48px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button></div>
       </div>
     ) : item.context === "special" ? (
       <div className="flex h-auto flex-1 flex-col bg-white p-[16px] md:hidden">
-        <div className="flex items-start justify-between"><div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] text-[#475569CC]">Asking Price</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[22px] font-extrabold leading-[36px] tracking-[-0.6px] text-[#111827]">{item.priceDisplay}</div></div><div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-right font-['Plus_Jakarta_Sans'] text-[8px] font-bold leading-[15px] text-white">{item.match}</div></div>
+        <div className="flex items-start justify-between"><div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] text-[#475569CC]">Asking Price</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[22px] font-extrabold leading-[36px] tracking-[-0.6px] text-[#111827]">{item.priceDisplay}</div></div>{item.match && <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-right font-['Plus_Jakarta_Sans'] text-[8px] font-bold leading-[15px] text-white">{item.match}</div>}</div>
         <h4 className="mt-[8px] font-['Plus_Jakarta_Sans'] text-[18px] font-bold leading-[27px] text-[#111827]">{item.title}</h4>
         <div className="mt-[4px] flex items-center gap-[5px] font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[19.5px] text-[#6B7280]"><ResultPinIcon /><span>{item.location}</span></div>
         <div className="mt-[20px] grid grid-cols-3 gap-[10px] border-y border-[#F3F4F6] py-[12px]"><div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] text-[#475569CC]">Est. Yield</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] text-[#333333]">{item.yieldDisplay}</div></div><div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] text-[#475569CC]">Total Area</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] text-[#111827]">{item.area}</div></div><div><div className="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase leading-[16.5px] text-[#475569CC]">Status</div><div className="mt-[3px] font-['Plus_Jakarta_Sans'] text-[10px] font-medium leading-[20px] text-[#111827]">{item.status}</div></div></div>
         <div className="mt-[12px] flex items-center gap-[8px]"><span className="inline-flex h-[24px] items-center rounded-[5px] bg-[#F9FAFB] px-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] text-[#4B5563]">Freehold Title</span><span className="inline-flex h-[24px] items-center rounded-[5px] bg-[#F9FAFB] px-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] text-[#4B5563]">RERA Registered</span></div>
-        <div className="mt-[16px] flex items-center gap-[10px]"><button type="button" onClick={(event) => event.stopPropagation()} className="cta-red inline-flex h-[48px] flex-1 items-center justify-center rounded-[10px] px-[8px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[22.5px] text-white">{item.actionLabel}</button><button type="button" aria-label="Call" onClick={(event) => event.stopPropagation()} className="inline-flex h-[48px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button></div>
+        <div className="mt-[16px] flex items-center gap-[10px]"><button type="button" onClick={ctaClick(item)} className="cta-red inline-flex h-[48px] flex-1 items-center justify-center rounded-[10px] px-[8px] font-['Plus_Jakarta_Sans'] text-[14px] font-bold leading-[22.5px] text-white">{item.actionLabel}</button><button type="button" aria-label="Call" onClick={callClick(item)} className="inline-flex h-[48px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button></div>
       </div>
     ) : item.context === "institutional" ? (
       <div className="flex h-[315px] flex-1 flex-col bg-white p-[16px] md:hidden">
@@ -871,7 +923,7 @@ function ResultTileCard({
             <div className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[24px] text-[#111827]">{item.priceDisplay}</div>
             <div className="text-[9px] leading-[14px] text-[#6B7280]">{item.rateDisplay}</div>
           </div>
-          <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div>
+          {item.match && <div className="whitespace-nowrap rounded-[6px] bg-[#111827] px-[8px] py-[5px] text-[8px] font-bold text-white">{item.match}</div>}
         </div>
         <h4 className="mt-[7px] truncate text-[15px] font-bold leading-[20px] text-[#111827]">{item.title}</h4>
         <div className="mt-[4px] flex items-center gap-[5px] text-[12px] leading-[15px] text-[#6B7280]">
@@ -887,8 +939,8 @@ function ResultTileCard({
           {item.tags.map((tag) => <span key={tag} className="inline-flex h-[24px] items-center rounded-[5px] bg-[#F9FAFB] px-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-[15px] tracking-[0] text-[#4B5563]">{tag}</span>)}
         </div>
         <div className="mt-auto flex items-center gap-[10px]">
-          <button type="button" onClick={(event) => event.stopPropagation()} className="cta-red inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[12px] font-bold leading-[18px] text-white">{item.actionLabel}</button>
-          <button type="button" aria-label="Call" onClick={(event) => event.stopPropagation()} className="inline-flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button>
+          <button type="button" onClick={ctaClick(item)} className="cta-red inline-flex h-[40px] flex-1 items-center justify-center rounded-[10px] px-[8px] text-[12px] font-bold leading-[18px] text-white">{item.actionLabel}</button>
+          <button type="button" aria-label="Call" onClick={callClick(item)} className="inline-flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"><img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[14px] w-[14px] object-contain" /></button>
         </div>
       </div>
     ) : null}
@@ -1033,7 +1085,7 @@ function ResultTileCard({
     {/* ENQUIRE NOW */}
     <button
       type="button"
-      onClick={(event) => event.stopPropagation()}
+      onClick={ctaClick(item)}
       className={[
         "cta-red inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[20px] font-['Plus_Jakarta_Sans'] font-bold leading-[21px] text-white",
         featuredLayout
@@ -1048,7 +1100,7 @@ function ResultTileCard({
     <button
       type="button"
       aria-label="Call"
-      onClick={(event) => event.stopPropagation()}
+      onClick={callClick(item)}
       className={[
         "inline-flex shrink-0 items-center justify-center border-2 border-[#E51C23] bg-white text-[#E51C23]",
         featuredLayout
@@ -1265,7 +1317,7 @@ function MapResultCard({
         <div className="mt-auto flex items-center gap-[8px] pt-[2px]">
           <button
             type="button"
-            onClick={(event) => event.stopPropagation()}
+            onClick={ctaClick(item)}
             className="cta-red inline-flex h-[36px] flex-1 items-center justify-center whitespace-nowrap rounded-[10px] px-[16px] font-['Plus_Jakarta_Sans'] text-[13px] font-bold leading-[18px] text-white"
           >
             {item.actionLabel || "Enquire Now"}
@@ -1274,7 +1326,7 @@ function MapResultCard({
           <button
             type="button"
             aria-label="Call"
-            onClick={(event) => event.stopPropagation()}
+            onClick={callClick(item)}
             className="inline-flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-[10px] border border-[#E51C23] bg-white text-[#E51C23]"
           >
             <img
@@ -1380,24 +1432,6 @@ function MapPlaceholder() {
   );
 }
 
-function parsePriceValue(label) {
-  const normalized = label.toLowerCase().replace(/₹|,/g, "").trim();
-  const numeric = Number.parseFloat(normalized);
-
-  if (Number.isNaN(numeric)) {
-    return 0;
-  }
-
-  if (normalized.includes("cr")) {
-    return numeric * 10000000;
-  }
-
-  if (normalized.includes("lakh")) {
-    return numeric * 100000;
-  }
-
-  return numeric;
-}
 
 /* -------------------------------------------------------------------------- */
 /*                                  DATA                                      */
@@ -1413,170 +1447,68 @@ function PropertiesPage({
   renderSidebar,
   heroTitle,
   heroDescription,
-  heroAreaLabel = "Mumbai, Andheri West",
+  heroAreaLabel,
   mobileHeroTitle = false,
   hideMobileHeroDescription = false,
   resultContext = "residential",
+  purpose = "buy",
+  // Fixed filters for a curated listing page (e.g. Rent > Furnished Flats);
+  // anything in the URL still overrides them.
+  presetFilters = null,
+  resultNoun: resultNounOverride,
 }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { accessToken } = useAuth();
   const isResidential = resultContext === "residential";
-  const baseResults =
-    resultContext === "institutional"
-      ? propertyResults.map((item, index) => {
-          const institutionalContexts = [
-            {
-              priceDisplay: "₹350 Cr – ₹400 Cr",
-              rateDisplay: "Est. Yield: 8.5% - 9%",
-              title: "Industrial Warehouse Portfolio",
-              location: "Navi Mumbai",
-              details: "Industrial / Warehousing",
-              area: "850,000 sq.ft (Leased)",
-              status: "98% Occupied Tenants",
-              match: "89% Match",
-            },
-            {
-              priceDisplay: "₹420 Cr – ₹470 Cr",
-              rateDisplay: "Est. Yield: 9% - 9.5%",
-              title: "Bangalore Office Park Portfolio",
-              location: "Bangalore Outer Ring Road",
-              details: "Office Space",
-              area: "1,200,000 sq.ft",
-              status: "Nearing Completion",
-              match: "91% Match",
-            },
-            {
-              priceDisplay: "₹280 Cr – ₹320 Cr",
-              rateDisplay: "Est. Yield: 8% - 8.7%",
-              title: "Delhi NCR Industrial Portfolio",
-              location: "Delhi NCR",
-              details: "Industrial / Warehousing",
-              area: "750,000 sq.ft (Leased)",
-              status: "Entity Level / Asset Sale",
-              match: "85% Match",
-            },
-            {
-              priceDisplay: "₹500 Cr – ₹550 Cr",
-              rateDisplay: "Est. Yield: 9.2% - 9.8%",
-              title: "Chennai IT Corridor Portfolio",
-              location: "Chennai IT Corridor",
-              details: "Commercial Office",
-              area: "1,000,000 sq.ft (Leased)",
-              status: "97% Occupied Tenants",
-              match: "88% Match",
-            },
-            {
-              priceDisplay: "₹610 Cr – ₹680 Cr",
-              rateDisplay: "Est. Yield: 10% - 10.8%",
-              title: "Hyderabad Data Center Campus",
-              location: "Hyderabad Financial District",
-              details: "Data Center",
-              area: "620,000 sq.ft (Operational)",
-              status: "Fully Commissioned",
-              match: "92% Match",
-            },
-          ];
-
-          return {
-          ...item,
-          context: "institutional",
-          ...institutionalContexts[index % institutionalContexts.length],
-          tags: ["PRE-LEASED", "RERA REGISTERED"],
-          actionLabel: "Verify & Request Access",
-          };
-        })
-      : resultContext === "special"
-        ? propertyResults.map((item, index) => {
-            const specialContexts = [
-              { priceDisplay: "₹85.5 Cr", yieldDisplay: "11.4% Post Capex", area: "850,000 sq.ft", status: "NCLT Admitted", title: "Industrial Park - NCLT Resolution", location: "Navi Mumbai", match: "89% Match" },
-              { priceDisplay: "₹120 Cr", yieldDisplay: "13.2% Post Capex", area: "1,100,000 sq.ft", status: "Resolution Approved", title: "Commercial Estate - Debt Resolution", location: "Pune", match: "87% Match" },
-              { priceDisplay: "₹64 Cr", yieldDisplay: "10.8% Post Capex", area: "540,000 sq.ft", status: "NCLT Pending", title: "Logistics Hub - Insolvency Sale", location: "Gurugram", match: "86% Match" },
-              { priceDisplay: "₹210 Cr", yieldDisplay: "12.6% Post Capex", area: "1,450,000 sq.ft", status: "Strategic Exit", title: "Tech Campus - Structured Exit", location: "Bengaluru", match: "90% Match" },
-              { priceDisplay: "₹42 Cr", yieldDisplay: "9.9% Post Capex", area: "320,000 sq.ft", status: "NCLT Admitted", title: "Warehouse Cluster - Special Sale", location: "Ahmedabad", match: "84% Match" },
-            ];
-
-            return {
-              ...item,
-              context: "special",
-              ...specialContexts[index % specialContexts.length],
-              tags: ["FREEHOLD TITLE", "RERA REGISTERED"],
-              actionLabel: "Verify & Request Access",
-            };
-          })
-      : resultContext === "auction"
-        ? propertyResults.map((item, index) => {
-            const auctionContexts = [
-              {
-                priceDisplay: "₹2.1 Cr",
-                rateDisplay: "₹22,400/sq.ft",
-                title: "Lodha World One",
-                location: "Lower Parel, Mumbai - 400013",
-                details: "3 BHK",
-                area: "1850 sqft",
-                match: "95% Match",
-                auctionDate: "Auction: Oct 28, 2023 | 11:30 AM",
-              },
-              {
-                priceDisplay: "₹4.8 Cr",
-                rateDisplay: "₹19,800/sq.ft",
-                title: "DLF Commercial Tower",
-                location: "Gurugram, Haryana - 122002",
-                details: "Office Space",
-                area: "2420 sqft",
-                match: "91% Match",
-                auctionDate: "Auction: Nov 06, 2023 | 12:00 PM",
-              },
-              {
-                priceDisplay: "₹1.6 Cr",
-                rateDisplay: "₹12,500/sq.ft",
-                title: "Green Valley Residency",
-                location: "Bengaluru, Karnataka - 560103",
-                details: "3 BHK",
-                area: "1280 sqft",
-                match: "88% Match",
-                auctionDate: "Auction: Nov 14, 2023 | 10:30 AM",
-              },
-              {
-                priceDisplay: "₹3.2 Cr",
-                rateDisplay: "₹15,600/sq.ft",
-                title: "Marina Business Centre",
-                location: "Chennai, Tamil Nadu - 600018",
-                details: "Commercial Office",
-                area: "2050 sqft",
-                match: "86% Match",
-                auctionDate: "Auction: Nov 21, 2023 | 02:00 PM",
-              },
-              {
-                priceDisplay: "₹95 Lakh",
-                rateDisplay: "₹8,900/sq.ft",
-                title: "Skyline Heights",
-                location: "Pune, Maharashtra - 411045",
-                details: "2 BHK",
-                area: "1065 sqft",
-                match: "84% Match",
-                auctionDate: "Auction: Nov 29, 2023 | 11:00 AM",
-              },
-            ];
-
-            return {
-              ...item,
-              context: "auction",
-              ...auctionContexts[index % auctionContexts.length],
-              sourceBank: "State Bank of India",
-              actionLabel: "Enquire Now",
-            };
-          })
-      : propertyResults;
 
   const [apiItems, setApiItems] = React.useState([]);
-  const [apiPagination, setApiPagination] = React.useState({ page: 1, totalPages: 1 });
+  const [apiPagination, setApiPagination] = React.useState({ page: 1, totalPages: 1, total: 0 });
   const [apiLoading, setApiLoading] = React.useState(false);
   const [apiError, setApiError] = React.useState(null);
+  const [disclaimers, setDisclaimers] = React.useState([]);
+  const [dealAccess, setDealAccess] = React.useState(null);
 
-  const results = isResidential ? apiItems : baseResults;
-  const areaLabel = "Mumbai, Andheri West";
-  const [minPrice, setMinPrice] = React.useState(18);
-  const [maxPrice, setMaxPrice] = React.useState(82);
+  const results = apiItems;
+  const presetKey = JSON.stringify(presetFilters || {});
+  const cityFilter = searchParams.get("city");
+  const effectivePurpose = searchParams.get("purpose") || purpose;
+  // purpose=all (home page "View All") lists sale and rent together.
+  const apiPurpose = effectivePurpose === "all" ? undefined : effectivePurpose;
+  const verifiedParam = searchParams.get("verified") === "true";
+  const areaLabel = cityFilter || "All cities";
+  const resultNoun = resultNounOverride || {
+    residential: "Properties",
+    auction: "Auction Deals",
+    special: "Special Situation Deals",
+    institutional: "Institutional Listings",
+  }[resultContext] || "Properties";
+  const resultsHeading = `${(apiPagination.total || 0).toLocaleString("en-IN")} ${resultNoun}${cityFilter ? ` in ${cityFilter}` : ""}`;
+  const resultsSubheading =
+    effectivePurpose === "all"
+      ? `Latest ${verifiedParam ? "verified " : ""}listings for sale and rent${cityFilter ? ` in ${cityFilter}` : " across all cities"}`
+      : `${resultNoun} ${effectivePurpose === "rent" ? "for Rent / Lease" : "for Sale"}${cityFilter ? ` in ${cityFilter}` : " across all cities"}`;
+
+  // What the search bar shows: the page's real type / property / budget
+  // (from the URL or the page's preset filters), not fixed sample values.
+  const PROPERTY_LABELS = {
+    apartment: "Flat", villa: "Villa", independent_house: "House", plot: "Plot", commercial: "Commercial", farmhouse: "Farmhouse", other: "Other",
+  };
+  const shortInr = (v) => (v >= 1e7 ? `₹${Number((v / 1e7).toFixed(2))} Cr` : `₹${Number((v / 1e5).toFixed(2))} L`);
+  const summaryType = searchParams.get("propertyType") || presetFilters?.propertyType;
+  const minP = Number(searchParams.get("minPrice")) || null;
+  const maxP = Number(searchParams.get("maxPrice")) || null;
+  const searchSummary = {
+    type: effectivePurpose === "all" ? "All" : effectivePurpose === "rent" ? "Rent" : "Buy",
+    property:
+      { auction: "Auction", special: "Special Situation", institutional: "Institutional" }[resultContext] ||
+      (presetFilters?.tag ? "PG / Co-living" : null) ||
+      PROPERTY_LABELS[summaryType] ||
+      "All",
+    budget: minP && maxP ? `${shortInr(minP)} - ${shortInr(maxP)}` : maxP ? `Up to ${shortInr(maxP)}` : minP ? `From ${shortInr(minP)}` : "Any",
+  };
+  const [minPrice, setMinPrice] = React.useState(0);
+  const [maxPrice, setMaxPrice] = React.useState(100);
   const [viewMode, setViewMode] = React.useState("list");
   const [sortValue, setSortValue] = React.useState("relevance");
   const [sortOpen, setSortOpen] = React.useState(false);
@@ -1631,20 +1563,55 @@ function PropertiesPage({
   }, [initialDrawerState, renderSidebar]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPropertyId, setSelectedPropertyId] = React.useState(null);
-  const [favoriteIds, setFavoriteIds] = React.useState(
-    () =>
-      new Set(results.filter((item) => item.favorite).map((item) => item.id)),
-  );
-  const [selectedBhk, setSelectedBhk] = React.useState(["2 BHK", "3 BHK"]);
-  const [selectedPropertyTypes, setSelectedPropertyTypes] = React.useState([
-    "Apartment",
-  ]);
-  const [selectedPropertyStatus, setSelectedPropertyStatus] = React.useState([
-    "Under Construction",
-  ]);
-  const [selectedFurnishing, setSelectedFurnishing] = React.useState(["Full"]);
-  const [selectedParking, setSelectedParking] = React.useState(["2 Wheeler"]);
-  const [verifiedOnly, setVerifiedOnly] = React.useState(true);
+  // Enquiry form for a listing (from "Enquire Now" / the phone button).
+  const [enquiry, setEnquiry] = React.useState(null);
+  React.useEffect(() => {
+    openEnquiryFor = (item, kind) => setEnquiry({ item, kind });
+    return () => {
+      openEnquiryFor = null;
+    };
+  }, []);
+
+  // Hearts are saved to the signed-in account (guests are asked to log in).
+  const { favouriteIds: favoriteIds, toggleFavourite: toggleFavorite } = useFavourites();
+
+  // "Save this search" - stored on the account with new-listing alerts on,
+  // listed under Saved in the dashboard.
+  const { user } = useAuth();
+  const [savedSearchState, setSavedSearchState] = React.useState("idle"); // idle | saving | saved | error
+  React.useEffect(() => setSavedSearchState("idle"), [searchParams]);
+  const saveThisSearch = async () => {
+    if (!accessToken) {
+      navigate("/login", { state: { from: { pathname: window.location.pathname, search: window.location.search } } });
+      return;
+    }
+    setSavedSearchState("saving");
+    try {
+      await portal.createSavedSearch(accessToken, {
+        name: `${resultNoun}${cityFilter ? ` in ${cityFilter}` : ""}${summaryType ? ` - ${searchSummary.property}` : ""}${
+          maxP ? ` - up to ${shortInr(maxP)}` : ""
+        }`.slice(0, 120),
+        filters: {
+          purpose: effectivePurpose,
+          city: cityFilter || undefined,
+          q: searchParams.get("q") || undefined,
+          propertyType: summaryType || undefined,
+          minPrice: minP || undefined,
+          maxPrice: maxP || undefined,
+          bedrooms: searchParams.get("bedrooms") || presetFilters?.bedrooms || undefined,
+        },
+      });
+      setSavedSearchState("saved");
+    } catch {
+      setSavedSearchState("error");
+    }
+  };
+  const [selectedBhk, setSelectedBhk] = React.useState([]);
+  const [selectedPropertyTypes, setSelectedPropertyTypes] = React.useState([]);
+  const [selectedPropertyStatus, setSelectedPropertyStatus] = React.useState([]);
+  const [selectedFurnishing, setSelectedFurnishing] = React.useState([]);
+  const [selectedParking, setSelectedParking] = React.useState([]);
+  const [verifiedOnly, setVerifiedOnly] = React.useState(false);
   const [reraApproved, setReraApproved] = React.useState(false);
   const [selectedAmenities, setSelectedAmenities] = React.useState([]);
 
@@ -1656,23 +1623,48 @@ function PropertiesPage({
     );
   };
 
+  // Drawer selections only take effect on "Show Results" (applyFilters),
+  // translated to the search API's filter values (same values the CRM
+  // stores on a listing).
+  const [appliedFilters, setAppliedFilters] = React.useState({});
+  const DRAWER_VALUES = {
+    type: { Apartment: ["apartment"], "Independent House/Villa": ["independent_house", "villa"], Plots: ["plot"] },
+    status: { "Under Construction": "Under Construction", Ready: "Ready to Move" },
+    furnishing: { Full: "Fully Furnished", Semi: "Semi-Furnished", None: "Unfurnished" },
+  };
+  const applyFilters = () => {
+    const next = {};
+    if (minPrice > 0) next.minPrice = sliderToInr(minPrice, effectivePurpose);
+    if (maxPrice < 100) next.maxPrice = sliderToInr(maxPrice, effectivePurpose);
+    if (selectedBhk.length) next.bhk = selectedBhk.map((b) => parseInt(b, 10)).join(",");
+    if (selectedPropertyTypes.length) next.propertyType = selectedPropertyTypes.flatMap((t) => DRAWER_VALUES.type[t] || []).join(",");
+    if (selectedPropertyStatus.length) next.possessionStatus = selectedPropertyStatus.map((t) => DRAWER_VALUES.status[t]).join(",");
+    if (selectedFurnishing.length) next.furnishing = selectedFurnishing.map((t) => DRAWER_VALUES.furnishing[t]).join(",");
+    if (selectedParking.length) next.parking = selectedParking.map((p) => p.toLowerCase()).join(",");
+    if (verifiedOnly) next.verified = true;
+    if (reraApproved) next.rera = true;
+    if (selectedAmenities.length) next.amenities = selectedAmenities.join(",");
+    setAppliedFilters(next);
+    setCurrentPage(1);
+    setFiltersOpen(false);
+  };
+  const activeFilterCount = Object.keys(appliedFilters).length;
+
   const resetFilters = () => {
-    setMinPrice(18);
-    setMaxPrice(82);
+    setAppliedFilters({});
+    setMinPrice(0);
+    setMaxPrice(100);
     setViewMode("list");
     setSortValue("relevance");
     setSortOpen(false);
     setCurrentPage(1);
     setSelectedPropertyId(null);
-    setFavoriteIds(
-      new Set(results.filter((item) => item.favorite).map((item) => item.id)),
-    );
-    setSelectedBhk(["2 BHK", "3 BHK"]);
-    setSelectedPropertyTypes(["Apartment"]);
-    setSelectedPropertyStatus(["Under Construction"]);
-    setSelectedFurnishing(["Full"]);
-    setSelectedParking(["2 Wheeler"]);
-    setVerifiedOnly(true);
+    setSelectedBhk([]);
+    setSelectedPropertyTypes([]);
+    setSelectedPropertyStatus([]);
+    setSelectedFurnishing([]);
+    setSelectedParking([]);
+    setVerifiedOnly(false);
     setReraApproved(false);
     setSelectedAmenities([]);
   };
@@ -1694,82 +1686,84 @@ function PropertiesPage({
 
   const itemsPerPage = 5;
 
-  // Real backend data already arrives sorted/paginated by the `sort`/
-  // `page` params sent below, so it's used as-is; the client-side sort and
-  // fake page-cycling further down stay exactly as they were for the
-  // institutional/special/auction marketing contexts, which are still
-  // static mock data.
-  const sortedResults = React.useMemo(() => {
-    if (isResidential) return results;
+  // Every context is backed by the real API now, which returns results
+  // already sorted and paginated by the `sort` / `page` params below.
+  const pagedResults = results;
+  const totalPages = Math.max(apiPagination.totalPages || 1, 1);
 
-    const nextResults = [...results];
-
-    if (sortValue === "price-low") {
-      nextResults.sort(
-        (a, b) => parsePriceValue(a.price) - parsePriceValue(b.price),
-      );
-    } else if (sortValue === "price-high") {
-      nextResults.sort(
-        (a, b) => parsePriceValue(b.price) - parsePriceValue(a.price),
-      );
-    }
-
-    return nextResults;
-  }, [results, sortValue, isResidential]);
-
-  const totalPages = isResidential ? apiPagination.totalPages || 1 : 42;
-
-  const pagedResults = React.useMemo(() => {
-    if (isResidential) return sortedResults;
-
-    if (sortedResults.length === 0) {
-      return [];
-    }
-
-    const startIndex = (currentPage - 1) * itemsPerPage;
-
-    return Array.from({ length: itemsPerPage }, (_, index) => {
-      const absoluteIndex = startIndex + index;
-      const source = sortedResults[absoluteIndex % sortedResults.length];
-      const cycle = Math.floor(absoluteIndex / sortedResults.length);
-
-      return {
-        ...source,
-        id: `${source.id}-${currentPage}-${cycle}-${index}`,
-        // The synthetic `id` above only exists to keep React keys/selection
-        // unique across repeated cycles of the same 5 mock records - detail
-        // page links need the real underlying property id, not that.
-        detailId: source.id,
-      };
-    });
-  }, [currentPage, sortedResults, isResidential]);
-
-  // Fetches the real property search results for the plain residential
-  // /properties page (institutional/special/auction stay on static mock
-  // data - see the ternary above). Reads `city` from the URL so a search
-  // from the homepage hero carries through.
+  // Residential listings come from /search/properties. Auction and special
+  // situation deals come from /opportunities - the public teaser list, or the
+  // full list when the signed-in user has access (staff, brokers, verified
+  // NRI/HNI investors). Institutional listings are masked teasers from
+  // /search/properties. `purpose` is buy (for sale) or rent.
   React.useEffect(() => {
-    if (!isResidential) return undefined;
     let cancelled = false;
     setApiLoading(true);
     setApiError(null);
 
-    const sortParam =
-      sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : "newest";
+    const city = searchParams.get("city") || undefined;
+    let request;
+    if (resultContext === "auction" || resultContext === "special") {
+      const params = {
+        listingCategory: resultContext === "auction" ? "auction" : "special_situation",
+        purpose,
+        city,
+        page: currentPage,
+        limit: itemsPerPage,
+        sort: sortValue === "price-high" ? "price_desc" : sortValue === "price-low" ? "price_asc" : resultContext === "auction" ? "auction_date" : "score",
+      };
+      const loadPublic = () => listPublicOpportunities(params, accessToken || undefined);
+      request = (accessToken
+        ? listOpportunities(params, accessToken).then((data) => ({ ...data, access: { full: true } })).catch(loadPublic)
+        : loadPublic()
+      ).then((data) => ({
+        items: (data.items || []).map((item) => normalizeOpportunity(item, resultContext)),
+        pagination: data.pagination,
+        disclaimers: data.disclaimers || [],
+        access: data.access || null,
+      }));
+    } else {
+      const params = {
+        ...(presetFilters || {}),
+        city,
+        // Filters carried over from the home-page hero search.
+        purpose: apiPurpose,
+        verified: verifiedParam || undefined,
+        q: searchParams.get("q") || undefined,
+        propertyType: searchParams.get("propertyType") || presetFilters?.propertyType || undefined,
+        minPrice: searchParams.get("minPrice") || undefined,
+        maxPrice: searchParams.get("maxPrice") || undefined,
+        bedrooms: searchParams.get("bedrooms") || presetFilters?.bedrooms || undefined,
+        ...(resultContext === "institutional" ? {} : appliedFilters),
+        page: currentPage,
+        limit: itemsPerPage,
+        listingCategory: resultContext === "institutional" ? "institutional" : undefined,
+        sort:
+          resultContext === "institutional"
+            ? sortValue === "price-high" ? "price_desc" : sortValue === "price-low" ? "price_asc" : "newest"
+            : sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : "newest",
+      };
+      request = searchProperties(params).then((data) => ({
+        items: (data.items || []).map((item) =>
+          resultContext === "institutional" ? normalizeOpportunity(item, "institutional") : normalizeProperty(item)
+        ),
+        pagination: data.pagination,
+        disclaimers: data.disclaimers || [],
+        access: null,
+      }));
+    }
 
-    searchProperties({
-      city: searchParams.get("city") || undefined,
-      page: currentPage,
-      limit: itemsPerPage,
-      sort: sortParam,
-    })
+    request
       .then((data) => {
         if (cancelled) return;
-        setApiItems((data.items || []).map(normalizeProperty));
+        setApiItems(data.items);
         setApiPagination({
           page: data.pagination?.page || 1,
           totalPages: data.pagination?.totalPages || 1,
+          total: data.pagination?.total || 0,
         });
+        setDisclaimers(data.disclaimers);
+        setDealAccess(data.access);
       })
       .catch((err) => {
         if (cancelled) return;
@@ -1783,7 +1777,7 @@ function PropertiesPage({
     return () => {
       cancelled = true;
     };
-  }, [isResidential, searchParams, currentPage, sortValue, itemsPerPage]);
+  }, [resultContext, purpose, presetKey, accessToken, searchParams, currentPage, sortValue, itemsPerPage, appliedFilters]);
 
   const goToPage = (pageNumber) => {
     const nextPage = Math.min(Math.max(pageNumber, 1), totalPages);
@@ -1792,19 +1786,6 @@ function PropertiesPage({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const toggleFavorite = (propertyId) => {
-    setFavoriteIds((current) => {
-      const next = new Set(current);
-
-      if (next.has(propertyId)) {
-        next.delete(propertyId);
-      } else {
-        next.add(propertyId);
-      }
-
-      return next;
-    });
-  };
 
   const sortLabel =
     sortValue === "price-low"
@@ -1828,11 +1809,12 @@ function PropertiesPage({
           <HeroSearchSection
             title={heroTitle}
             description={heroDescription}
-            areaLabel={heroAreaLabel}
+            areaLabel={heroAreaLabel || areaLabel}
             filtersOpen={filtersOpen}
             onToggleFilters={() => setFiltersOpen((current) => !current)}
             mobileTitleStyle={mobileHeroTitle}
             hideMobileDescription={hideMobileHeroDescription}
+            summary={searchSummary}
           />
         )}
 
@@ -1843,6 +1825,7 @@ function PropertiesPage({
                 areaLabel={areaLabel}
                 filtersOpen={filtersOpen}
                 onToggleFilters={() => setFiltersOpen((current) => !current)}
+                summary={searchSummary}
               />
             </div>
           </section>
@@ -1938,6 +1921,7 @@ function PropertiesPage({
                                 maxValue={maxPrice}
                                 onMinChange={setMinPrice}
                                 onMaxChange={setMaxPrice}
+                                purpose={effectivePurpose}
                               />
                             </SidebarSection>
 
@@ -2080,26 +2064,26 @@ function PropertiesPage({
                             <SidebarSection title="Parking">
                               <div className="flex flex-wrap items-center gap-[12px]">
                                 <CheckboxItem
-                                  label="2 Wheeler"
+                                  label="Covered"
                                   checked={selectedParking.includes(
-                                    "2 Wheeler",
+                                    "Covered",
                                   )}
                                   onClick={() =>
                                     toggleSelection(
-                                      "2 Wheeler",
+                                      "Covered",
                                       setSelectedParking,
                                     )
                                   }
                                 />
 
                                 <CheckboxItem
-                                  label="4 Wheeler"
+                                  label="Open"
                                   checked={selectedParking.includes(
-                                    "4 Wheeler",
+                                    "Open",
                                   )}
                                   onClick={() =>
                                     toggleSelection(
-                                      "4 Wheeler",
+                                      "Open",
                                       setSelectedParking,
                                     )
                                   }
@@ -2169,7 +2153,7 @@ function PropertiesPage({
                         <div className="shrink-0 border-t border-[#F3F4F6] px-5 py-4">
                           <button
                             type="button"
-                            onClick={() => setFiltersOpen(false)}
+                            onClick={applyFilters}
                             className="cta-red inline-flex h-[46px] w-full items-center justify-center rounded-[12px] text-[14px] font-bold text-white"
                           >
                             Show Results
@@ -2191,12 +2175,36 @@ function PropertiesPage({
                   {viewMode !== "map" && (
                     <div className="min-w-0 shrink-0 md:w-[258.98px]">
                       <h1 className="font-['Plus_Jakarta_Sans'] text-[16px] font-extrabold leading-[27px] text-[#111827] md:text-[20px] md:font-semibold md:leading-[30px]">
-                        1,245 Properties in Mumbai
+                        {resultsHeading}
                       </h1>
 
                       <p className="font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[18px] tracking-[0] text-[#6B7280] md:font-['Lato'] md:text-[14px] md:leading-[21px] md:tracking-[-0.49%]">
-                        Properties for Sale in Andheri West
+                        {resultsSubheading}
                       </p>
+                      {isResidential && (!user || user.role === "customer") && (
+                        <button
+                          type="button"
+                          onClick={saveThisSearch}
+                          disabled={savedSearchState === "saving" || savedSearchState === "saved"}
+                          className="mt-1 inline-flex items-center gap-1 font-['Plus_Jakarta_Sans'] text-[12px] font-bold text-[#E51C23] transition hover:text-red-700 disabled:cursor-default disabled:text-emerald-700"
+                        >
+                          {savedSearchState === "saved"
+                            ? "✓ Search saved - we'll alert you to new listings"
+                            : savedSearchState === "saving"
+                              ? "Saving..."
+                              : savedSearchState === "error"
+                                ? "Couldn't save - try again"
+                                : "🔔 Save this search"}
+                        </button>
+                      )}
+                      {activeFilterCount > 0 && (
+                        <p className="mt-1 font-['Plus_Jakarta_Sans'] text-[12px] text-[#6B7280]">
+                          {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} applied ·{" "}
+                          <button type="button" onClick={resetFilters} className="font-bold text-[#E51C23] hover:underline">
+                            Clear
+                          </button>
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -2392,23 +2400,28 @@ function PropertiesPage({
                   )}
                 </div>
 
-                {isResidential && apiLoading && (
+                {apiLoading && (
                   <div className="mt-[20px] w-full rounded-2xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-500">
                     Loading properties…
                   </div>
                 )}
-                {isResidential && !apiLoading && apiError && (
+                {!apiLoading && apiError && (
                   <div className="mt-[20px] w-full rounded-2xl border border-red-200 bg-red-50 py-12 text-center text-sm text-red-600">
                     {apiError}
                   </div>
                 )}
-                {isResidential && !apiLoading && !apiError && pagedResults.length === 0 && (
+                {!apiLoading && !apiError && pagedResults.length === 0 && (
                   <div className="mt-[20px] w-full rounded-2xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-500">
-                    No listings match your search yet.
+                    {isResidential ? "No listings match your search yet." : "No live opportunities in this category right now - check back soon."}
+                  </div>
+                )}
+                {!isResidential && dealAccess && dealAccess.full === false && pagedResults.length > 0 && (
+                  <div className="mt-[20px] w-full rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+                    {dealAccess.reason || "Sign in with a verified investor profile to unlock full deal details."}
                   </div>
                 )}
 
-                {viewMode === "list" && (!isResidential || (!apiLoading && !apiError && pagedResults.length > 0)) && (
+                {viewMode === "list" && (!apiLoading && !apiError && pagedResults.length > 0) && (
                   <>
                     <div className="mt-[20px] flex w-full flex-col gap-[12px] md:hidden">
                       {pagedResults.map((item, index) => (
@@ -2450,7 +2463,7 @@ function PropertiesPage({
                   </>
                 )}
 
-                {viewMode === "tile" && (!isResidential || (!apiLoading && !apiError && pagedResults.length > 0)) && (
+                {viewMode === "tile" && (!apiLoading && !apiError && pagedResults.length > 0) && (
                   <>
                     {/* PROPERTY TILES */}
                     <div className="mx-auto w-full max-w-[1440px] xl:px-[9px]">
@@ -2508,11 +2521,11 @@ function PropertiesPage({
                         <div className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] pb-[12px]">
                           <div>
                             <h2 className="text-[20px] font-semibold leading-[30px] text-[#111827]">
-                              1,245 Properties
+                              {resultsHeading}
                             </h2>
 
                             <p className="font-['Lato'] text-[14px] font-normal leading-[21px] tracking-[-0.49%] text-[#6B7280]">
-                              Showing residential flats for sale in Mumbai
+                              {resultsSubheading}
                             </p>
                           </div>
 
@@ -2623,37 +2636,17 @@ function PropertiesPage({
                       </svg>
                     </PaginationButton>
 
-                    <PaginationButton
-                      active={currentPage === 1}
-                      onClick={() => goToPage(1)}
-                    >
-                      1
-                    </PaginationButton>
-
-                    <PaginationButton
-                      active={currentPage === 2}
-                      onClick={() => goToPage(2)}
-                    >
-                      2
-                    </PaginationButton>
-
-                    <PaginationButton
-                      active={currentPage === 3}
-                      onClick={() => goToPage(3)}
-                    >
-                      3
-                    </PaginationButton>
-
-                    <span className="inline-flex h-[24px] min-w-[29.34px] items-center justify-center px-[8px] text-[14px] leading-none text-[#94A3B8]">
-                      ...
-                    </span>
-
-                    <PaginationButton
-                      active={currentPage === 42}
-                      onClick={() => goToPage(42)}
-                    >
-                      42
-                    </PaginationButton>
+                    {pageWindow(currentPage, totalPages).map((page) =>
+                      typeof page === "string" ? (
+                        <span key={page} className="inline-flex h-[24px] min-w-[29.34px] items-center justify-center px-[8px] text-[14px] leading-none text-[#94A3B8]">
+                          ...
+                        </span>
+                      ) : (
+                        <PaginationButton key={page} active={currentPage === page} onClick={() => goToPage(page)}>
+                          {page}
+                        </PaginationButton>
+                      )
+                    )}
 
                     <PaginationButton
                       disabled={currentPage === totalPages}
@@ -2676,12 +2669,35 @@ function PropertiesPage({
                     </PaginationButton>
                   </div>
                 </div>
+
+                {disclaimers.length > 0 && (
+                  <div className="mt-[24px] w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4 text-[12px] leading-[18px] text-[#6B7280]">
+                    {disclaimers.map((d) => (
+                      <p key={d.key} className="mt-1 first:mt-0">
+                        <span className="font-semibold text-[#4B5563]">{d.title}: </span>
+                        {d.content_html}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </section>
             </div>
           </div>
         </div>
 
         {/* FOOTER */}
+        <EnquiryModal
+          open={!!enquiry}
+          onClose={() => setEnquiry(null)}
+          topic={enquiry?.kind === "callback" ? "Call back request" : "Property enquiry"}
+          title={enquiry?.kind === "callback" ? "Request a call back" : "Enquire about this property"}
+          description={
+            enquiry
+              ? `${enquiry.item.title}${enquiry.item.location ? ` - ${enquiry.item.location}` : ""}. Your A R Buildwel representative will call you back and can arrange a site visit.`
+              : ""
+          }
+          propertyId={enquiry && /^[0-9a-f-]{36}$/i.test(String(enquiry.item.id)) ? enquiry.item.id : undefined}
+        />
         <CompanyFooterSection />
       </div>
     </main>

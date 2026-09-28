@@ -9,9 +9,12 @@ function RegisterPage() {
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  // New accounts land on My Dashboard (onboarding) unless they came from a page.
+  const from = location.state?.from?.pathname ? `${location.state.from.pathname}${location.state.from.search || ""}` : "/dashboard";
+  // Shared referral links look like /register?ref=BU-8Q2ZT (sec. 33.1A).
+  const refFromLink = (new URLSearchParams(location.search).get("ref") || "").toUpperCase();
 
-  const [form, setForm] = useState({ fullName: "", email: "", mobile: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({ fullName: "", email: "", mobile: "", password: "", confirmPassword: "", referralCode: refFromLink });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -65,6 +68,7 @@ function RegisterPage() {
         mobile: form.mobile.trim(),
         password: form.password,
         role,
+        referralCode: form.referralCode.trim() || undefined,
       });
       navigate(from, { replace: true });
     } catch (err) {
@@ -157,6 +161,16 @@ function RegisterPage() {
           value={form.mobile}
           onChange={set("mobile")}
           error={errors.mobile}
+        />
+
+        <AuthField
+          label="Referral code (optional)"
+          type="text"
+          autoComplete="off"
+          placeholder="e.g. BU-8Q2ZT"
+          value={form.referralCode}
+          onChange={(event) => setForm((f) => ({ ...f, referralCode: event.target.value.toUpperCase() }))}
+          error={errors.referralCode}
         />
 
         {/* <AuthField

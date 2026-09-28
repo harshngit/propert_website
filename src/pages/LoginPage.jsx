@@ -269,7 +269,8 @@ function LoginPage() {
   const { loginWithGoogle } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
+  // Return to the exact page (including its query, e.g. ?new=1) after login.
+  const from = location.state?.from?.pathname ? `${location.state.from.pathname}${location.state.from.search || ""}` : "/";
   const [mode, setMode] = useState("password"); // password | otp
   const [googleError, setGoogleError] = useState("");
 

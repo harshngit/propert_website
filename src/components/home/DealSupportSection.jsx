@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getDisclaimers } from "../../api/content";
 
+const LIQUIDITY = { high: "High", moderate: "Moderate", low: "Low" };
+
+// Special situation / auction promo with the live top-scored deal, plus the
+// financing card. Disclaimers come from the admin-editable library.
 function DealSupportSection({
-  scoreText = "Investment Score - 74/100 - Liquidity: Moderate",
+  topDeal,
+  onFinancing,
   title = "Special Situation Properties",
   description = "Curated bank auction, NBFC, and ARC-sourced deals, each carrying an Investment Score. Access for verified brokers, NRI, and HNI users.",
   pills = ["Verified Documents", "Ready for Possession", "Legally Clear"],
   buttonText = "View Curated Deals",
-  disclaimer = "Special situation property. Independent legal and financial due diligence required before proceeding.",
   financeTitle = "Need financing?",
   financeDescription = "Home loan, construction finance, loan against property, and NRI mortgage across leading banks and NBFCs.",
   financeRange = "₹10L - ₹100Cr",
   financeButtonText = "Check Eligibility",
-  financeDisclaimer = "Loan eligibility subject to lender assessment and applicable terms and conditions.",
 }) {
+  const navigate = useNavigate();
+  const [disclaimers, setDisclaimers] = useState({});
+
+  useEffect(() => {
+    getDisclaimers(["special_situation", "loan"])
+      .then((rows) => setDisclaimers(Object.fromEntries(rows.map((d) => [d.key, d.content_html]))))
+      .catch(() => {});
+  }, []);
+
+  const scoreText =
+    topDeal && topDeal.investment_score != null
+      ? `Top deal - Investment Score ${topDeal.investment_score}/100${topDeal.liquidity_band ? ` - Liquidity: ${LIQUIDITY[topDeal.liquidity_band]}` : ""}`
+      : "Every deal carries an Investment Score";
+  const dealsPath = topDeal?.listing_category === "special_situation" ? "/buy/special-situation-properties" : "/buy/bank-auction-properties";
   return (
     <>
       <div className="h-[50px]" />
@@ -35,11 +54,11 @@ function DealSupportSection({
               </span>
             ))}
           </div>
-          <button className="cta-red mt-[18px] h-[50px] w-full rounded-[16px] px-6 py-3.5 text-[16px] font-extrabold text-white sm:mt-4 sm:h-auto sm:w-auto sm:rounded-[14px] sm:text-[16px]">
+          <button type="button" onClick={() => navigate(dealsPath)} className="cta-red mt-[18px] h-[50px] w-full rounded-[16px] px-6 py-3.5 text-[16px] font-extrabold text-white sm:mt-4 sm:h-auto sm:w-auto sm:rounded-[14px] sm:text-[16px]">
             {buttonText}
           </button>
           <p className="mt-4 hidden border-t border-slate-100 pt-4 text-[14px] leading-6 text-slate-500 sm:block">
-            {disclaimer}
+            {disclaimers.special_situation}
           </p>
         </div>
 
@@ -47,11 +66,11 @@ function DealSupportSection({
           <h3 className="text-[28px] font-black">{financeTitle}</h3>
           <p className="mt-3 text-[14px] leading-6 text-white/90">{financeDescription}</p>
           <div className="mt-5 text-[28px] font-black leading-none">{financeRange}</div>
-          <button className="cta-white-on-red mt-6 w-full rounded-[14px] bg-white px-6 py-3.5 text-[16px] font-extrabold text-red-500 transition hover:bg-slate-50">
+          <button type="button" onClick={onFinancing} className="cta-white-on-red mt-6 w-full rounded-[14px] bg-white px-6 py-3.5 text-[16px] font-extrabold text-red-500 transition hover:bg-slate-50">
             {financeButtonText}
           </button>
           <p className="mt-4 border-t border-white/20 pt-4 text-[14px] leading-6 text-white/85">
-            {financeDisclaimer}
+            {disclaimers.loan}
           </p>
         </div>
       </div>

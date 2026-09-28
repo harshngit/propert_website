@@ -18,7 +18,7 @@ const leftFeatures = [
   },
 ];
 
-function PropertyManagementSection() {
+function PropertyManagementSection({ onTalkToManager }) {
   return (
     <section className="mt-12 w-full">
       <div className="mx-auto grid w-full max-w-[1440px] gap-5 lg:grid-cols-[735.69px_592.31px]">
@@ -121,7 +121,7 @@ function PropertyManagementSection() {
             {/* =====================================================
         CTA BUTTON
     ====================================================== */}
-            <button className="cta-red mt-[20px] inline-flex h-[46px] w-fit items-center gap-[11px] rounded-[8px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[13px] font-extrabold text-white transition">
+            <button type="button" onClick={onTalkToManager} className="cta-red mt-[20px] inline-flex h-[46px] w-fit items-center gap-[11px] rounded-[8px] bg-[#E51C23] px-[20px] font-['Plus_Jakarta_Sans'] text-[13px] font-extrabold text-white transition">
               <span>Talk to a Relationship Manager</span>
 
               <span
@@ -326,6 +326,7 @@ function PropertyManagementSection() {
               {/* CTA BUTTON */}
               <button
                 type="button"
+                onClick={onTalkToManager}
                 className="
           cta-red-on-dark
           mt-[22px]

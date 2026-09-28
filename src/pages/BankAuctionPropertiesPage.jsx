@@ -10,7 +10,8 @@ function BankAuctionPropertiesPage() {
     <div className="bank-auction-page">
       <PropertiesPage
         heroTitle="Bank Auction Opportunities"
-        heroDescription="Exclusive access to high-yield distressed assets, foreclosed properties, and E-Auction opportunities from leading financial institutions for savvy investors"
+        heroDescription="High-Opportunity Investment Deals from SARFAESI bank auctions, NBFC and ARC asset sales and E-Auctions by leading financial institutions"
+        purpose="buy"
         mobileHeroTitle
         hideMobileHeroDescription
         resultContext="auction"

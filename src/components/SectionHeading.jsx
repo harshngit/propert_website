@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function SectionHeading({
   title,
@@ -8,6 +9,8 @@ function SectionHeading({
   mobileCompact = false,
   mobileSmall = false,
   cityLandingMobile = false,
+  // Where "View All" goes; without it the link is not shown.
+  viewAllTo,
 }) {
   const wrapperClassName =
     className ||
@@ -50,7 +53,9 @@ function SectionHeading({
           {subtitle}
         </p>
       </div>
-      <button
+      {viewAllTo && (
+      <Link
+        to={viewAllTo}
         className={`inline-flex h-6 w-[77.5px] flex-nowrap items-center gap-2 whitespace-nowrap font-['Plus_Jakarta_Sans'] font-bold leading-6 tracking-[0.0049em] text-[#E51C23] transition hover:text-red-600 ${
           cityLandingMobile ? "gap-1 sm:gap-2" : ""
         } ${
@@ -80,7 +85,8 @@ function SectionHeading({
               : "h-[10px] w-[7.5px] shrink-0 object-contain"
           }
         />
-      </button>
+      </Link>
+      )}
     </div>
   );
 }

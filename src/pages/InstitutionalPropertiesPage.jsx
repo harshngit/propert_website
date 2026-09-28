@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import EnquiryModal from "../components/EnquiryModal";
 import PropertiesPage from "./PropertiesPage";
 
 function createInvestmentDrawerState() {
@@ -11,13 +12,16 @@ function createInvestmentDrawerState() {
 }
 
 function AdvisorCard() {
+  const [open, setOpen] = useState(false);
   return (
     <div className="rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-4">
+      <EnquiryModal open={open} onClose={() => setOpen(false)} topic="Institutional Advisor" description="Tell us what you are looking for - asset type, city and ticket size - and an institutional advisor will call you back confidentially." />
       <p className="text-[14px] font-normal leading-[20px] text-[#111827]">
         Need a tailored portfolio search?
       </p>
       <button
         type="button"
+        onClick={() => setOpen(true)}
         className="mt-1 inline-flex items-center gap-1 text-[14px] font-semibold leading-[20px] text-[#E51C23]"
       >
         <span>Connect with Advisor</span>
@@ -236,7 +240,8 @@ function InstitutionalPropertiesPage() {
   return (
     <PropertiesPage
       heroTitle="Institutional Opportunities"
-      heroDescription="Exclusive access to high-value portfolios, commercial assets, and distressed debt opportunities for qualified institutional investors"
+      heroDescription="Confidential sale, stake-sale, lease and JV opportunities for schools, colleges, hospitals, hotels and campuses - for verified institutional buyers"
+      purpose="buy"
       mobileHeroTitle
       hideMobileHeroDescription
       resultContext="institutional"

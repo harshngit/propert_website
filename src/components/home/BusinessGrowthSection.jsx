@@ -8,7 +8,7 @@ function BusinessGrowthSection() {
         <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
           <div className="max-w-[560px]">
             <div className="inline-flex rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white/75">
-              First in India
+              Institutional Marketplace
             </div>
             <h2 className="mt-4 max-w-[520px] text-[36px] font-black leading-[1.06] tracking-tight">
               ll a school, college, or university. Confidentially

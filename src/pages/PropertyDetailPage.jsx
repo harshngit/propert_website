@@ -7,6 +7,8 @@ import { propertyResults } from "../data/propertyResults";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
 import { getPropertyById } from "../api/properties";
 import { normalizeProperty } from "../utils/normalizeProperty";
+import EnquiryModal from "../components/EnquiryModal";
+import { useFavourites } from "../hooks/useFavourites";
 
 function LocationIcon({ className = "text-[#E51C23]" }) {
   return (
@@ -289,11 +291,31 @@ function PropertyDetailPage() {
   const location = useLocation();
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavourite, toggleFavourite } = useFavourites();
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [shareNote, setShareNote] = useState("");
   const routeProperty = propertyResults.find((item) => String(item.id) === id);
   const [fetchedProperty, setFetchedProperty] = useState(null);
   const [fetchFailed, setFetchFailed] = useState(false);
   const property = routeProperty || location.state?.property || fetchedProperty;
+  const isFavorite = property ? isFavourite(property.id) : false;
+
+  // Native share sheet where available (phones), otherwise copy the link.
+  const shareListing = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: property?.title, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareNote("Link copied");
+    } catch {
+      setShareNote("");
+      return;
+    }
+    setTimeout(() => setShareNote(""), 2500);
+  };
 
   // Real listings (a UUID id, not one of the small mock array's numeric
   // ids) aren't in `propertyResults` and only arrive via route state when
@@ -413,7 +435,7 @@ function PropertyDetailPage() {
                 aria-pressed={isFavorite}
                 onClick={(event) => {
                   event.stopPropagation();
-                  setIsFavorite((value) => !value);
+                  toggleFavourite(property.id);
                 }}
                 className={`absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-colors sm:hidden ${
                   isFavorite ? "text-[#E51C23]" : "text-[#64748B]"
@@ -744,13 +766,15 @@ function PropertyDetailPage() {
               <div className="mt-6 flex items-center gap-3">
                 <button
                   type="button"
+                  onClick={() => setEnquiryOpen(true)}
                   className="cta-red inline-flex h-[46px] flex-1 items-center justify-center rounded-[12px] px-5 text-[14px] font-bold text-white"
                 >
                   Enquire Now
                 </button>
                 <button
                   type="button"
-                  aria-label="Call"
+                  onClick={() => setEnquiryOpen(true)}
+                  aria-label="Request a call back"
                   className="inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[12px] border-2 border-[#E51C23] bg-white text-[#E51C23]"
                 >
                   <img src="/icons/phone.png" alt="" aria-hidden="true" className="h-[16px] w-[16px] object-contain" />
@@ -760,18 +784,23 @@ function PropertyDetailPage() {
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  className="inline-flex h-[68px] items-center justify-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[18px] font-semibold text-[#374151]"
+                  onClick={() => toggleFavourite(property.id)}
+                  aria-pressed={isFavorite}
+                  className={`inline-flex h-[68px] items-center justify-center gap-3 rounded-[20px] border px-4 text-[18px] font-semibold ${
+                    isFavorite ? "border-[#FECACA] bg-[#FEF2F2] text-[#E51C23]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#374151]"
+                  }`}
                 >
                   <img src="/icons/fav%20icon.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
-                  Save
+                  {isFavorite ? "Saved" : "Save"}
                 </button>
 
                 <button
                   type="button"
+                  onClick={shareListing}
                   className="inline-flex h-[68px] items-center justify-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 text-[18px] font-semibold text-[#374151]"
                 >
                   <img src="/icons/share.png" alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" />
-                  Share
+                  {shareNote || "Share"}
                 </button>
               </div>
 
@@ -813,12 +842,12 @@ function PropertyDetailPage() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
+                <Link
+                  to={`/properties?purpose=all${property.city ? `&city=${encodeURIComponent(property.city)}` : ""}`}
                   className="mt-5 inline-flex h-[42px] w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] font-bold text-[#374151] transition hover:border-[#D1D5DB]"
                 >
-                  View All Projects
-                </button>
+                  View more properties{property.city ? ` in ${property.city}` : ""}
+                </Link>
               </div>
 
               <div className="rounded-[16px] border border-[#FFE4E4] bg-[#FFF9F9] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -858,6 +887,14 @@ function PropertyDetailPage() {
         </div>
       </section>
 
+      <EnquiryModal
+        open={enquiryOpen}
+        onClose={() => setEnquiryOpen(false)}
+        topic="Property enquiry"
+        title="Enquire about this property"
+        description={`${property.title}${property.location ? ` - ${property.location}` : ""}. Your A R Buildwel representative will call you back and can arrange a site visit.`}
+        propertyId={/^[0-9a-f-]{36}$/i.test(String(property.id)) ? property.id : undefined}
+      />
       <CompanyFooterSection />
     </main>
   );

@@ -17,9 +17,22 @@ const navDropdowns = {
     { label: "Bank Auction Properties", to: "/buy/bank-auction-properties" },
     { label: "Special Situation Properties", to: "/buy/special-situation-properties" },
   ],
-  Rent: ["Family Homes", "Studio Homes", "PG & Co-living", "Furnished Flats"],
-  Sell: ["List Property", "Property Valuation", "Owner Services", "Broker Tools"],
-  Services: [{ label: "Get Involved", to: "/services/get-involved" }],
+  Rent: [
+    { label: "Family Homes", to: "/rent/family-homes" },
+    { label: "Studio Homes", to: "/rent/studio-homes" },
+    { label: "PG & Co-living", to: "/rent/pg-co-living" },
+    { label: "Furnished Flats", to: "/rent/furnished-flats" },
+  ],
+  Sell: [
+    { label: "List Property", to: "/sell/list-property" },
+    { label: "Property Valuation", to: "/sell/property-valuation" },
+    { label: "Owner Services", to: "/sell/owner-services" },
+    { label: "Broker Tools", to: "/sell/broker-tools" },
+  ],
+  Services: [
+    { label: "Get Involved", to: "/services/get-involved" },
+    { label: "Property Calculators", to: "/tools" },
+  ],
   "News & Guide": [
     { label: "Blogs & Insights", to: "/news-guide/insights-guides" },
   ],
@@ -298,6 +311,34 @@ function AccountMenu({ isOpen, onEnter, onLeave, onLoggedOut }) {
         <p className="truncate px-3 pb-1 pt-1.5 text-[12px] font-semibold text-slate-400">
           Signed in as {user?.email || user?.mobile}
         </p>
+        {!showConsole && (
+          <>
+            <Link
+              to="/dashboard"
+              className="block w-full rounded-[12px] px-3 py-2 text-left text-[14px] font-bold leading-5 text-[#E51C23] transition hover:bg-red-50"
+            >
+              My Dashboard
+            </Link>
+            <Link
+              to="/dashboard/saved"
+              className="block w-full rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+            >
+              Saved Properties
+            </Link>
+            <Link
+              to="/dashboard/enquiries"
+              className="block w-full rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+            >
+              My Enquiries
+            </Link>
+          </>
+        )}
+        <Link
+          to="/account/investor-profile"
+          className="block w-full rounded-[12px] px-3 py-2 text-left text-[14px] font-semibold leading-5 text-[#374151] transition hover:bg-slate-50 hover:text-slate-950"
+        >
+          Investor Profile (NRI / HNI)
+        </Link>
         <button
           type="button"
           onMouseDown={handleLogout}
@@ -425,12 +466,12 @@ function SiteHeader() {
           </NavLink>
         </div>
 
-        <button className="cta-red inline-flex h-[32px] w-[137px] shrink-0 items-center gap-1 rounded-[11px] px-3 text-[11.2px] font-bold leading-none whitespace-nowrap text-white shadow-[0_10px_22px_-12px_rgba(229,28,35,0.55)]">
+        <Link to="/sell/list-property" className="cta-red inline-flex h-[32px] w-[137px] shrink-0 items-center gap-1 rounded-[11px] px-3 text-[11.2px] font-bold leading-none whitespace-nowrap text-white shadow-[0_10px_22px_-12px_rgba(229,28,35,0.55)]">
           <span>Post Property</span>
           <span className="inline-flex h-[12.8px] items-center rounded-[3px] bg-[#F4B400] px-2 text-[8px] font-bold uppercase leading-none tracking-[0.02em] text-[#111827]">
             FREE
           </span>
-        </button>
+        </Link>
       </div>
 
       <div className="hidden min-h-[72px] w-full items-center justify-between px-4 py-3 sm:flex sm:px-6 lg:px-12">
@@ -499,12 +540,12 @@ function SiteHeader() {
             />
           )}
 
-          <button className="cta-red inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white">
+          <Link to="/sell/list-property" className="cta-red inline-flex h-10 w-[171px] items-center justify-center gap-1 rounded-[12px] px-4 py-[10px] text-center text-[14px] font-bold leading-5 tracking-[0.002em] text-white">
             <span className="inline-flex h-5 w-[95px] items-center justify-center">Post Property</span>
             <span className="inline-flex h-4 w-10 items-center justify-center rounded-[2px] bg-[#F4B400] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase leading-5 tracking-[0.0107em] text-[#111827]">
               FREE
             </span>
-          </button>
+          </Link>
         </div>
 
           <button
@@ -642,7 +683,15 @@ function SiteHeader() {
                   >
                     Console
                   </a>
-                ) : null}
+                ) : (
+                  <NavLink
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="inline-flex h-8 items-center justify-center rounded-[10px] bg-[#FDE8E8] px-3 text-[13px] font-bold text-[#E51C23]"
+                  >
+                    My Dashboard
+                  </NavLink>
+                )}
                 <button
                   type="button"
                   onClick={async () => {

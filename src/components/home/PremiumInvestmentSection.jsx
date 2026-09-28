@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function PremiumInvestmentSection() {
+function PremiumInvestmentSection({ onContactDesk }) {
+  const navigate = useNavigate();
   return (
     <>
       <div className="h-10" />
@@ -11,7 +13,7 @@ function PremiumInvestmentSection() {
             <div className="max-w-[544px]">
               <div className="inline-flex h-[32px] items-center rounded-full border border-[#FFFFFF33] bg-[#FFFFFF33] px-4 backdrop-blur-[12px]">
                 <span className="whitespace-nowrap font-['Plus_Jakarta_Sans'] text-[12px] font-semibold uppercase leading-[16px] tracking-[0.1em] text-white">
-                  First in India
+                  Institutional Marketplace
                 </span>
               </div>
 
@@ -27,11 +29,11 @@ function PremiumInvestmentSection() {
               </p>
 
               <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row">
-                <button className="w-full rounded-[12px] bg-red-500 px-4 py-3 text-[13px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:py-3.5 sm:text-[16px]">
+                <button type="button" onClick={onContactDesk} className="w-full rounded-[12px] bg-red-500 px-4 py-3 text-[13px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:py-3.5 sm:text-[16px]">
                   Contact Institutional Desk
                 </button>
 
-                <button className="w-full rounded-[12px] border border-white/15 px-4 py-3 text-[13px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:py-3.5 sm:text-[16px]">
+                <button type="button" onClick={() => navigate("/buy/institutional-properties")} className="w-full rounded-[12px] border border-white/15 px-4 py-3 text-[13px] font-extrabold whitespace-nowrap text-white transition hover:!bg-white hover:!text-[#E51C23] sm:w-auto sm:px-6 sm:py-3.5 sm:text-[16px]">
                   Sample Data Room
                 </button>
               </div>

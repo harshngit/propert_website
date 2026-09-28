@@ -49,9 +49,9 @@ function PropertyCard({ item, className = "", showMessage = true }) {
             <span className="inline-flex items-center rounded-full bg-[#E51C23] px-4 py-2 text-[12px] font-extrabold uppercase leading-none tracking-[0.02em] text-white shadow-[0_2px_6px_rgba(15,23,42,0.12)]">
               New Launch
             </span>
-          ) : (
+          ) : item.verified || item.badge === "VERIFIED" ? (
             <VerifiedBadge />
-          )}
+          ) : null}
         </div>
       </div>
 

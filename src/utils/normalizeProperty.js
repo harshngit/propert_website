@@ -21,6 +21,14 @@ const buildLocation = (parts) => {
 // PropertyDetailPage already render - same field names the site's static
 // mock data (src/data/propertyResults.js) used, so no other UI code needs
 // to change.
+const formatInr = (value) => {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  if (n >= 1e7) return `₹${Number((n / 1e7).toFixed(2))} Cr`;
+  if (n >= 1e5) return `₹${Number((n / 1e5).toFixed(2))} Lakh`;
+  return `₹${n.toLocaleString("en-IN")}`;
+};
+
 export function normalizeProperty(p) {
   if (!p) return null;
 
@@ -37,23 +45,22 @@ export function normalizeProperty(p) {
     id: p.id,
     title: p.title,
     description: p.description,
-    price: p.price,
+    price: formatInr(p.price_value) || p.price,
     // Backend stores rate as a plain number (₹/sqft) - format to match the
     // "22,400/sq.ft" string style the rest of the UI already expects.
     // Empty string (not undefined) so `${item.rate}` template interpolation
     // in PropertiesPage's cards never literally prints the word "undefined".
     rate: p.rate != null ? `${Number(p.rate).toLocaleString("en-IN")}/sq.ft` : "",
-    location: buildLocation([p.address, p.locality, p.city]),
+    // Public API responses carry locality/city only - full addresses stay private.
+    location: buildLocation([p.locality, p.city]),
     city: p.city,
     details: p.bedrooms != null ? `${p.bedrooms} BHK` : typeLabel(p.property_type),
     area: p.area_sqft != null ? `${p.area_sqft} sq.ft` : undefined,
     image,
     images,
     tags: p.amenities || [],
-    // No real backing field yet for trust badges - leave unset rather than
-    // fabricate a "Verified"/"Featured" claim the backend doesn't make.
-    badge: null,
-    verified: false,
+    badge: p.badge || (p.is_verified ? "VERIFIED" : null),
+    verified: !!p.is_verified,
     favorite: false,
     propertyType: p.property_type,
     transactionType: p.transaction_type,

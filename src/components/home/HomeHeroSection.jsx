@@ -1,6 +1,8 @@
 import React from "react";
+import { toMaxBudget, toPropertyType } from "../../utils/searchIntent";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { buildPropertiesPath } from "../../utils/propertySearch";
+import { apiRequest } from "../../api/client";
 
 function PinIcon() {
   return (
@@ -71,6 +73,26 @@ function HomeHeroSection({
   const tabs = ["Buy", "Rent", "Commercial", "Institutional"];
   const [activeTab, setActiveTab] = React.useState("Buy");
   const [searchLocation, setSearchLocation] = React.useState("");
+  // City / locality / project suggestions as the visitor types
+  // (GET /search/suggestions), debounced.
+  const [suggestions, setSuggestions] = React.useState([]);
+  React.useEffect(() => {
+    const q = searchLocation.trim();
+    if (q.length < 2) {
+      setSuggestions([]);
+      return undefined;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      apiRequest(`/search/suggestions?q=${encodeURIComponent(q)}`)
+        .then((res) => !cancelled && setSuggestions(res.data || []))
+        .catch(() => {});
+    }, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchLocation]);
   const [propertyType, setPropertyType] = React.useState("");
   const [budget, setBudget] = React.useState("");
   const tabWidths = {
@@ -86,16 +108,25 @@ function HomeHeroSection({
     Institutional: "sm:w-[131px]",
   };
 
+  // Buy / Rent / Commercial search the listings page; Institutional goes to
+  // the confidential institutional listings. Free-text type and budget are
+  // mapped to API filters (see utils/searchIntent.js).
   const handleSearch = (event) => {
     event.preventDefault();
 
     const activeCity = currentCity || searchParams.get("city");
+    if (activeTab === "Institutional") {
+      navigate(`/buy/institutional-properties${activeCity ? `?city=${encodeURIComponent(activeCity)}` : ""}`);
+      return;
+    }
+
+    const typedType = toPropertyType(propertyType);
     const nextPath = buildPropertiesPath(searchParams, {
       city: activeCity || undefined,
-      location: searchLocation,
-      propertyType,
-      budget,
-      type: activeTab.toLowerCase(),
+      q: searchLocation.trim() || (!typedType && propertyType.trim()) || undefined,
+      propertyType: activeTab === "Commercial" ? "commercial" : typedType,
+      maxPrice: toMaxBudget(budget),
+      purpose: activeTab === "Rent" ? "rent" : "buy",
     });
 
     navigate(nextPath);
@@ -228,6 +259,8 @@ function HomeHeroSection({
       <input
         type="text"
         placeholder="Search City, Locality or Landmark"
+        list="hero-location-suggestions"
+        autoComplete="off"
         value={searchLocation}
         onChange={(event) => setSearchLocation(event.target.value)}
         className="
@@ -239,6 +272,11 @@ function HomeHeroSection({
           sm:text-[14px]
         "
       />
+      <datalist id="hero-location-suggestions">
+        {suggestions.map((s) => (
+          <option key={`${s.type}-${s.value}`} value={s.value} label={s.type} />
+        ))}
+      </datalist>
     </div>
 
     {/* Property type */}

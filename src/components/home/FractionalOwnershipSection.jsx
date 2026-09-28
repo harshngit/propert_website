@@ -1,6 +1,6 @@
 import React from "react";
 
-function FractionalOwnershipSection() {
+function FractionalOwnershipSection({ onRegisterInterest }) {
   return (
     <section className="mt-12 w-full">
       {/* =====================================================
@@ -40,6 +40,7 @@ function FractionalOwnershipSection() {
             ===================================================== */}
         <button
           type="button"
+          onClick={onRegisterInterest}
           className="cta-red absolute right-[48px] top-[28px] flex h-[50px] w-[230px] items-center justify-center rounded-[10px] text-[14px] font-extrabold text-white shadow-[0_8px_20px_rgba(229,28,35,0.18)] transition duration-300 hover:-translate-y-[2px]"
         >
           Register Your Interest
@@ -209,7 +210,8 @@ function FractionalOwnershipSection() {
 
             <button
               type="button"
-              className="cta-red mt-5 inline-flex h-[50px] items-center justify-center rounded-[10px] px-7 text-[14px] font-extrabold text-white"
+              onClick={onRegisterInterest}
+          className="cta-red mt-5 inline-flex h-[50px] items-center justify-center rounded-[10px] px-7 text-[14px] font-extrabold text-white"
             >
               Register Your Interest
               <span className="ml-2 text-[17px]">→</span>

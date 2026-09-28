@@ -1,0 +1,166 @@
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, Navigate, useLocation, useParams } from "react-router-dom";
+import SiteHeader from "../../components/SiteHeader";
+import CompanyFooterSection from "../../components/home/CompanyFooterSection";
+import { useAuth } from "../../context/AuthContext";
+import { portal } from "../../api/portal";
+import { LoadState } from "./ui";
+import OnboardingPanel from "./OnboardingPanel";
+import OverviewSection from "./OverviewSection";
+import RequirementsSection from "./RequirementsSection";
+import MatchesSection from "./MatchesSection";
+import SavedSection from "./SavedSection";
+import EnquiriesSection from "./EnquiriesSection";
+import ListingsSection from "./ListingsSection";
+import RentalsSection from "./RentalsSection";
+import DocumentsSection from "./DocumentsSection";
+import NotificationsSection from "./NotificationsSection";
+import ProfileSection from "./ProfileSection";
+import NriSection from "./NriSection";
+import HniSection from "./HniSection";
+
+// My Dashboard - the Lite Dashboard (Annexure A sec. 13.1 / 13.2A) for a
+// customer account acting as buyer, tenant, seller and/or owner. Which
+// sections show depends on the roles picked in onboarding (editable under
+// Profile); every section is still reachable by URL.
+
+const CRM_URL = "https://property-dashboard-one-navy.vercel.app/";
+
+const SECTIONS = [
+  { key: "overview", label: "Overview", roles: null, Component: OverviewSection },
+  { key: "requirements", label: "My Requirements", roles: ["buyer", "tenant"], Component: RequirementsSection },
+  { key: "matches", label: "Matched Properties", roles: ["buyer", "tenant"], Component: MatchesSection },
+  { key: "saved", label: "Saved", roles: null, Component: SavedSection },
+  { key: "enquiries", label: "Enquiries & Visits", roles: null, Component: EnquiriesSection },
+  { key: "listings", label: "My Listings", roles: ["seller", "owner"], Component: ListingsSection },
+  { key: "rentals", label: "Rentals", roles: ["owner", "tenant"], Component: RentalsSection },
+  // Shown when the investor profile (Profile > NRI / HNI) marks the person as NRI / HNI.
+  { key: "nri", label: "NRI Services", investor: "is_nri", Component: NriSection },
+  { key: "hni", label: "HNI Investments", investor: "is_hni", Component: HniSection },
+  { key: "documents", label: "Documents", roles: null, Component: DocumentsSection },
+  { key: "notifications", label: "Notifications", roles: null, Component: NotificationsSection },
+  { key: "profile", label: "Profile & Referral", roles: null, Component: ProfileSection },
+];
+
+const ROLE_LABELS = { buyer: "Buyer", tenant: "Tenant", seller: "Seller", owner: "Owner / Landlord" };
+
+function DashboardPage() {
+  const { section = "overview" } = useParams();
+  const location = useLocation();
+  const { user, accessToken, isAuthenticated, isReady } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState(null);
+  const [investor, setInvestor] = useState(null);
+
+  const isCustomer = user?.role === "customer";
+
+  const loadProfile = () =>
+    portal
+      .profile(accessToken)
+      .then((data) => {
+        setProfile(data);
+        setError(null);
+      })
+      .catch((err) => setError(err.message));
+
+  useEffect(() => {
+    if (!accessToken || !isCustomer) return;
+    portal.investorProfile(accessToken).then(setInvestor).catch(() => setInvestor(null));
+  }, [accessToken, isCustomer]);
+
+  useEffect(() => {
+    if (accessToken && isCustomer) loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, isCustomer]);
+
+  if (isReady && !isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+
+  const current = SECTIONS.find((s) => s.key === section);
+  if (!current) return <Navigate to="/dashboard" replace />;
+
+  const roles = profile?.portalRoles || [];
+  const visible = SECTIONS.filter((s) =>
+    s.key === section ||
+    (s.investor ? !!investor?.[s.investor] : !s.roles || s.roles.some((r) => roles.includes(r))),
+  );
+  const Section = current.Component;
+
+  let body;
+  if (!isReady || (isCustomer && !profile && !error)) {
+    body = <LoadState loading />;
+  } else if (!isCustomer) {
+    body = (
+      <div className="mx-auto max-w-[560px] rounded-[18px] border border-[#E5E7EB] bg-white p-8 text-center">
+        <h1 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold text-[#111827]">Your workspace is the CRM</h1>
+        <p className="mt-2 text-[14px] leading-6 text-[#6B7280]">
+          This dashboard is for buyers, tenants, sellers and owners. Broker, builder and team accounts manage listings, leads and deals in
+          the CRM.
+        </p>
+        <a href={CRM_URL} target="_blank" rel="noreferrer" className="cta-red mt-5 inline-flex h-[44px] items-center rounded-[12px] px-6 text-[14px] font-bold text-white">
+          Open the CRM
+        </a>
+      </div>
+    );
+  } else if (error) {
+    body = <LoadState error={error} onRetry={loadProfile} />;
+  } else if (!profile.onboardedAt || !roles.length) {
+    body = <OnboardingPanel profile={profile} onDone={setProfile} />;
+  } else {
+    body = (
+      <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="mb-3 hidden rounded-[16px] border border-[#E5E7EB] bg-white p-4 lg:block">
+            <p className="truncate font-['Plus_Jakarta_Sans'] text-[15px] font-extrabold text-[#111827]">{profile.user.full_name}</p>
+            <p className="mt-0.5 text-[12px] text-[#6B7280]">{roles.map((r) => ROLE_LABELS[r]).join(" · ")}</p>
+            {profile.referral?.code && (
+              <p className="mt-2 inline-flex rounded-full bg-[#FDE8E8] px-2.5 py-0.5 font-mono text-[12px] font-bold text-[#E51C23]">
+                {profile.referral.code}
+              </p>
+            )}
+          </div>
+          <nav className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
+            {visible.map((s) => (
+              <NavLink
+                key={s.key}
+                to={s.key === "overview" ? "/dashboard" : `/dashboard/${s.key}`}
+                end
+                className={({ isActive }) =>
+                  [
+                    "shrink-0 whitespace-nowrap rounded-[12px] px-3.5 py-2 font-['Plus_Jakarta_Sans'] text-[14px] font-semibold transition",
+                    isActive || s.key === section
+                      ? "bg-[#FDE8E8] text-[#E51C23]"
+                      : "border border-[#E5E7EB] bg-white text-[#374151] hover:bg-slate-50 lg:border-transparent lg:bg-transparent",
+                  ].join(" ")
+                }
+              >
+                {s.label}
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
+        <section className="min-w-0">
+          <Section profile={profile} onProfileChange={setProfile} reloadProfile={loadProfile} />
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <main className="min-h-screen w-full bg-[#F9FAFB] text-[#111827]">
+      <SiteHeader />
+      <div className="mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 lg:px-12 lg:py-10">
+        <div className="mb-4 flex items-center gap-2 text-[12px] text-[#9CA3AF]">
+          <Link to="/" className="hover:text-[#E51C23]">
+            Home
+          </Link>
+          <span>/</span>
+          <span className="text-[#6B7280]">My Dashboard</span>
+        </div>
+        {body}
+      </div>
+      <CompanyFooterSection />
+    </main>
+  );
+}
+
+export default DashboardPage;

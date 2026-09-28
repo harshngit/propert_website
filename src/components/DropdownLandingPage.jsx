@@ -272,7 +272,17 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange }) {
   );
 }
 
-function GuidesSearchSection({ title, description }) {
+// Guides search: submits the query (and picks a topic) through the page's
+// `searchProps` - { query, onSearch(q), topics, activeTopic, onTopic(t) }.
+function GuidesSearchSection({ title, description, searchProps = {} }) {
+  const { query = "", onSearch, topics = [], activeTopic = "", onTopic } = searchProps;
+  const [text, setText] = React.useState(query);
+  const [topicsOpen, setTopicsOpen] = React.useState(false);
+  React.useEffect(() => setText(query), [query]);
+  const submit = (event) => {
+    event.preventDefault();
+    onSearch?.(text.trim());
+  };
   return (
     <section className="w-full border-b border-[#E5E7EB] bg-white text-[#111827]">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col items-start px-5 pb-5 pt-5 text-left sm:items-center sm:px-6 sm:py-8 sm:text-center lg:px-8 xl:px-[9px]">
@@ -285,33 +295,60 @@ function GuidesSearchSection({ title, description }) {
           </p>
         </div>
 
-        <div className="mt-4 flex h-[48px] w-full items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 shadow-none md:mt-8 md:h-auto md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+        <form
+          role="search"
+          onSubmit={submit}
+          className="relative mt-4 flex h-[48px] w-full items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 shadow-none md:mt-8 md:h-auto md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+        >
           <div className="flex h-full min-w-0 flex-1 items-center gap-3 overflow-hidden md:h-[52px] md:rounded-[12px] md:border md:border-[#E5E7EB] md:bg-[#F9FAFB] md:px-4 md:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
             <SearchIcon className="h-4 w-4 text-[#9CA3AF]" />
             <input
               type="text"
               aria-label="Search guides"
               placeholder="Search for guides, laws, or market reports..."
+              value={text}
+              onChange={(event) => setText(event.target.value)}
               className="min-w-0 flex-1 bg-transparent font-['Roboto'] text-[14px] font-normal leading-[21px] text-[#111827] outline-none placeholder:text-[#9CA3AF] md:font-['Lato'] md:leading-[20px] md:placeholder:text-[#94A3B8]"
             />
           </div>
 
           <button
             type="button"
+            onClick={() => setTopicsOpen((open) => !open)}
+            aria-expanded={topicsOpen}
             className="inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center gap-2 rounded-[8px] bg-[#111827] text-[14px] font-bold text-white md:h-[52px] md:w-[108px] md:rounded-[12px] md:border md:border-[#E5E7EB] md:bg-white md:text-[#111827]"
           >
             <FiltersIcon />
-            <span className="hidden md:inline">Topics</span>
+            <span className="hidden md:inline">{activeTopic || "Topics"}</span>
           </button>
+          {topicsOpen && (
+            <div className="absolute right-0 top-full z-30 mt-2 w-[240px] rounded-[14px] border border-[#E5E7EB] bg-white p-2 text-left shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+              {["", ...topics].map((topic) => (
+                <button
+                  key={topic || "all"}
+                  type="button"
+                  onClick={() => {
+                    setTopicsOpen(false);
+                    onTopic?.(topic);
+                  }}
+                  className={`block w-full rounded-[10px] px-3 py-2 text-left text-[14px] font-semibold ${
+                    topic === activeTopic ? "bg-[#FDE8E8] text-[#E51C23]" : "text-[#374151] hover:bg-slate-50"
+                  }`}
+                >
+                  {topic || "All topics"}
+                </button>
+              ))}
+            </div>
+          )}
 
           <button
-            type="button"
+            type="submit"
             aria-label="Search"
             className="inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-[8px] bg-[#E51C23] text-white md:h-[52px] md:w-[52px] md:rounded-[12px]"
           >
             <SearchIcon className="h-4 w-4 text-white" />
           </button>
-        </div>
+        </form>
       </div>
     </section>
   );
@@ -593,6 +630,7 @@ function DropdownLandingPage({
   renderSidebar,
   heroVariant = "filters",
   belowHeroContent,
+  searchProps,
 }) {
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [filtersMounted, setFiltersMounted] = React.useState(false);
@@ -646,7 +684,7 @@ function DropdownLandingPage({
 
       {heroVariant === "search" ? (
         <>
-          <GuidesSearchSection title={title} description={description} />
+          <GuidesSearchSection title={title} description={description} searchProps={searchProps} />
           {belowHeroContent}
         </>
       ) : (

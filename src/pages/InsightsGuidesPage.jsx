@@ -1,12 +1,25 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import DropdownLandingPage from "../components/DropdownLandingPage";
-import { blogArticles, buildBlogArticlePath } from "../data/blogArticles";
+import { buildBlogArticlePath } from "../data/blogArticles";
+import { useArticleCategories, useArticleList } from "../hooks/useArticles";
+import { subscribeNewsletter } from "../api/content";
+import { buildCityPath } from "../utils/city";
 
-function FeaturedArticleSection() {
-  const featuredArticle = blogArticles.find(
-    (article) => article.slug === "institutional-real-estate-outlook-private-equity-school-assets"
-  );
+const STATIC_FEATURED_SLUG = "institutional-real-estate-outlook-private-equity-school-assets";
+
+// The featured article is the CMS article marked featured (or, with the
+// static fallback, the institutional outlook piece); everything else is
+// "latest".
+function splitArticles(articles, fromCms) {
+  const featured = fromCms
+    ? articles.find((a) => a.isFeatured) || articles[0]
+    : articles.find((a) => a.slug === STATIC_FEATURED_SLUG) || articles[0];
+  return { featured, latest: articles.filter((a) => a !== featured) };
+}
+
+function FeaturedArticleSection({ featuredArticle }) {
+  if (!featuredArticle) return null;
 
   return (
     <section className="w-full bg-white">
@@ -18,14 +31,22 @@ function FeaturedArticleSection() {
         >
         <article className="grid w-full items-center gap-6 overflow-hidden bg-[#111827] px-5 pb-10 pt-11 text-white md:grid-cols-[500px_minmax(0,1fr)] md:gap-8 md:px-8 md:py-12">
           <div className="overflow-hidden rounded-[16px] bg-[#0F172A]">
-            <picture>
-              <source media="(min-width: 768px)" srcSet="/images/buy or sell.png" />
+            {featuredArticle.fromCms ? (
               <img
-                src="/images/blog mobile view.png"
-                alt="Premium real estate"
+                src={featuredArticle.image}
+                alt={featuredArticle.title}
                 className="h-[263px] w-full object-cover object-center md:h-[300px] md:w-[600px]"
               />
-            </picture>
+            ) : (
+              <picture>
+                <source media="(min-width: 768px)" srcSet="/images/buy or sell.png" />
+                <img
+                  src="/images/blog mobile view.png"
+                  alt="Premium real estate"
+                  className="h-[263px] w-full object-cover object-center md:h-[300px] md:w-[600px]"
+                />
+              </picture>
+            )}
           </div>
 
           <div className="ml-0 min-w-0 md:ml-[40px]">
@@ -34,15 +55,11 @@ function FeaturedArticleSection() {
             </span>
 
             <h2 className="mt-4 max-w-[800px] font-['Plus_Jakarta_Sans'] text-[20px] font-extrabold leading-[35px] tracking-[-0.03em] text-white sm:text-[30px] md:text-[36px] md:leading-[1.15]">
-              The 2024 Institutional Real Estate Outlook:
-              <br className="hidden md:block" />
-              Why Private Equity is Pivoting to School Assets
+              {featuredArticle.title}
             </h2>
 
             <p className="mt-4 max-w-[760px] text-[12px] leading-[26px] text-white/55 sm:text-[16px]">
-              An in-depth analysis of why K-12 education infrastructure has become the most
-              resilient real estate asset class in India, and how fractional ownership is changing
-              the entry barrier.
+              {featuredArticle.description}
             </p>
 
             <div className="mt-6 inline-flex h-[56px] w-full items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[16px] font-bold text-white transition hover:bg-[#cf171d] md:h-[48px] md:w-auto md:text-[14px]">
@@ -56,20 +73,17 @@ function FeaturedArticleSection() {
   );
 }
 
-function LatestArticlesSection() {
-  const articles = blogArticles.filter(
-    (article) => article.slug !== "institutional-real-estate-outlook-private-equity-school-assets"
-  );
+function LatestArticlesSection({ articles, heading = "Latest Articles", subheading = "Stay updated with the latest in real estate" }) {
 
   return (
     <section className="w-full bg-white">
       <div className="mx-auto w-full max-w-[1440px] px-4 pt-4 pb-4 sm:px-6 lg:px-8 xl:px-[9px]">
         <div className="mb-6">
           <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[32px] tracking-[-0.03em] text-[#111827]">
-            Latest Articles
+            {heading}
           </h2>
           <p className="mt-1 text-[12px] leading-[20px] text-[#667085]">
-            Stay updated with the latest in real estate
+            {subheading}
           </p>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
@@ -122,96 +136,7 @@ function LatestArticlesSection() {
   );
 }
 
-function PaginationButton({
-  children,
-  active = false,
-  disabled = false,
-  compact = false,
-  onClick,
-  ariaLabel,
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={ariaLabel}
-      disabled={disabled}
-      className={[
-        "inline-flex h-[40px] items-center justify-center rounded-[8px] border text-[16px] font-bold leading-none transition",
-        compact ? "min-w-[29px] px-[8px]" : "min-w-[40px] px-[12px]",
-        active
-          ? "border-[#E51C23] bg-[#E51C23] text-white"
-          : compact
-            ? "border-[#E5E7EB] bg-white text-[#9CA3AF] hover:border-slate-300 hover:bg-slate-50"
-            : "border-[#E5E7EB] bg-white text-[#111827] hover:border-slate-300 hover:bg-slate-50",
-        disabled ? "cursor-not-allowed opacity-50" : "",
-      ].join(" ")}
-    >
-      {children}
-    </button>
-  );
-}
-
-function LatestArticlesPagination() {
-  const pages = [1, 2, 3, 42];
-  const [currentPage, setCurrentPage] = React.useState(1);
-
-  const goToPrevPage = () => {
-    const currentIndex = pages.indexOf(currentPage);
-    const nextIndex = Math.max(0, currentIndex - 1);
-    setCurrentPage(pages[nextIndex]);
-  };
-
-  const goToNextPage = () => {
-    const currentIndex = pages.indexOf(currentPage);
-    const nextIndex = Math.min(pages.length - 1, currentIndex + 1);
-    setCurrentPage(pages[nextIndex]);
-  };
-
-  return (
-    <section className="w-full bg-white pb-8">
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-[9px]">
-        <div className="flex items-center justify-center gap-2">
-          <PaginationButton
-            compact
-            ariaLabel="Previous page"
-            onClick={goToPrevPage}
-            disabled={currentPage === pages[0]}
-          >
-            <span className="text-[24px] font-normal leading-none text-[#9CA3AF]">‹</span>
-          </PaginationButton>
-
-          {pages.slice(0, 3).map((page) => (
-            <PaginationButton
-              key={page}
-              active={currentPage === page}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </PaginationButton>
-          ))}
-
-          <span className="px-1 text-[14px] text-[#98A2B3]">...</span>
-
-          <PaginationButton active={currentPage === 42} onClick={() => setCurrentPage(42)}>
-            42
-          </PaginationButton>
-
-          <PaginationButton
-            compact
-            ariaLabel="Next page"
-            onClick={goToNextPage}
-            disabled={currentPage === pages[pages.length - 1]}
-          >
-            <span className="text-[24px] font-normal leading-none text-[#9CA3AF]">›</span>
-          </PaginationButton>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CityGuideCard({ image, title, count }) {
+function CityGuideCard({ image, title, count, city }) {
   return (
     <article className="group relative h-[293px] w-[calc(100vw-36px)] shrink-0 snap-start overflow-hidden rounded-[20px] bg-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)] md:h-[235px] md:w-auto md:shrink">
       <img
@@ -226,12 +151,12 @@ function CityGuideCard({ image, title, count }) {
         </h3>
         <p className="mt-1 text-[12px] font-medium text-white/65">{count} Deep-dive Guides</p>
 
-        <button
-          type="button"
+        <Link
+          to={buildCityPath(city)}
           className="mt-4 inline-flex h-[30px] items-center justify-center rounded-[8px] border border-white/16 bg-white/14 px-4 text-[12px] font-semibold text-white backdrop-blur-sm transition hover:bg-white/22"
         >
           Explore City
-        </button>
+        </Link>
       </div>
     </article>
   );
@@ -239,10 +164,10 @@ function CityGuideCard({ image, title, count }) {
 
 function UltimateCityGuidesSection() {
   const cities = [
-    { image: "/images/city-guide-mumbai.png", title: "Mumbai", count: 42 },
-    { image: "/images/city-guide-delhi.png", title: "Delhi NCR", count: 35 },
-    { image: "/images/city-guide-bangalore.png", title: "Bangalore", count: 28 },
-    { image: "/images/city-guide-hyderabad.png", title: "Hyderabad", count: 22 },
+    { image: "/images/city-guide-mumbai.png", title: "Mumbai", city: "Mumbai", count: 42 },
+    { image: "/images/city-guide-delhi.png", title: "Delhi NCR", city: "Delhi", count: 35 },
+    { image: "/images/city-guide-bangalore.png", title: "Bangalore", city: "Bengaluru", count: 28 },
+    { image: "/images/city-guide-hyderabad.png", title: "Hyderabad", city: "Hyderabad", count: 22 },
   ];
 
   return (
@@ -268,6 +193,19 @@ function UltimateCityGuidesSection() {
 }
 
 function SubscribeBannerSection() {
+  const [email, setEmail] = React.useState("");
+  const [state, setState] = React.useState({ status: "idle", message: "" });
+  const submit = async (event) => {
+    event.preventDefault();
+    setState({ status: "saving", message: "" });
+    try {
+      await subscribeNewsletter(email.trim(), window.location.pathname);
+      setState({ status: "done", message: "You're subscribed - look out for our weekly market brief." });
+      setEmail("");
+    } catch (err) {
+      setState({ status: "error", message: err.message });
+    }
+  };
   return (
     <section className="w-full bg-white ">
       <div className="w-full bg-[#111827] px-6 py-10 text-white sm:px-8 lg:px-12 xl:px-16">
@@ -283,19 +221,29 @@ function SubscribeBannerSection() {
           </div>
 
           <div className="w-full max-w-[430px] lg:pt-1">
-            <div className="flex h-[48px] w-full items-stretch rounded-[16px] border border-[#FFFFFF33] bg-[#FFFFFF1A] p-[4px] backdrop-blur-[4px]">
+            <form onSubmit={submit} className="flex h-[48px] w-full items-stretch rounded-[16px] border border-[#FFFFFF33] bg-[#FFFFFF1A] p-[4px] backdrop-blur-[4px]">
               <input
                 type="email"
+                required
+                aria-label="Email address"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="Your email address"
                 className="min-w-0 flex-1 bg-transparent px-5 text-[18px] font-normal text-white outline-none placeholder:font-normal placeholder:text-[14px] placeholder:opacity-100 placeholder:text-[#808899]"
               />
               <button
-                type="button"
-                className="ml-[4px] inline-flex h-full w-[43%] min-w-[130px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[14px] font-medium text-white transition hover:bg-[#cf171d]"
+                type="submit"
+                disabled={state.status === "saving"}
+                className="ml-[4px] inline-flex h-full w-[43%] min-w-[130px] shrink-0 items-center justify-center rounded-[12px] bg-[#E51C23] px-6 text-[14px] font-medium text-white transition hover:bg-[#cf171d] disabled:opacity-60"
               >
-                Subscribe
+                {state.status === "saving" ? "Subscribing…" : "Subscribe"}
               </button>
-            </div>
+            </form>
+            {state.message && (
+              <p role="status" className={`mt-2 text-[13px] ${state.status === "error" ? "text-red-300" : "text-emerald-300"}`}>
+                {state.message}
+              </p>
+            )}
 
             <p className="mt-3 text-right font-['Plus_Jakarta_Sans'] text-[12px] font-normal leading-[18px] tracking-[0] text-[#6B7280]">
               By subscribing, you agree to our Privacy Policy and Terms
@@ -308,17 +256,56 @@ function SubscribeBannerSection() {
 }
 
 function InsightsGuidesPage() {
+  const [params, setParams] = useSearchParams();
+  const query = params.get("q") || "";
+  const topic = params.get("category") || "";
+  const filtering = !!(query || topic);
+  const { articles, fromCms, loading } = useArticleList(filtering ? 24 : 13, { search: query, category: topic });
+  const topics = useArticleCategories();
+  const { featured, latest } = splitArticles(articles, fromCms);
+  const updateParams = (next) => {
+    const merged = { q: query, category: topic, ...next };
+    setParams(Object.fromEntries(Object.entries(merged).filter(([, v]) => v)));
+  };
+
   return (
     <DropdownLandingPage
       title="Blogs & Insights"
       description="Deep-dive into the Indian real estate market, legal checklists, city guides, and investment intelligence to help you make your choice with confidence."
       heroVariant="search"
+      searchProps={{
+        query,
+        onSearch: (q) => updateParams({ q }),
+        topics,
+        activeTopic: topic,
+        onTopic: (category) => updateParams({ category }),
+      }}
       belowHeroContent={
         <>
-          <FeaturedArticleSection />
-          <LatestArticlesSection />
-          <LatestArticlesSection />
-          <LatestArticlesPagination />
+          {filtering ? (
+            articles.length ? (
+              <LatestArticlesSection
+                articles={articles}
+                heading={query ? `Results for "${query}"` : topic}
+                subheading={`${articles.length} guide${articles.length === 1 ? "" : "s"}${query && topic ? ` in ${topic}` : ""}`}
+              />
+            ) : (
+              <section className="mx-auto w-full max-w-[1440px] px-4 py-12 text-center sm:px-6">
+                <p className="font-['Plus_Jakarta_Sans'] text-[18px] font-bold text-[#111827]">{loading ? "Searching…" : "No guides found"}</p>
+                {!loading && (
+                  <button type="button" onClick={() => setParams({})} className="mt-2 text-[14px] font-bold text-[#E51C23]">
+                    Clear search
+                  </button>
+                )}
+              </section>
+            )
+          ) : (
+            <>
+              <FeaturedArticleSection featuredArticle={featured} />
+              <LatestArticlesSection articles={latest.slice(0, 6)} />
+              {latest.length > 6 && <LatestArticlesSection articles={latest.slice(6, 12)} heading="More Articles" />}
+            </>
+          )}
           <UltimateCityGuidesSection />
           <SubscribeBannerSection />
         </>

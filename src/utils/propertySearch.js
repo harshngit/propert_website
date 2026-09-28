@@ -4,8 +4,13 @@ export function normalizeView(view) {
   return validViews.has(view) ? view : "list";
 }
 
+// Auction / special situation / institutional cards open the deal page,
+// which knows about masked teasers and access gating.
+const DEAL_CONTEXTS = new Set(["auction", "special", "institutional"]);
+
 export function buildPropertyDetailPath(item) {
   const detailId = item?.detailId ?? item?.id;
+  if (DEAL_CONTEXTS.has(item?.context) && detailId) return `/deals/${detailId}`;
   const detailSlug =
     detailId !== undefined && detailId !== null && detailId !== ""
       ? detailId
