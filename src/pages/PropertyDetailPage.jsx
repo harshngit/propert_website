@@ -8,7 +8,11 @@ import { buildPropertyDetailPath } from "../utils/propertySearch";
 import { getPropertyById } from "../api/properties";
 import { normalizeProperty } from "../utils/normalizeProperty";
 import EnquiryModal from "../components/EnquiryModal";
+import ListerTrustCard from "../components/ListerTrustCard";
 import { useFavourites } from "../hooks/useFavourites";
+import { useAuth } from "../context/AuthContext";
+import { portal } from "../api/portal";
+import MatchBadge from "../components/MatchBadge";
 
 function LocationIcon({ className = "text-[#E51C23]" }) {
   return (
@@ -297,6 +301,13 @@ function PropertyDetailPage() {
   const routeProperty = propertyResults.find((item) => String(item.id) === id);
   const [fetchedProperty, setFetchedProperty] = useState(null);
   const [fetchFailed, setFetchFailed] = useState(false);
+  // Sec. 7.3: the signed-in buyer's real match against their requirements.
+  const { accessToken, user } = useAuth();
+  const [match, setMatch] = useState(null);
+  useEffect(() => {
+    if (!accessToken || user?.role !== "customer" || !/^[0-9a-f-]{36}$/i.test(String(id))) return;
+    portal.matchScores(accessToken, [id]).then((m) => setMatch(m?.[id] || null)).catch(() => setMatch(null));
+  }, [accessToken, user?.role, id]);
   const property = routeProperty || location.state?.property || fetchedProperty;
   const isFavorite = property ? isFavourite(property.id) : false;
 
@@ -457,12 +468,23 @@ function PropertyDetailPage() {
               <div className="min-w-0">
                 <div className="flex items-start justify-between gap-3">
                   <h1 className="mt-3 text-[14px] font-black leading-5 tracking-tight text-[#111827] sm:mt-0 sm:text-[32px]">
-                    {property.title}, Borivali
+                    {property.title}
                   </h1>
-                  <span className="mt-3 inline-flex h-[28px] shrink-0 items-center rounded-[8px] bg-[#111827] px-3 text-[10px] font-bold text-white sm:hidden">
-                    89% Match
-                  </span>
+                  {match && <MatchBadge className="mt-3 shrink-0 sm:mt-1" score={match.score} tier={match.tier} breakdown={match.breakdown} />}
                 </div>
+                {/* Sec. 9.1 verification level + sec. 9.5 Under Review banner */}
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {property.verificationLevel > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#ECFDF5] px-3 py-1 text-[12px] font-bold text-[#065F46]">
+                      ✓ {["", "Verified by System", "Seller Verified", "Legally Verified", "Site Verified"][property.verificationLevel]}
+                    </span>
+                  )}
+                </div>
+                {property.underReview && (
+                  <p className="mt-2 rounded-[10px] bg-[#FFFBEB] px-3 py-2 text-[13px] font-semibold text-[#92400E]">
+                    Under Review - our team is running a routine check on this listing. Details may change.
+                  </p>
+                )}
 
                 <p className="mt-2 flex items-center gap-1.5 text-[12px] text-[#6B7280] sm:text-[15px]">
                   <LocationIcon />
@@ -749,6 +771,13 @@ function PropertyDetailPage() {
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
                 verify details with the developer before making any financial commitment.
               </p>
+              <ListerTrustCard propertyId={property.id} />
+              {/^[0-9a-f-]{36}$/i.test(String(property.id)) && (
+                <p className="mt-4 text-[13px] text-[#6B7280]">
+                  Something wrong with this listing?{" "}
+                  <Link to={`/dashboard/disputes?new=1&property=${property.id}`} className="font-bold text-[#E51C23]">Report it</Link> - our team reviews every report within 48 hours.
+                </p>
+              )}
             </div>
           </div>
 

@@ -4,7 +4,7 @@ import SiteHeader from "../../components/SiteHeader";
 import CompanyFooterSection from "../../components/home/CompanyFooterSection";
 import { useAuth } from "../../context/AuthContext";
 import { portal } from "../../api/portal";
-import { LoadState } from "./ui";
+import { LoadState, CRM_URL } from "./ui";
 import OnboardingPanel from "./OnboardingPanel";
 import OverviewSection from "./OverviewSection";
 import RequirementsSection from "./RequirementsSection";
@@ -18,13 +18,15 @@ import NotificationsSection from "./NotificationsSection";
 import ProfileSection from "./ProfileSection";
 import NriSection from "./NriSection";
 import HniSection from "./HniSection";
+import ReviewsSection from "./ReviewsSection";
+import DisputesSection from "./DisputesSection";
+import DealsSection from "./DealsSection";
 
 // My Dashboard - the Lite Dashboard (Annexure A sec. 13.1 / 13.2A) for a
 // customer account acting as buyer, tenant, seller and/or owner. Which
 // sections show depends on the roles picked in onboarding (editable under
 // Profile); every section is still reachable by URL.
 
-const CRM_URL = "https://property-dashboard-one-navy.vercel.app/";
 
 const SECTIONS = [
   { key: "overview", label: "Overview", roles: null, Component: OverviewSection },
@@ -32,17 +34,20 @@ const SECTIONS = [
   { key: "matches", label: "Matched Properties", roles: ["buyer", "tenant"], Component: MatchesSection },
   { key: "saved", label: "Saved", roles: null, Component: SavedSection },
   { key: "enquiries", label: "Enquiries & Visits", roles: null, Component: EnquiriesSection },
+  { key: "deals", label: "My Deals & Invoices", roles: null, Component: DealsSection },
   { key: "listings", label: "My Listings", roles: ["seller", "owner"], Component: ListingsSection },
   { key: "rentals", label: "Rentals", roles: ["owner", "tenant"], Component: RentalsSection },
   // Shown when the investor profile (Profile > NRI / HNI) marks the person as NRI / HNI.
   { key: "nri", label: "NRI Services", investor: "is_nri", Component: NriSection },
   { key: "hni", label: "HNI Investments", investor: "is_hni", Component: HniSection },
+  { key: "reviews", label: "Reviews", roles: null, Component: ReviewsSection },
+  { key: "disputes", label: "Help & disputes", roles: null, Component: DisputesSection },
   { key: "documents", label: "Documents", roles: null, Component: DocumentsSection },
   { key: "notifications", label: "Notifications", roles: null, Component: NotificationsSection },
   { key: "profile", label: "Profile & Referral", roles: null, Component: ProfileSection },
 ];
 
-const ROLE_LABELS = { buyer: "Buyer", tenant: "Tenant", seller: "Seller", owner: "Owner / Landlord" };
+const ROLE_LABELS = { buyer: "Buyer", tenant: "Tenant", seller: "Seller", owner: "Owner / Landlord", nri: "NRI", hni: "HNI investor" };
 
 function DashboardPage() {
   const { section = "overview" } = useParams();
@@ -79,6 +84,7 @@ function DashboardPage() {
   if (!current) return <Navigate to="/dashboard" replace />;
 
   const roles = profile?.portalRoles || [];
+  const labelRoles = [...roles, ...(profile?.investor?.isNri ? ["nri"] : []), ...(profile?.investor?.isHni ? ["hni"] : [])];
   const visible = SECTIONS.filter((s) =>
     s.key === section ||
     (s.investor ? !!investor?.[s.investor] : !s.roles || s.roles.some((r) => roles.includes(r))),
@@ -103,19 +109,32 @@ function DashboardPage() {
     );
   } else if (error) {
     body = <LoadState error={error} onRetry={loadProfile} />;
-  } else if (!profile.onboardedAt || !roles.length) {
-    body = <OnboardingPanel profile={profile} onDone={setProfile} />;
+  } else if (!profile.onboardedAt || (!roles.length && !profile.investor)) {
+    body = (
+      <OnboardingPanel
+        profile={profile}
+        onDone={(p) => {
+          setProfile(p);
+          portal.investorProfile(accessToken).then(setInvestor).catch(() => setInvestor(null));
+        }}
+      />
+    );
   } else {
     body = (
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 hidden rounded-[16px] border border-[#E5E7EB] bg-white p-4 lg:block">
             <p className="truncate font-['Plus_Jakarta_Sans'] text-[15px] font-extrabold text-[#111827]">{profile.user.full_name}</p>
-            <p className="mt-0.5 text-[12px] text-[#6B7280]">{roles.map((r) => ROLE_LABELS[r]).join(" · ")}</p>
+            <p className="mt-0.5 text-[12px] text-[#6B7280]">{labelRoles.map((r) => ROLE_LABELS[r]).join(" · ")}</p>
             {profile.referral?.code && (
               <p className="mt-2 inline-flex rounded-full bg-[#FDE8E8] px-2.5 py-0.5 font-mono text-[12px] font-bold text-[#E51C23]">
                 {profile.referral.code}
               </p>
+            )}
+            {profile.tier?.current === "full" && (
+              <a href={`${CRM_URL}/app/workspace`} target="_blank" rel="noreferrer" className="mt-3 block text-[13px] font-bold text-[#E51C23] hover:underline">
+                Open my CRM workspace →
+              </a>
             )}
           </div>
           <nav className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">

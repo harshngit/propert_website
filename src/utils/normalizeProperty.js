@@ -43,6 +43,8 @@ export function normalizeProperty(p) {
 
   return {
     id: p.id,
+    // Lister trust (score + badge keys, no identity) from /search/properties.
+    listerTrust: p.lister_trust || null,
     title: p.title,
     description: p.description,
     price: formatInr(p.price_value) || p.price,
@@ -61,6 +63,9 @@ export function normalizeProperty(p) {
     tags: p.amenities || [],
     badge: p.badge || (p.is_verified ? "VERIFIED" : null),
     verified: !!p.is_verified,
+    // Sec. 9: 0-4 verification level and the Yellow-band Under Review banner.
+    verificationLevel: Number(p.verification_level) || 0,
+    underReview: !!p.under_review,
     favorite: false,
     propertyType: p.property_type,
     transactionType: p.transaction_type,

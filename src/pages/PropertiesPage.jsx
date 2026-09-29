@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import { useFavourites } from "../hooks/useFavourites";
 import { portal } from "../api/portal";
 import EnquiryModal from "../components/EnquiryModal";
+import MatchBadge from "../components/MatchBadge";
 
 // Deal cards (auction / special situation / institutional) open the deal
 // page on CTA click. Residential "Enquire Now" and the phone buttons open
@@ -498,6 +499,33 @@ function PriceRangeSlider({ minValue, maxValue, onMinChange, onMaxChange, purpos
   );
 }
 
+// Sec. 8.3: the lister's strongest trust badge on search cards (no identity).
+const TRUST_CHIPS = [
+  ["top_broker", "Top Broker"],
+  ["highly_rated", "Highly Rated"],
+  ["verified_builder", "Verified Builder"],
+  ["verified_broker", "Verified Broker"],
+  ["verified_user", "Verified Lister"],
+];
+const LEVEL_CHIPS = ["", "System Verified", "Seller Verified", "Legally Verified", "Site Verified"];
+function VerificationChip({ item }) {
+  if (!item.verificationLevel && !item.underReview) return null;
+  return item.underReview ? (
+    <span className="inline-flex h-[23px] items-center rounded-[9999px] bg-[#FFFBEB] px-[8px] text-[10px] font-bold leading-[15px] text-[#92400E] shadow-sm">Under Review</span>
+  ) : (
+    <span className="inline-flex h-[23px] items-center rounded-[9999px] bg-[#ECFDF5] px-[8px] text-[10px] font-bold leading-[15px] text-[#065F46] shadow-sm">✓ {LEVEL_CHIPS[item.verificationLevel]}</span>
+  );
+}
+function TrustChip({ trust }) {
+  const hit = TRUST_CHIPS.find(([k]) => (trust?.badges || []).includes(k));
+  if (!hit) return null;
+  return (
+    <span className="inline-flex h-[23px] items-center rounded-[9999px] bg-white px-[8px] text-[10px] font-bold leading-[15px] text-[#065F46] shadow-sm" title={`Trust score ${trust.score}/100`}>
+      ✓ {hit[1]}
+    </span>
+  );
+}
+
 function ResultCard({
   item,
   selected = false,
@@ -530,6 +558,8 @@ function ResultCard({
 
         {/* BADGES */}
         <div className="absolute left-[8px] top-[8px] flex items-center gap-[6px]">
+          <TrustChip trust={item.listerTrust} />
+          <VerificationChip item={item} />
           {item.badge === "NEW LISTING" ? (
             <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
               <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
@@ -691,7 +721,9 @@ function ResultCard({
                   <AreaIcon />
                   {item.area}
                 </span>
-                {item.match && (
+                {item.matchInfo ? (
+                  <MatchBadge score={item.matchInfo.score} tier={item.matchInfo.tier} breakdown={item.matchInfo.breakdown} />
+                ) : item.match && (
                   <div className="whitespace-nowrap rounded-[8px] bg-[#111827] px-[10px] py-[8px] font-['Plus_Jakarta_Sans'] text-[10px] font-semibold leading-[15px] text-white">
                     {item.match}
                   </div>
@@ -814,6 +846,8 @@ function ResultTileCard({
         />
 
         <div className="absolute left-[8px] top-[8px] flex w-fit flex-col items-start gap-[6px]">
+          <TrustChip trust={item.listerTrust} />
+          <VerificationChip item={item} />
           <div className="flex items-center gap-[6px]">
             {item.badge === "NEW LISTING" ? (
               <span className="inline-flex h-[38px] w-[78.48px] items-center gap-[4px] rounded-[9999px] bg-white px-[8px] py-[4px] text-[10px] font-bold leading-[15px] tracking-normal text-[#111827] shadow-sm">
@@ -872,7 +906,12 @@ function ResultTileCard({
             )}
           </div>
 
-          {showMatchBadge && item.match && item.context !== "institutional" && item.context !== "auction" && item.context !== "special" && (
+          {showMatchBadge && item.matchInfo && (
+            <span onClick={(e) => e.stopPropagation()} className={featuredLayout ? "md:hidden" : ""}>
+              <MatchBadge score={item.matchInfo.score} tier={item.matchInfo.tier} breakdown={item.matchInfo.breakdown} />
+            </span>
+          )}
+          {showMatchBadge && !item.matchInfo && item.match && item.context !== "institutional" && item.context !== "auction" && item.context !== "special" && (
             <span
               className={[
                 "inline-flex h-[23px] w-fit items-center justify-center rounded-[9999px] bg-[#111827] px-[12.5px] text-[10px] font-bold leading-[15px] text-white shadow-sm",
@@ -1445,6 +1484,8 @@ function PropertiesPage({
   showTopSearchBar = true,
   initialDrawerState,
   renderSidebar,
+  // Maps the custom drawer's state to API query params (deal pages).
+  drawerToParams,
   heroTitle,
   heroDescription,
   heroAreaLabel,
@@ -1688,7 +1729,25 @@ function PropertiesPage({
 
   // Every context is backed by the real API now, which returns results
   // already sorted and paginated by the `sort` / `page` params below.
-  const pagedResults = results;
+  // Sec. 7.3 match badges: for a signed-in buyer with active requirements,
+  // every residential card shows its colour-coded match % + breakdown.
+  const [matchScores, setMatchScores] = React.useState({});
+  const resultIds = results.filter((r) => r.id && (!r.context || r.context === "residential")).map((r) => r.id).join(",");
+  React.useEffect(() => {
+    if (!accessToken || user?.role !== "customer" || !resultIds) return undefined;
+    let cancelled = false;
+    portal
+      .matchScores(accessToken, resultIds.split(","))
+      .then((scores) => !cancelled && setMatchScores((prev) => ({ ...prev, ...(scores || {}) })))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken, user?.role, resultIds]);
+  const pagedResults = React.useMemo(
+    () => results.map((r) => (matchScores[r.id] ? { ...r, matchInfo: matchScores[r.id] } : r)),
+    [results, matchScores]
+  );
   const totalPages = Math.max(apiPagination.totalPages || 1, 1);
 
   // Residential listings come from /search/properties. Auction and special
@@ -1711,6 +1770,7 @@ function PropertiesPage({
         page: currentPage,
         limit: itemsPerPage,
         sort: sortValue === "price-high" ? "price_desc" : sortValue === "price-low" ? "price_asc" : resultContext === "auction" ? "auction_date" : "score",
+        ...(drawerToParams ? drawerToParams(customDrawerState) : {}),
       };
       const loadPublic = () => listPublicOpportunities(params, accessToken || undefined);
       request = (accessToken
@@ -1735,13 +1795,14 @@ function PropertiesPage({
         maxPrice: searchParams.get("maxPrice") || undefined,
         bedrooms: searchParams.get("bedrooms") || presetFilters?.bedrooms || undefined,
         ...(resultContext === "institutional" ? {} : appliedFilters),
+        ...(resultContext === "institutional" && drawerToParams ? drawerToParams(customDrawerState) : {}),
         page: currentPage,
         limit: itemsPerPage,
         listingCategory: resultContext === "institutional" ? "institutional" : undefined,
         sort:
           resultContext === "institutional"
             ? sortValue === "price-high" ? "price_desc" : sortValue === "price-low" ? "price_asc" : "newest"
-            : sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : "newest",
+            : sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : sortValue === "newest" ? "newest" : "recommended",
       };
       request = searchProperties(params).then((data) => ({
         items: (data.items || []).map((item) =>
@@ -1777,7 +1838,17 @@ function PropertiesPage({
     return () => {
       cancelled = true;
     };
-  }, [resultContext, purpose, presetKey, accessToken, searchParams, currentPage, sortValue, itemsPerPage, appliedFilters]);
+  }, [resultContext, purpose, presetKey, accessToken, searchParams, currentPage, sortValue, itemsPerPage, appliedFilters, customDrawerState, drawerToParams]);
+
+  // A changed deal filter starts again from page 1.
+  const firstDrawerRender = React.useRef(true);
+  React.useEffect(() => {
+    if (firstDrawerRender.current) {
+      firstDrawerRender.current = false;
+      return;
+    }
+    setCurrentPage(1);
+  }, [customDrawerState]);
 
   const goToPage = (pageNumber) => {
     const nextPage = Math.min(Math.max(pageNumber, 1), totalPages);

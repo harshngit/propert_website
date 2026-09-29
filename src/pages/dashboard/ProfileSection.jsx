@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
-import { CITY_SUGGESTIONS, Card, Notice, PROPERTY_TYPES, SectionHeader, formatDate, inputClass, labelClass, primaryButton, secondaryButton } from "./ui";
+import { CITY_SUGGESTIONS, CRM_URL, Card, Notice, PROPERTY_TYPES, SectionHeader, formatDate, inputClass, labelClass, primaryButton, secondaryButton, useLoad } from "./ui";
 
 // Profile & Referral: portal roles, buyer / tenant preferences (used for
 // matching), the permanent referral code with one-tap WhatsApp share
@@ -14,6 +14,89 @@ const ROLE_OPTIONS = [
   { value: "seller", label: "Seller" },
   { value: "owner", label: "Owner / Landlord" },
 ];
+
+const TRUST_LABELS = { verification: "Verification", deals: "Completed deals", response: "Response time", ratings: "Ratings", geo: "Listing location" };
+
+// Sec. 8 trust score + badges, with KYC submission (ID document is sent to
+// A R for verification; only the last 4 characters of any number are kept).
+function TrustCard() {
+  const { accessToken } = useAuth();
+  const trust = useLoad((t) => portal.trust(t));
+  const [reference, setReference] = useState("");
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const t = trust.data;
+  if (!t) return null;
+  const kyc = (t.verifications || []).find((v) => v.kind === "kyc");
+  const submitKyc = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await portal.submitVerification(accessToken, { kind: "kyc", reference, file });
+      setMsg({ tone: "green", text: "Submitted - your A R Buildwel representative will verify it." });
+      setReference("");
+      setFile(null);
+      trust.reload();
+    } catch (err) {
+      setMsg({ tone: "red", text: err.message });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Card>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold text-[#111827]">Trust score</p>
+          <p className="mt-1 text-[13px] text-[#6B7280]">Shown (without your identity) on your listings and reviews. A higher score ranks your listings higher.</p>
+        </div>
+        <p className="font-['Plus_Jakarta_Sans'] text-[32px] font-extrabold leading-none text-[#111827]">
+          {t.score}
+          <span className="text-[14px] text-[#9CA3AF]">/100</span>
+        </p>
+      </div>
+      {t.badges.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {t.badges.map((b) => (
+            <span key={b.id} className={`rounded-full px-3 py-1 text-[12px] font-bold ${b.status === "warning" ? "bg-amber-50 text-amber-800" : "bg-[#ECFDF5] text-[#065F46]"}`}>
+              {b.status === "warning" ? "⚠ " : "✓ "}
+              {b.label}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        {Object.entries(TRUST_LABELS).map(([k, label]) => (
+          <div key={k}>
+            <div className="flex justify-between text-[12px]"><span className="font-semibold text-[#374151]">{label} ({t.weights[k]}%)</span><span className="text-[#6B7280]">{t.components[k]?.score ?? 0}</span></div>
+            <div className="mt-1 h-1.5 rounded-full bg-[#F3F4F6]"><div className="h-1.5 rounded-full bg-[#E51C23]" style={{ width: `${t.components[k]?.score ?? 0}%` }} /></div>
+          </div>
+        ))}
+      </div>
+      {t.nextSteps.length > 0 && <p className="mt-3 text-[12px] text-[#6B7280]">Improve it: {t.nextSteps.join(" · ")}</p>}
+      <div className="mt-4 border-t border-[#F3F4F6] pt-4">
+        <p className="text-[14px] font-bold text-[#111827]">
+          KYC {kyc ? <span className="ml-1 text-[12px] font-semibold capitalize text-[#6B7280]">({kyc.status}{kyc.notes ? ` - ${kyc.notes}` : ""})</span> : null}
+        </p>
+        {(!kyc || kyc.status === "rejected") && (
+          <form onSubmit={submitKyc} className="mt-2 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+            <label className={labelClass}>
+              ID number (PAN / Aadhaar)
+              <input value={reference} onChange={(e) => setReference(e.target.value)} className={inputClass} placeholder="Only the last 4 characters are stored" />
+            </label>
+            <label className={labelClass}>
+              ID document
+              <input type="file" accept=".pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className={`${inputClass} py-2`} />
+            </label>
+            <button type="submit" disabled={busy || (!reference && !file)} className={primaryButton}>{busy ? "Sending…" : "Submit KYC"}</button>
+          </form>
+        )}
+        {msg && <div className="mt-3"><Notice tone={msg.tone}>{msg.text}</Notice></div>}
+      </div>
+    </Card>
+  );
+}
 
 function ProfileSection({ profile, onProfileChange }) {
   const { accessToken } = useAuth();
@@ -105,13 +188,25 @@ function ProfileSection({ profile, onProfileChange }) {
         </Card>
       )}
 
+      <TrustCard />
+
       <Card>
         <p className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold text-[#111827]">Dashboard level: {tier.current === "full" ? "Full CRM" : "Lite"}</p>
         <p className="mt-1 text-[13px] text-[#6B7280]">
-          {tier.current === "full"
-            ? "You've unlocked the full CRM workspace. Contact your representative for access."
+          {tier.current === "full" && tier.exempt
+            ? "As an HNI investor you have the full CRM workspace from day one - deal pipeline with SLA tracking, activity log, scored deal flow, saved searches, portfolio and analytics."
+            : tier.current === "full"
+            ? "You've unlocked the full CRM workspace - deal pipeline, activity log, saved searches and analytics. It stays unlocked permanently."
             : `Full CRM unlocks after ${tier.dealThreshold} completed deals or ${tier.referralThreshold} people joining with your code - whichever comes first.`}
         </p>
+        {tier.current === "full" && (
+          <div className="mt-3">
+            <a href={`${CRM_URL}/app/workspace`} target="_blank" rel="noreferrer" className={primaryButton}>
+              Open my CRM workspace
+            </a>
+            <p className="mt-2 text-[12px] text-[#6B7280]">Sign in there with the same email / mobile and password or OTP you use on this website.</p>
+          </div>
+        )}
         {tier.current !== "full" && (
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {[

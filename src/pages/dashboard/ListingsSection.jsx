@@ -6,6 +6,8 @@ import {
   Badge, CITY_SUGGESTIONS, Card, EmptyState, FeeConsent, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
 } from "./ui";
+import ListingChecks from "./ListingChecks";
+import ListingDocuments from "./ListingDocuments";
 
 // My Listings (Screen 4 - Post Property) for sellers and owners. A posted
 // property is checked by the A R Buildwel team before it goes live. The
@@ -53,6 +55,9 @@ function ListingForm({ existing, onSaved, onCancel }) {
     longitude: existing?.longitude ?? "",
   }));
   const [mandateType, setMandateType] = useState("standard");
+  // Engine 4 deal sourcing from direct sellers - never labelled "distressed".
+  const [situationTags, setSituationTags] = useState([]);
+  const [marketValueLakh, setMarketValueLakh] = useState("");
   const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -103,7 +108,15 @@ function ListingForm({ existing, onSaved, onCancel }) {
     try {
       const saved = editing
         ? await portal.updateListing(accessToken, existing.id, body)
-        : await portal.createListing(accessToken, { ...body, pg: form.transactionType === "rent" && form.pg, mandateType, feeConsent: true });
+        : await portal.createListing(accessToken, {
+            ...body,
+            pg: form.transactionType === "rent" && form.pg,
+            mandateType,
+            feeConsent: true,
+            ...(form.transactionType === "sell" && situationTags.length
+              ? { situationTags, ...(marketValueLakh ? { estimatedMarketValue: Math.round(Number(marketValueLakh) * 1e5) } : {}) }
+              : {}),
+          });
       onSaved(saved, editing);
     } catch (err) {
       setError(err.message);
@@ -231,6 +244,42 @@ function ListingForm({ existing, onSaved, onCancel }) {
           This is a PG / co-living space
         </label>
       )}
+      {form.transactionType === "sell" && !editing && (
+        <div className="rounded-[14px] border border-[#E5E7EB] p-4">
+          <p className="text-[14px] font-bold text-[#111827]">Need a quick or time-bound sale? (optional)</p>
+          <p className="mt-1 text-[12px] text-[#6B7280]">
+            Tagged sales are offered as Special Situation Properties to our verified investors and brokers - often the fastest route to a
+            serious buyer. Your identity and contact stay private.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {[
+              ["urgent_sale", "Urgent sale"],
+              ["time_bound_sale", "Time-bound sale"],
+              ["investor_exit", "Investor exit"],
+              ["financial_distress", "Financial restructuring"],
+            ].map(([value, label]) => {
+              const on = situationTags.includes(value);
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setSituationTags((t) => (on ? t.filter((x) => x !== value) : [...t, value]))}
+                  className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold ${on ? "border-[#E51C23] bg-[#FEF2F2] text-[#E51C23]" : "border-[#E5E7EB] text-[#374151]"}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          {situationTags.length > 0 && (
+            <label className={`${labelClass} mt-3`}>
+              Your estimate of its market value (₹ Lakh)
+              <input type="number" min="0" step="0.01" value={marketValueLakh} onChange={(e) => setMarketValueLakh(e.target.value)} placeholder="Helps show buyers the discount" className={inputClass} />
+            </label>
+          )}
+        </div>
+      )}
       {!editing && <FeeConsent kind="listing" mandateType={mandateType} onMandateType={setMandateType} consent={consent} onConsent={setConsent} />}
       {error && <Notice tone="red">{error}</Notice>}
       <div className="flex flex-wrap gap-2">
@@ -321,6 +370,8 @@ function ListingEnquiries({ listing }) {
 }
 
 function ListingsSection({ reloadProfile }) {
+  const [checksFor, setChecksFor] = useState(null);
+  const [docsFor, setDocsFor] = useState(null);
   const { accessToken } = useAuth();
   const [params, setParams] = useSearchParams();
   const { data, loading, error, reload } = useLoad((token) => portal.listings(token));
@@ -409,6 +460,10 @@ function ListingsSection({ reloadProfile }) {
                   <Badge status={l.status} />
                   {l.is_verified && <Badge tone="green">Verified</Badge>}
                   {l.mandate_type === "exclusive" && <Badge tone="blue">Exclusive mandate</Badge>}
+                  {l.listing_category === "special_situation" && <Badge tone="amber">Special situation</Badge>}
+                  {l.verification_level > 0 && <Badge tone="green">✓ {["", "System", "Seller", "Legally", "Site"][l.verification_level]} Verified</Badge>}
+                  {l.under_review && l.status === "approved" && <Badge tone="amber">Under review</Badge>}
+                  {l.duplicate_status === "blocked" && <Badge tone="blue">Already listed</Badge>}
                 </div>
                 <p className="mt-1 text-[14px] text-[#374151]">
                   {formatINR(l.price_value) || l.price}
@@ -449,6 +504,12 @@ function ListingsSection({ reloadProfile }) {
                   <button type="button" onClick={() => setPhotosFor(l)} className={linkButton}>
                     Add photos
                   </button>
+                  <button type="button" onClick={() => setChecksFor(l)} className={linkButton}>
+                    Verification & checks
+                  </button>
+                  <button type="button" onClick={() => setDocsFor(l)} className={linkButton}>
+                    Documents
+                  </button>
                   {l.status !== "inactive" && (
                     <button type="button" disabled={busy === l.id} onClick={() => openEdit(l)} className={linkButton}>
                       Edit
@@ -486,7 +547,16 @@ function ListingsSection({ reloadProfile }) {
           onCancel={() => setParams({}, { replace: true })}
           onSaved={async (saved) => {
             setParams({}, { replace: true });
-            setNotice({ tone: "green", text: "Submitted! Our team will review it shortly. Add photos now to get more enquiries." });
+            // Sec. 9.5: clean listings go live instantly; others are held for a check.
+            setNotice(
+              saved?.status === "approved"
+                ? { tone: "green", text: saved.under_review ? "Your listing is live (a routine check is running). Add at least 3 photos to earn the System Verified badge." : "Your listing is live! Add at least 3 photos to earn the System Verified badge." }
+                : saved?.duplicate_status === "blocked"
+                ? { tone: "amber", text: "This property already seems to be listed. Open Verification & checks to choose how to proceed." }
+                : saved?.status === "rejected"
+                ? { tone: "red", text: "Your listing could not be published. See Verification & checks to appeal." }
+                : { tone: "green", text: "Submitted - our team will check it shortly. Add photos now to get more enquiries." }
+            );
             await reload();
             reloadProfile?.();
             setPhotosFor(saved);
@@ -505,6 +575,12 @@ function ListingsSection({ reloadProfile }) {
             }}
           />
         )}
+      </Modal>
+      <Modal open={!!docsFor} title={docsFor ? `Documents - ${docsFor.title}` : ""} onClose={() => setDocsFor(null)} width="max-w-[680px]">
+        {docsFor && <ListingDocuments listing={docsFor} />}
+      </Modal>
+      <Modal open={!!checksFor} title={checksFor ? `Verification - ${checksFor.title}` : ""} onClose={() => setChecksFor(null)} width="max-w-[640px]">
+        {checksFor && <ListingChecks listing={checksFor} onChanged={reload} />}
       </Modal>
       <Modal open={!!photosFor} title="Add photos" onClose={() => setPhotosFor(null)}>
         {photosFor && (

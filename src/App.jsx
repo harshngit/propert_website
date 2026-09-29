@@ -21,6 +21,7 @@ import SellServicePage, { SellHubPage } from "./pages/SellServicePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import SeoCityPage from "./pages/SeoCityPage";
 import ToolsPage from "./pages/ToolsPage";
+import InvestorLandingPage from "./pages/InvestorLandingPage";
 
 function ScrollToTop() {
   const location = useLocation();
@@ -68,6 +69,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/services/get-involved" element={<GetInvolvedPage />} />
         <Route path="/tools" element={<ToolsPage />} />
+        <Route path="/for-nri" element={<InvestorLandingPage kind="nri" />} />
+        <Route path="/for-hni" element={<InvestorLandingPage kind="hni" />} />
         <Route path="/legal" element={<PublicLegalPage />} />
         <Route path="/news-guide/insights-guides" element={<InsightsGuidesPage />} />
         <Route path="/news-guide/article/:slug" element={<BlogContentPage />} />

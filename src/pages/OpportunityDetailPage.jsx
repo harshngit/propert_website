@@ -6,6 +6,7 @@ import { expressInterest, getOpportunity } from "../api/opportunities";
 import { getPropertyById } from "../api/properties";
 import { useAuth } from "../context/AuthContext";
 import { formatAuctionDate, typeLabel } from "../utils/normalizeOpportunity";
+import DealRoomPanel from "../components/DealRoomPanel";
 
 // Deal page for bank auction / special situation / institutional listings.
 // The API decides what the caller may see: a masked teaser (anonymous or
@@ -193,6 +194,40 @@ function InterestPanel({ deal, onRegistered }) {
   );
 }
 
+const ADVISORY_PROFILE = {
+  value: { label: "Value opportunity", cls: "bg-emerald-50 text-emerald-800" },
+  balanced: { label: "Balanced", cls: "bg-blue-50 text-blue-800" },
+  higher_risk: { label: "Higher risk / higher potential", cls: "bg-amber-50 text-amber-800" },
+};
+
+// Engine 3 deal advisory: non-legal guidance on structure and risk-return.
+function AdvisoryCard({ advisory }) {
+  const tag = ADVISORY_PROFILE[advisory.profile] || ADVISORY_PROFILE.balanced;
+  const list = (title, items) =>
+    items?.length > 0 && (
+      <div className="mt-4">
+        <p className="text-[13px] font-bold text-[#111827]">{title}</p>
+        <ul className="mt-1 list-disc space-y-1 pl-5 text-[13px] leading-5 text-[#4B5563]">
+          {items.map((t) => <li key={t}>{t}</li>)}
+        </ul>
+      </div>
+    );
+  return (
+    <div className="mt-6 rounded-xl border border-[#E5E7EB] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-[16px] font-bold text-[#111827]">Deal advisory</h2>
+        <span className={`rounded-md px-2.5 py-1 text-[12px] font-semibold ${tag.cls}`}>{tag.label}</span>
+      </div>
+      <p className="mt-1 text-[13px] text-[#4B5563]">{advisory.profileText}</p>
+      {list("Risk-return", advisory.points)}
+      {list("How the deal is structured", advisory.structure)}
+      {list("Before you commit", advisory.checks)}
+      {advisory.exit && <p className="mt-4 text-[13px] text-[#4B5563]"><span className="font-bold text-[#111827]">Exit: </span>{advisory.exit}</p>}
+      <p className="mt-4 text-[11px] text-[#9CA3AF]">General guidance only - not legal, tax or financial advice. See the disclaimers below.</p>
+    </div>
+  );
+}
+
 function OpportunityDetailPage() {
   const { id } = useParams();
   const { accessToken, isReady } = useAuth();
@@ -360,6 +395,8 @@ function OpportunityDetailPage() {
             </div>
           )}
 
+          {!locked && deal.advisory && <AdvisoryCard advisory={deal.advisory} />}
+
           {(deal.disclaimers || []).length > 0 && (
             <div className="mt-8 rounded-xl bg-[#F9FAFB] px-5 py-4 text-[12px] leading-5 text-[#6B7280]">
               {deal.disclaimers.map((d) => (
@@ -372,20 +409,33 @@ function OpportunityDetailPage() {
           )}
         </div>
 
-        <aside className="lg:sticky lg:top-6 lg:self-start">
+        <aside className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
+          {deal.my_match && (
+            <div className="rounded-2xl border border-[#E5E7EB] p-5">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-[#111827]">Fit for your profile</p>
+                <span className="text-[20px] font-extrabold text-[#E51C23]">{deal.my_match.score}%</span>
+              </div>
+              {deal.my_match.reasons?.length > 0 ? (
+                <ul className="mt-2 space-y-1 text-[13px] text-[#4B5563]">
+                  {deal.my_match.reasons.map((r) => <li key={r}>✓ {r}</li>)}
+                </ul>
+              ) : (
+                <p className="mt-1 text-[13px] text-[#6B7280]">Outside your stated preferences - update your investor profile to refine matches.</p>
+              )}
+            </div>
+          )}
           {category === "institutional" ? (
             <div className="rounded-2xl border border-[#E5E7EB] p-5">
               <p className="text-sm font-bold text-[#111827]">Confidential institutional listing</p>
               <p className="mt-1 text-sm text-[#6B7280]">
                 Institution identity and the data room unlock after buyer verification, NDA and admin approval.
               </p>
-              <Link to="/services/get-involved" className="cta-red mt-4 inline-flex h-[44px] w-full items-center justify-center rounded-[10px] text-sm font-bold text-white">
-                Request access
-              </Link>
             </div>
           ) : (
             <InterestPanel deal={deal} onRegistered={(interest) => setDeal((d) => ({ ...d, my_interest: interest }))} />
           )}
+          <DealRoomPanel dealId={deal.id} />
         </aside>
       </section>
 

@@ -60,7 +60,30 @@ function VisitRequestForm({ enquiry, onDone, onCancel }) {
   );
 }
 
+// Documents the seller shared with buyers (visible once the deal reaches
+// negotiation - Module 20 role visibility).
+function BuyerDocuments({ propertyId }) {
+  const docs = useLoad((token) => portal.propertyDocuments(token, propertyId), [propertyId]);
+  if (docs.loading && !docs.data) return <LoadState loading />;
+  if (docs.error) return <LoadState error={docs.error} onRetry={docs.reload} />;
+  const list = docs.data?.documents || [];
+  if (!list.length) return <EmptyState title="No documents shared yet" body="Your representative will share title and approval papers as the deal progresses." />;
+  return (
+    <ul className="flex flex-col gap-2">
+      {list.map((d) => (
+        <li key={d.id} className="flex items-center justify-between gap-2 text-[14px]">
+          <a href={d.document_url} target="_blank" rel="noreferrer" className="font-semibold text-[#111827] hover:text-[#E51C23]">{d.file_name || d.document_type.replace(/_/g, " ")}</a>
+          <span className="text-[12px] text-[#6B7280]">{d.document_type.replace(/_/g, " ")}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const DOC_STAGES = ["negotiation", "booking", "documentation", "payment", "closed_won"];
+
 function EnquiriesSection() {
+  const [docsFor, setDocsFor] = useState(null);
   const enquiries = useLoad((token) => portal.enquiries(token));
   const visits = useLoad((token) => portal.visits(token));
   const [visitFor, setVisitFor] = useState(null);
@@ -124,6 +147,11 @@ function EnquiriesSection() {
                     Request a site visit
                   </button>
                 )}
+                {e.property_id && DOC_STAGES.includes(e.deal_stage) && (
+                  <button type="button" onClick={() => setDocsFor(e)} className={linkButton}>
+                    Property documents
+                  </button>
+                )}
               </div>
             </Card>
           ))}
@@ -176,6 +204,9 @@ function EnquiriesSection() {
         )}
       </div>
 
+      <Modal open={!!docsFor} title={docsFor ? `Documents - ${docsFor.property_title}` : ""} onClose={() => setDocsFor(null)}>
+        {docsFor && <BuyerDocuments propertyId={docsFor.property_id} />}
+      </Modal>
       <Modal open={!!visitFor} title="Request a site visit" onClose={() => setVisitFor(null)}>
         {visitFor && (
           <VisitRequestForm

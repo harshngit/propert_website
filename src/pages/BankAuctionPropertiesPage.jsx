@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 import PropertiesPage from "./PropertiesPage";
+import { DealFiltersSidebar, createDealFilterState, dealFiltersToParams } from "../components/DealFilters";
+
+const renderDealSidebar = (props) => <DealFiltersSidebar context="auction" {...props} />;
+const toParams = (state) => dealFiltersToParams(state, "auction");
 
 function BankAuctionPropertiesPage() {
   useEffect(() => {
@@ -16,6 +20,9 @@ function BankAuctionPropertiesPage() {
         hideMobileHeroDescription
         resultContext="auction"
         showTopSearchBar={false}
+        initialDrawerState={createDealFilterState}
+        renderSidebar={renderDealSidebar}
+        drawerToParams={toParams}
       />
     </div>
   );

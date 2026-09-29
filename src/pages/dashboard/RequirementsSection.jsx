@@ -13,6 +13,7 @@ import {
 // Matched Properties.
 
 const URGENCY_LABELS = { immediate: "Immediately", "30_days": "Within 30 days", flexible: "Flexible" };
+const AMENITY_OPTIONS = ["Gym", "Pool", "Parking", "Lift", "Power Backup", "Security", "Clubhouse", "Park", "Play Area"];
 
 function RequirementForm({ profile, onSaved, onCancel }) {
   const { accessToken } = useAuth();
@@ -30,7 +31,23 @@ function RequirementForm({ profile, onSaved, onCancel }) {
     areaMax: "",
     urgency: prefs.urgency || "flexible",
     notes: "",
+    amenities: [],
+    latitude: null,
+    longitude: null,
   });
+  const [locating, setLocating] = useState(false);
+  const pinLocation = () => {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setForm((f) => ({ ...f, latitude: Number(pos.coords.latitude.toFixed(6)), longitude: Number(pos.coords.longitude.toFixed(6)) }));
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { timeout: 10000 }
+    );
+  };
   const [mandateType, setMandateType] = useState("standard");
   const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -61,6 +78,8 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         areaMaxSqft: num(form.areaMax),
         urgency: form.urgency,
         notes: form.notes || undefined,
+        amenities: form.amenities,
+        ...(form.latitude != null ? { latitude: form.latitude, longitude: form.longitude } : {}),
         mandateType,
         feeConsent: true,
       });
@@ -154,6 +173,31 @@ function RequirementForm({ profile, onSaved, onCancel }) {
           </select>
         </label>
       </div>
+      <div>
+        <span className={labelClass}>Must-have amenities</span>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          {AMENITY_OPTIONS.map((a) => {
+            const on = form.amenities.includes(a);
+            return (
+              <button
+                key={a}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setForm((f) => ({ ...f, amenities: on ? f.amenities.filter((x) => x !== a) : [...f.amenities, a] }))}
+                className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold ${on ? "border-[#E51C23] bg-[#FEF2F2] text-[#E51C23]" : "border-[#E5E7EB] text-[#374151]"}`}
+              >
+                {a}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-3 text-[13px]">
+        <button type="button" onClick={pinLocation} disabled={locating} className={linkButton}>
+          {locating ? "Locating…" : form.latitude != null ? "📍 Location pinned - update" : "📍 Pin my current location"}
+        </button>
+        <span className="text-[#6B7280]">Optional - matches are scored by distance from this pin (within your city's radius).</span>
+      </div>
       <label className={labelClass}>
         Anything else? (optional)
         <textarea rows={3} value={form.notes} onChange={set("notes")} placeholder="e.g. near a metro station, east facing, school nearby" className={`${inputClass} h-auto py-2`} />
@@ -185,6 +229,19 @@ function RequirementsSection({ profile, reloadProfile }) {
     setBusy(requirement.id);
     try {
       await portal.updateRequirement(accessToken, requirement.id, { status });
+      await reload();
+    } catch (err) {
+      setNotice({ tone: "red", text: err.message });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const renew = async (requirement) => {
+    setBusy(requirement.id);
+    try {
+      await portal.renewRequirement(accessToken, requirement.id);
+      setNotice({ tone: "green", text: "Requirement renewed for another 60 days." });
       await reload();
     } catch (err) {
       setNotice({ tone: "red", text: err.message });
@@ -240,7 +297,8 @@ function RequirementsSection({ profile, reloadProfile }) {
                   </p>
                   <Badge status={r.temperature}>{r.temperature}</Badge>
                   <Badge status={r.status} />
-                  {r.mandate_type === "exclusive" && <Badge tone="blue">Exclusive mandate</Badge>}
+                  {r.mandate_type === "exclusive" && <Badge tone="blue">Priority requirement</Badge>}
+                  {r.expired_at && r.status === "paused" && <Badge tone="red">Expired</Badge>}
                 </div>
                 <p className="mt-1 text-[14px] text-[#374151]">
                   {[...(r.localities || []), r.city].join(", ")} · {budget(r)}
@@ -249,6 +307,12 @@ function RequirementsSection({ profile, reloadProfile }) {
                   {URGENCY_LABELS[r.urgency]} · Posted {formatDate(r.created_at)} ·{" "}
                   {r.representative_name ? `Your representative: ${r.representative_name}` : "A representative will be assigned shortly"}
                 </p>
+                {r.expires_at && ["active", "paused"].includes(r.status) && (
+                  <p className={`mt-1 text-[12px] ${r.expired_at || new Date(r.expires_at) - Date.now() < 7 * 86400000 ? "font-semibold text-[#B45309]" : "text-[#6B7280]"}`}>
+                    {r.expired_at ? `Expired on ${formatDate(r.expired_at)} - renew to keep getting matches` : `Active until ${formatDate(r.expires_at)}`}
+                  </p>
+                )}
+                {(r.amenities || []).length > 0 && <p className="mt-1 text-[12px] text-[#6B7280]">Amenities: {r.amenities.join(", ")}</p>}
                 {r.notes && <p className="mt-1 text-[13px] italic text-[#6B7280]">"{r.notes}"</p>}
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -262,9 +326,14 @@ function RequirementsSection({ profile, reloadProfile }) {
                     Pause
                   </button>
                 )}
-                {r.status === "paused" && (
+                {r.status === "paused" && !r.expired_at && (
                   <button type="button" disabled={busy === r.id} onClick={() => setStatus(r, "active")} className={linkButton}>
                     Resume
+                  </button>
+                )}
+                {["active", "paused"].includes(r.status) && (r.expired_at || new Date(r.expires_at) - Date.now() < 7 * 86400000) && (
+                  <button type="button" disabled={busy === r.id} onClick={() => renew(r)} className={linkButton}>
+                    Renew for 60 days
                   </button>
                 )}
                 {["active", "paused"].includes(r.status) && (

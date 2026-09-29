@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import { apiRequest } from "./client";
 
 // Customer portal (backend /api/me/*) - the "My Dashboard" for buyers,
@@ -15,6 +16,81 @@ export const portal = {
   createRequirement: (token, body) => send("POST", "/me/requirements", token, body),
   updateRequirement: (token, id, body) => send("PUT", `/me/requirements/${id}`, token, body),
   matches: (token) => get("/me/matches", token),
+  renewRequirement: (token, id) => send("POST", `/me/requirements/${id}/renew`, token),
+  matchScores: (token, ids) => get(`/me/match-scores?ids=${ids.join(",")}`, token),
+  matchEvent: (token, body) => send("POST", "/me/match-events", token, body),
+  recommendations: (token) => get("/me/recommendations", token),
+
+  // Listing verification, duplicates & appeals (sec. 9)
+  listingChecks: (token, id) => get(`/fraud/listings/${id}`, token),
+  requestListingVerification: (token, id, { level, note, files = [] }) => {
+    const form = new FormData();
+    form.append("level", level);
+    if (note) form.append("note", note);
+    files.forEach((f) => form.append("files", f));
+    return apiRequest(`/fraud/listings/${id}/verifications`, { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
+  resolveDuplicate: (token, id, action) => send("POST", `/fraud/listings/${id}/duplicate-resolution`, token, { action }),
+  appealListing: (token, id, { reason, files = [] }) => {
+    const form = new FormData();
+    form.append("reason", reason);
+    files.forEach((f) => form.append("files", f));
+    return apiRequest(`/fraud/listings/${id}/appeal`, { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
+
+  // Documents & due diligence (Modules 20 / 21)
+  ddReport: (token, id) => get(`/due-diligence/properties/${id}`, token),
+  propertyDocuments: (token, id) => get(`/due-diligence/properties/${id}/documents`, token),
+  addPropertyDocument: (token, id, { file, documentType, visibleTo = [] }) => {
+    const form = new FormData();
+    form.append("file", file);
+    if (documentType) form.append("documentType", documentType);
+    form.append("visibleTo", visibleTo.join(","));
+    return apiRequest(`/due-diligence/properties/${id}/documents`, { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
+
+  // Deal progress + professional-fee invoices (Module 40)
+  myDeals: (token) => get("/orchestration/my-deals", token),
+  invoicePdf: async (token, id) => {
+    const res = await fetch(`${API_BASE_URL}/orchestration/invoices/${id}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error("Could not load the invoice");
+    return res.blob();
+  },
+
+  // Disputes (Engine 5)
+  disputes: (token) => get("/disputes", token),
+  dispute: (token, id) => get(`/disputes/${id}`, token),
+  openDispute: (token, { type, title, description, propertyId, files = [] }) => {
+    const form = new FormData();
+    form.append("type", type);
+    form.append("title", title);
+    form.append("description", description);
+    if (propertyId) form.append("propertyId", propertyId);
+    files.forEach((f) => form.append("files", f));
+    return apiRequest("/disputes", { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
+  commentDispute: (token, id, { body, files = [] }) => {
+    const form = new FormData();
+    if (body) form.append("body", body);
+    files.forEach((f) => form.append("files", f));
+    return apiRequest(`/disputes/${id}/comments`, { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
+
+  // Trust & reviews (sec. 8)
+  trust: (token) => get("/trust/me", token),
+  reviewable: (token) => get("/trust/reviews/eligible", token),
+  createReview: (token, body) => send("POST", "/trust/reviews", token, body),
+  myReviews: (token) => get("/trust/reviews/mine", token),
+  reviewsAboutMe: (token) => get("/trust/reviews/about-me", token),
+  replyReview: (token, id, reply) => send("POST", `/trust/reviews/${id}/reply`, token, { reply }),
+  reportReview: (token, id, reason) => send("POST", `/trust/reviews/${id}/report`, token, { reason }),
+  submitVerification: (token, { kind, reference, file }) => {
+    const form = new FormData();
+    form.append("kind", kind);
+    if (reference) form.append("reference", reference);
+    if (file) form.append("file", file);
+    return apiRequest("/trust/verifications", { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
+  },
 
   favourites: (token) => get("/me/favourites", token),
   addFavourite: (token, propertyId) => send("POST", `/properties/${propertyId}/favorite`, token),
@@ -71,6 +147,7 @@ export const portal = {
   // NRI / HNI investor tools (backend /nri/*, /hni/*) - the caller's own
   // investor profile.
   investorProfile: (token) => get("/investors/me", token),
+  saveInvestorProfile: (token, body) => send("PUT", "/investors/me", token, body),
   nriDashboard: (token) => get("/nri/dashboard", token),
   nriProperties: (token) => get("/nri/properties", token),
   nriProperty: (token, id) => get(`/nri/properties/${id}`, token),

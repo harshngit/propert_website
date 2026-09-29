@@ -153,6 +153,9 @@ function HniSection() {
         action={<Badge status={d.profile?.verificationStatus === "verified" ? "approved" : "pending"}>{d.profile?.verificationStatus === "verified" ? "Verified investor" : "Verification pending"}</Badge>}
       />
       {notice && <Notice tone={notice.tone}>{notice.text}</Notice>}
+      {d.assignedManager && (
+        <Notice>Your relationship manager: <b>{d.assignedManager.name || d.assignedManager.full_name}</b></Notice>
+      )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Invested" value={t.investedDisplay || formatINR(t.invested) || "₹0"} />
         <StatCard label="Current value" value={t.currentValueDisplay || formatINR(t.currentValue) || "₹0"} hint={t.unrealisedGainPercent != null ? `${t.unrealisedGainPercent > 0 ? "+" : ""}${pct(t.unrealisedGainPercent)} unrealised` : undefined} />
@@ -167,7 +170,7 @@ function HniSection() {
         </div>
         {d.dealAccess && !d.dealAccess.full && <div className="mb-3"><Notice tone="amber">{d.dealAccess.reason || "Full deal details unlock once your investor profile is verified."}</Notice></div>}
         <LoadState loading={deals.loading && !deals.data} error={deals.error} onRetry={deals.reload} />
-        {deals.data && !dealItems.length && <EmptyState title="No curated deals right now" body="We match deals to your ticket size, cities and asset classes - update your investor profile to widen the net." />}
+        {deals.data && !dealItems.length && <EmptyState title="No curated deals right now" body="We rank deals by how well they fit your ticket size, cities, asset classes and the deals you engage with - update your investor profile to widen the net." />}
         <div className="grid gap-3 md:grid-cols-2">
           {dealItems.map((deal) => (
             <Card key={deal.id}>
@@ -183,10 +186,14 @@ function HniSection() {
                     {deal.indicative_yield_percent ? ` · ~${pct(deal.indicative_yield_percent)} yield` : ""}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
+                    {deal.match_score != null && <Badge tone={deal.match_score >= 70 ? "green" : "gray"}>{deal.match_score}% match</Badge>}
                     {deal.investment_score != null && <Badge tone="blue">Score {Math.round(deal.investment_score)}</Badge>}
                     {deal.liquidity_band && <Badge tone={deal.liquidity_band === "high" ? "green" : deal.liquidity_band === "low" ? "red" : "amber"}>{deal.liquidity_band} liquidity</Badge>}
                     {deal.auction_date && <Badge tone="gray">Auction {formatDate(deal.auction_date)}</Badge>}
                   </div>
+                  {deal.match_reasons?.length > 0 && (
+                    <p className="mt-2 text-[12px] text-[#6B7280]">Why it fits: {deal.match_reasons.join(" · ")}</p>
+                  )}
                 </div>
                 <button type="button" onClick={() => toggleShortlist(deal)} className={`shrink-0 text-[13px] font-bold ${deal.is_shortlisted ? "text-[#E51C23]" : "text-[#6B7280] hover:text-[#E51C23]"}`}>
                   {deal.is_shortlisted ? "★ Shortlisted" : "☆ Shortlist"}

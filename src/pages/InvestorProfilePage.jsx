@@ -53,6 +53,10 @@ function InvestorProfilePage() {
     ticketMaxCr: "",
     riskAppetite: "moderate",
     alertsEnabled: true,
+    alertMode: "window",
+    alertWhatsapp: false,
+    alertMaxPerDay: "3",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
   });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
@@ -78,6 +82,10 @@ function InvestorProfilePage() {
           ticketMaxCr: toCrore(p.ticket_size_max),
           riskAppetite: p.risk_appetite || "moderate",
           alertsEnabled: p.alerts_enabled,
+          alertMode: p.alert_mode || "window",
+          alertWhatsapp: (p.alert_channels || []).includes("whatsapp"),
+          alertMaxPerDay: p.alert_max_per_day ? String(p.alert_max_per_day) : "3",
+          timeZone: p.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
         });
       })
       .catch(() => {});
@@ -120,6 +128,10 @@ function InvestorProfilePage() {
           ticketSizeMax: form.ticketMaxCr ? Number(form.ticketMaxCr) * 1e7 : null,
           riskAppetite: form.riskAppetite,
           alertsEnabled: form.alertsEnabled,
+          alertMode: form.alertMode,
+          alertChannels: form.alertWhatsapp ? ["in_app", "whatsapp"] : ["in_app"],
+          alertMaxPerDay: Number(form.alertMaxPerDay) || null,
+          timeZone: form.timeZone,
         },
       });
       setProfile(res.data);
@@ -219,9 +231,38 @@ function InvestorProfilePage() {
             </div>
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-[#374151]">
-            <input type="checkbox" checked={form.alertsEnabled} onChange={set("alertsEnabled")} /> Alert me when matching deals go live
-          </label>
+          <div className="rounded-xl border border-[#E5E7EB] p-4">
+            <label className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
+              <input type="checkbox" checked={form.alertsEnabled} onChange={set("alertsEnabled")} /> Alert me when matching deals go live
+            </label>
+            {form.alertsEnabled && (
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                <label className="block text-xs font-semibold text-[#374151]">
+                  When to send
+                  <select value={form.alertMode} onChange={set("alertMode")} className={inputClass}>
+                    <option value="window">Once a day, 9:30-10:30 am my time</option>
+                    <option value="instant">As soon as a deal matches</option>
+                  </select>
+                  <span className="mt-1 block font-normal text-[#9CA3AF]">High-scoring priority deals always arrive straight away.</span>
+                </label>
+                <label className="block text-xs font-semibold text-[#374151]">
+                  At most, per day
+                  <select value={form.alertMaxPerDay} onChange={set("alertMaxPerDay")} className={inputClass}>
+                    {["1", "2", "3", "5", "10"].map((n) => (
+                      <option key={n} value={n}>{n} alert{n === "1" ? "" : "s"}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-xs font-semibold text-[#374151]">
+                  My time zone
+                  <input value={form.timeZone} onChange={set("timeZone")} placeholder="e.g. Asia/Dubai" className={inputClass} />
+                </label>
+                <label className="flex items-center gap-2 self-end pb-2 text-sm text-[#374151]">
+                  <input type="checkbox" checked={form.alertWhatsapp} onChange={set("alertWhatsapp")} /> Also on WhatsApp
+                </label>
+              </div>
+            )}
+          </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
           {message && <p className="text-sm text-emerald-700">{message}</p>}

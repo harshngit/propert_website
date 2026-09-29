@@ -441,7 +441,7 @@ function NriSection() {
       {d.assignedManager ? (
         <Notice>Your relationship manager: <b>{d.assignedManager.name || d.assignedManager.full_name}</b></Notice>
       ) : (
-        <Notice tone="amber">A relationship manager will be assigned once your profile is verified.</Notice>
+        <Notice tone="amber">Your relationship manager is being assigned - we'll introduce them here shortly.</Notice>
       )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Properties" value={d.portfolio?.properties} hint={`${d.portfolio?.tenant_occupied || 0} rented · ${d.portfolio?.vacant || 0} vacant`} onClick={() => setTab("properties")} />

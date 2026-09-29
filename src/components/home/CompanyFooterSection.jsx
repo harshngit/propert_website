@@ -21,7 +21,8 @@ function CompanyFooterSection({ className = "" }) {
       items: [
         { label: "Bank Auction Properties", to: "/buy/bank-auction-properties" },
         { label: "Special Situation Properties", to: "/buy/special-situation-properties" },
-        { label: "NRI & HNI Investors", to: "/account/investor-profile" },
+        { label: "For NRIs", to: "/for-nri" },
+        { label: "For HNI Investors", to: "/for-hni" },
         { label: "Investment Calculators", to: "/tools" },
         { label: "Legal & Compliance", to: "/legal" },
       ],

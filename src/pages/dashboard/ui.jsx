@@ -4,6 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 // Small shared building blocks for the My Dashboard sections - same type,
 // colours and radii as the rest of the site.
 
+// The CRM app - staff workspace, and the investor Full CRM workspace
+// (/app/workspace) for customers who have unlocked it (sec. 13.2A).
+export const CRM_URL = (import.meta.env.VITE_CRM_URL || "https://property-dashboard-one-navy.vercel.app").replace(/\/$/, "");
+
 export const inputClass =
   "mt-1 h-[42px] w-full rounded-[10px] border border-[#E5E7EB] bg-white px-3 font-['Plus_Jakarta_Sans'] text-[14px] text-[#111827] outline-none transition focus:border-[#E51C23]";
 export const labelClass = "block font-['Plus_Jakarta_Sans'] text-[13px] font-semibold text-[#374151]";
