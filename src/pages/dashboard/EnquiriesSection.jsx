@@ -138,7 +138,7 @@ function EnquiriesSection() {
                     {e.price_value ? ` · ${formatINR(e.price_value)}` : ""} · Sent {formatDate(e.created_at)}
                   </p>
                   <p className="mt-1 text-[13px] text-[#374151]">
-                    {e.representative_name ? `Representative: ${e.representative_name}` : "A representative is being assigned"}
+                    {e.representative_name ? `Representative: ${e.representative_name}${e.representative_number ? ` · ${e.representative_number}` : ""}` : "A representative is being assigned"}
                     {e.next_visit_at ? ` · Visit on ${formatDate(e.next_visit_at, true)}` : ""}
                   </p>
                 </div>

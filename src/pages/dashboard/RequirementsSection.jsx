@@ -3,9 +3,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, FeeConsent, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
+  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
 } from "./ui";
+import FeeConsent, { EMPTY_CONSENT, MandateStatus } from "./FeeConsent";
 
 // My Requirements (Screen 5 - Post Requirement). A requirement is tagged
 // Hot / Warm / Cold from its urgency and goes straight to an A R Buildwel
@@ -48,8 +49,8 @@ function RequirementForm({ profile, onSaved, onCancel }) {
       { timeout: 10000 }
     );
   };
-  const [mandateType, setMandateType] = useState("standard");
-  const [consent, setConsent] = useState(false);
+  // Module 46 consent block: OTP consent token, mandate type, budget range.
+  const [mandate, setMandate] = useState(EMPTY_CONSENT);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -58,8 +59,8 @@ function RequirementForm({ profile, onSaved, onCancel }) {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!consent) {
-      setError("Please accept the professional fee terms to continue.");
+    if (!mandate.ready) {
+      setError("Complete the professional fee consent (OTP) and choose a mandate type to continue.");
       return;
     }
     setSaving(true);
@@ -80,8 +81,9 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         notes: form.notes || undefined,
         amenities: form.amenities,
         ...(form.latitude != null ? { latitude: form.latitude, longitude: form.longitude } : {}),
-        mandateType,
-        feeConsent: true,
+        mandateType: mandate.mandateType,
+        consentToken: mandate.consentToken,
+        ...(mandate.priceRange ? { priceRange: mandate.priceRange } : {}),
       });
       onSaved(requirement);
     } catch (err) {
@@ -202,10 +204,10 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         Anything else? (optional)
         <textarea rows={3} value={form.notes} onChange={set("notes")} placeholder="e.g. near a metro station, east facing, school nearby" className={`${inputClass} h-auto py-2`} />
       </label>
-      <FeeConsent kind="requirement" mandateType={mandateType} onMandateType={setMandateType} consent={consent} onConsent={setConsent} />
+      <FeeConsent kind="requirement" accessToken={accessToken} value={mandate} onChange={setMandate} />
       {error && <Notice tone="red">{error}</Notice>}
       <div className="flex flex-wrap gap-2">
-        <button type="submit" disabled={saving} className={primaryButton}>
+        <button type="submit" disabled={saving || !mandate.ready} className={primaryButton}>
           {saving ? "Posting…" : "Post requirement"}
         </button>
         <button type="button" onClick={onCancel} className={secondaryButton}>
@@ -305,7 +307,7 @@ function RequirementsSection({ profile, reloadProfile }) {
                 </p>
                 <p className="mt-1 text-[12px] text-[#6B7280]">
                   {URGENCY_LABELS[r.urgency]} · Posted {formatDate(r.created_at)} ·{" "}
-                  {r.representative_name ? `Your representative: ${r.representative_name}` : "A representative will be assigned shortly"}
+                  {r.representative_name ? `Your representative: ${r.representative_name}${r.representative_number ? ` · ${r.representative_number}` : ""}` : "A representative will be assigned shortly"}
                 </p>
                 {r.expires_at && ["active", "paused"].includes(r.status) && (
                   <p className={`mt-1 text-[12px] ${r.expired_at || new Date(r.expires_at) - Date.now() < 7 * 86400000 ? "font-semibold text-[#B45309]" : "text-[#6B7280]"}`}>
@@ -314,6 +316,7 @@ function RequirementsSection({ profile, reloadProfile }) {
                 )}
                 {(r.amenities || []).length > 0 && <p className="mt-1 text-[12px] text-[#6B7280]">Amenities: {r.amenities.join(", ")}</p>}
                 {r.notes && <p className="mt-1 text-[13px] italic text-[#6B7280]">"{r.notes}"</p>}
+                <MandateStatus mandate={r.mandate} accessToken={accessToken} />
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 {r.status === "active" && (

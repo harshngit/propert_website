@@ -30,8 +30,14 @@ const navDropdowns = {
     { label: "Broker Tools", to: "/sell/broker-tools" },
   ],
   Services: [
-    { label: "Get Involved", to: "/services/get-involved" },
+    { label: "Due Diligence", to: "/due-diligence" },
+    { label: "Legal Coordination", to: "/legal-coordination" },
+    { label: "Loan Assistance", to: "/loan-assistance" },
+    { label: "Insurance", to: "/insurance" },
+    { label: "Fees & Pricing", to: "/pricing" },
     { label: "Property Calculators", to: "/tools" },
+    { label: "Partner With Us", to: "/partner-with-us" },
+    { label: "Get Involved", to: "/services/get-involved" },
   ],
   "News & Guide": [
     { label: "Blogs & Insights", to: "/news-guide/insights-guides" },

@@ -22,6 +22,13 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import SeoCityPage from "./pages/SeoCityPage";
 import ToolsPage from "./pages/ToolsPage";
 import InvestorLandingPage from "./pages/InvestorLandingPage";
+import MarketingPage from "./pages/MarketingPage";
+import RequirementsPage from "./pages/RequirementsPage";
+import { ConsentBanner, InstallPrompt } from "./components/SiteChrome";
+import { MARKETING_PAGES } from "./data/marketingPages";
+import { applySeo, metaForPath } from "./lib/seo";
+import { identify, trackPageView } from "./lib/tracker";
+import { useAuth } from "./context/AuthContext";
 
 function ScrollToTop() {
   const location = useLocation();
@@ -33,10 +40,35 @@ function ScrollToTop() {
   return null;
 }
 
+// Route-level SEO defaults (title, description, canonical, Open Graph,
+// Organization schema) and the page_view event, on every navigation. Data
+// pages refine the meta once their content loads (useSeo).
+function RouteSeo() {
+  const location = useLocation();
+  useEffect(() => {
+    applySeo({ ...metaForPath(location.pathname), path: location.pathname });
+    trackPageView();
+  }, [location.pathname]);
+  return null;
+}
+
+// Links this browser's anonymous id to the signed-in person (Customer 360).
+function IdentityBridge() {
+  const { accessToken } = useAuth();
+  useEffect(() => {
+    identify(accessToken);
+  }, [accessToken]);
+  return null;
+}
+
 function App() {
   return (
     <>
       <ScrollToTop />
+      <RouteSeo />
+      <IdentityBridge />
+      <ConsentBanner />
+      <InstallPrompt />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/city/:citySlug" element={<CityLandingPage />} />
@@ -72,6 +104,16 @@ function App() {
         <Route path="/for-nri" element={<InvestorLandingPage kind="nri" />} />
         <Route path="/for-hni" element={<InvestorLandingPage kind="hni" />} />
         <Route path="/legal" element={<PublicLegalPage />} />
+        {/* Launch sitemap pages (sec. 21.4) - content in data/marketingPages.js */}
+        {Object.entries(MARKETING_PAGES).map(([slug, page]) => (
+          <Route key={slug} path={page.path} element={<MarketingPage slug={slug} />} />
+        ))}
+        <Route path="/requirements" element={<RequirementsPage />} />
+        <Route path="/blog" element={<Navigate to="/news-guide/insights-guides" replace />} />
+        <Route path="/guides" element={<Navigate to="/news-guide/insights-guides" replace />} />
+        <Route path="/documents" element={<Navigate to="/dashboard/documents" replace />} />
+        <Route path="/account" element={<Navigate to="/dashboard/profile" replace />} />
+        <Route path="/post-institutional" element={<Navigate to="/dashboard/listings?new=1" replace />} />
         <Route path="/news-guide/insights-guides" element={<InsightsGuidesPage />} />
         <Route path="/news-guide/article/:slug" element={<BlogContentPage />} />
         {/* SEO city pages from the CMS, e.g. /buy-property-in-gurugram (unknown slugs go home) */}

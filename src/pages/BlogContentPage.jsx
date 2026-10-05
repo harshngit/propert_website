@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { articleSchema, breadcrumbSchema, useSeo } from "../lib/seo";
 import { Link, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
@@ -36,6 +37,23 @@ function BlogContentPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  useSeo(
+    article
+      ? {
+          title: article.seoTitle || article.title,
+          description: article.seoDescription || article.excerpt || article.description,
+          path: `/news-guide/article/${slug}`,
+          image: article.image || undefined,
+          type: "article",
+          jsonLd: [
+            articleSchema({ title: article.title, description: article.excerpt || article.description, image: article.image, publishedAt: article.publishedAt || article.published_at, updatedAt: article.updatedAt || article.updated_at, path: `/news-guide/article/${slug}`, author: article.author }),
+            breadcrumbSchema([["Home", "/"], ["Insights & Guides", "/news-guide/insights-guides"], [article.title, `/news-guide/article/${slug}`]]),
+          ],
+        }
+      : null,
+    [article?.title, slug]
+  );
 
   const copyLink = () => {
     navigator.clipboard?.writeText(window.location.href).catch(() => {});

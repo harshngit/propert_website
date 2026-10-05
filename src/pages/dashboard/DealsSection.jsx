@@ -9,7 +9,7 @@ import { Badge, Card, EmptyState, LoadState, Notice, SectionHeader, formatDate, 
 // Agreement to Sell, Instalment 2 on the Sale Deed (execution = registration),
 // or the lease invoice - with GST, due date and a PDF copy.
 
-const LABEL = { inquiry: "Enquiry", site_visit: "Site visit", negotiation: "Negotiation", booking: "Booking", documentation: "Documentation", payment: "Payment", closed_won: "Completed" };
+import { DEAL_STAGE_LABEL as LABEL } from "../../utils/dealStages";
 const KIND = { instalment_1: "Instalment 1 - Agreement to Sell", instalment_2: "Instalment 2 - Sale Deed", lease: "Lease professional fee" };
 
 function InvoiceRow({ inv }) {

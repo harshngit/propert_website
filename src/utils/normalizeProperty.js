@@ -68,6 +68,8 @@ export function normalizeProperty(p) {
     underReview: !!p.under_review,
     favorite: false,
     propertyType: p.property_type,
+    priceValue: p.price_value != null ? Number(p.price_value) : null,
+    areaSqft: p.area_sqft != null ? Number(p.area_sqft) : null,
     transactionType: p.transaction_type,
     bedrooms: p.bedrooms,
     bathrooms: p.bathrooms,

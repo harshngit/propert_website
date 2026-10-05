@@ -3,9 +3,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, FeeConsent, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
+  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
 } from "./ui";
+import FeeConsent, { EMPTY_CONSENT, MandateStatus } from "./FeeConsent";
 import ListingChecks from "./ListingChecks";
 import ListingDocuments from "./ListingDocuments";
 
@@ -54,11 +55,11 @@ function ListingForm({ existing, onSaved, onCancel }) {
     latitude: existing?.latitude ?? "",
     longitude: existing?.longitude ?? "",
   }));
-  const [mandateType, setMandateType] = useState("standard");
+  // Module 46 consent block: OTP consent token, mandate type, price range.
+  const [mandate, setMandate] = useState(EMPTY_CONSENT);
   // Engine 4 deal sourcing from direct sellers - never labelled "distressed".
   const [situationTags, setSituationTags] = useState([]);
   const [marketValueLakh, setMarketValueLakh] = useState("");
-  const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState(null);
@@ -79,8 +80,8 @@ function ListingForm({ existing, onSaved, onCancel }) {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!editing && !consent) {
-      setError("Please accept the professional fee terms to continue.");
+    if (!editing && !mandate.ready) {
+      setError("Complete the professional fee consent (OTP) and choose a mandate type to continue.");
       return;
     }
     setSaving(true);
@@ -111,8 +112,9 @@ function ListingForm({ existing, onSaved, onCancel }) {
         : await portal.createListing(accessToken, {
             ...body,
             pg: form.transactionType === "rent" && form.pg,
-            mandateType,
-            feeConsent: true,
+            mandateType: mandate.mandateType,
+            consentToken: mandate.consentToken,
+            ...(mandate.priceRange ? { priceRange: mandate.priceRange } : {}),
             ...(form.transactionType === "sell" && situationTags.length
               ? { situationTags, ...(marketValueLakh ? { estimatedMarketValue: Math.round(Number(marketValueLakh) * 1e5) } : {}) }
               : {}),
@@ -280,10 +282,10 @@ function ListingForm({ existing, onSaved, onCancel }) {
           )}
         </div>
       )}
-      {!editing && <FeeConsent kind="listing" mandateType={mandateType} onMandateType={setMandateType} consent={consent} onConsent={setConsent} />}
+      {!editing && <FeeConsent kind="listing" accessToken={accessToken} value={mandate} onChange={setMandate} />}
       {error && <Notice tone="red">{error}</Notice>}
       <div className="flex flex-wrap gap-2">
-        <button type="submit" disabled={saving} className={primaryButton}>
+        <button type="submit" disabled={saving || (!editing && !mandate.ready)} className={primaryButton}>
           {saving ? "Saving…" : editing ? "Save changes" : "Submit for approval"}
         </button>
         <button type="button" onClick={onCancel} className={secondaryButton}>
@@ -359,6 +361,11 @@ function ListingEnquiries({ listing }) {
                   Enquired {formatDate(e.created_at)}
                   {e.visits ? ` · ${e.visits} visit(s)` : ""}
                 </p>
+                {e.representative_name && (
+                  <p className="text-[12px] text-[#6B7280]">
+                    Handled by {e.representative_name}{e.representative_number ? ` · ${e.representative_number}` : ""} - buyer details stay with your representative.
+                  </p>
+                )}
               </div>
               <Badge tone="blue">{e.status_label}</Badge>
             </li>
@@ -459,7 +466,7 @@ function ListingsSection({ reloadProfile }) {
                   <p className="font-['Plus_Jakarta_Sans'] text-[17px] font-bold text-[#111827]">{l.title}</p>
                   <Badge status={l.status} />
                   {l.is_verified && <Badge tone="green">Verified</Badge>}
-                  {l.mandate_type === "exclusive" && <Badge tone="blue">Exclusive mandate</Badge>}
+                  {l.mandate_type === "exclusive" && <Badge tone="blue">Exclusive Mandate</Badge>}
                   {l.listing_category === "special_situation" && <Badge tone="amber">Special situation</Badge>}
                   {l.verification_level > 0 && <Badge tone="green">✓ {["", "System", "Seller", "Legally", "Site"][l.verification_level]} Verified</Badge>}
                   {l.under_review && l.status === "approved" && <Badge tone="amber">Under review</Badge>}
@@ -474,6 +481,7 @@ function ListingsSection({ reloadProfile }) {
                   <p className="mt-2 rounded-[10px] bg-red-50 px-3 py-2 text-[13px] text-red-700">Needs changes: {l.rejection_reason}</p>
                 )}
                 {l.status === "pending_approval" && <p className="mt-2 text-[13px] text-[#92400E]">Our team is reviewing your listing - usually within a day.</p>}
+                <MandateStatus mandate={l.mandate} accessToken={accessToken} />
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {[
                     ["Enquiries", l.enquiry_count],

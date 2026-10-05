@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /console
+
+Sitemap: https://propertyserch.com/sitemap.xml

@@ -27,6 +27,10 @@ export function fromCms(article, index = 0) {
     author: article.author_name || "PropertySerch Editorial Desk",
     isFeatured: !!article.is_featured,
     contentHtml: article.content_html,
+    publishedAt: article.published_at || null,
+    updatedAt: article.updated_at || null,
+    seoTitle: article.seo_title || null,
+    seoDescription: article.seo_description || null,
     faqs: article.faqs || [],
     fromCms: true,
   };

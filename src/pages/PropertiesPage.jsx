@@ -12,6 +12,7 @@ import { useFavourites } from "../hooks/useFavourites";
 import { portal } from "../api/portal";
 import EnquiryModal from "../components/EnquiryModal";
 import MatchBadge from "../components/MatchBadge";
+import { track } from "../lib/tracker";
 
 // Deal cards (auction / special situation / institutional) open the deal
 // page on CTA click. Residential "Enquire Now" and the phone buttons open
@@ -1825,6 +1826,10 @@ function PropertiesPage({
         });
         setDisclaimers(data.disclaimers);
         setDealAccess(data.access);
+        // Module 48: search_performed with the filters used and the result count.
+        if ((data.pagination?.page || 1) === 1) {
+          track("search_performed", { query: searchParams.get("q") || undefined, filters: Object.fromEntries([...searchParams.entries()].filter(([k]) => k !== "q" && k !== "page")), result_count: data.pagination?.total || 0 });
+        }
       })
       .catch((err) => {
         if (cancelled) return;

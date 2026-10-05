@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import { EmptyState, LoadState, SectionHeader, formatDate, linkButton, secondaryButton, useLoad } from "./ui";
+import { disablePush, enablePush, pushState, sendTestPush } from "../../lib/pwa";
 
 // Notification Centre (Screen 12): match alerts, saved-search alerts,
 // enquiry / visit updates and rental updates.
@@ -13,6 +14,59 @@ const LINKS = {
   lead: () => "/dashboard/enquiries",
   deal: () => "/dashboard/enquiries",
 };
+
+// Browser push for the PWA: the same alerts, delivered even when the site
+// is closed. Hidden where the browser has no push support or the server has
+// no push keys yet.
+function PushToggle() {
+  const { accessToken } = useAuth();
+  const [state, setState] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState("");
+  const refresh = () => pushState(accessToken).then(setState).catch(() => setState(null));
+  useEffect(() => {
+    refresh();
+  }, [accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!state?.supported || !state.configured) return null;
+  const run = async (fn, done) => {
+    setBusy(true);
+    setNote("");
+    try {
+      await fn();
+      setNote(done);
+    } catch (err) {
+      setNote(err.message);
+    } finally {
+      setBusy(false);
+      refresh();
+    }
+  };
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+      <div>
+        <p className="text-[14px] font-bold text-[#111827]">Push notifications on this device</p>
+        <p className="text-[12px] text-[#6B7280]">
+          {state.permission === "denied"
+            ? "Blocked in your browser settings for this site."
+            : state.subscribed
+              ? "On - match alerts and updates reach you even when the site is closed."
+              : "Get Hot matches and updates from your representative straight away."}
+          {note ? ` ${note}` : ""}
+        </p>
+      </div>
+      <div className="flex gap-2">
+        {state.subscribed ? (
+          <>
+            <button type="button" disabled={busy} className={secondaryButton} onClick={() => run(() => sendTestPush(accessToken), "Test sent.")}>Send a test</button>
+            <button type="button" disabled={busy} className={secondaryButton} onClick={() => run(() => disablePush(accessToken), "Turned off.")}>Turn off</button>
+          </>
+        ) : (
+          <button type="button" disabled={busy || state.permission === "denied"} className={secondaryButton} onClick={() => run(() => enablePush(accessToken), "Turned on.")}>Turn on</button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function NotificationsSection() {
   const { accessToken } = useAuth();
@@ -43,6 +97,7 @@ function NotificationsSection() {
           )
         }
       />
+      <PushToggle />
       <LoadState loading={loading} error={error} onRetry={reload} />
       {data && !items.length && <EmptyState title="No notifications yet" body="We'll let you know when there's a new match or an update on your enquiries." />}
       {items.length > 0 && (

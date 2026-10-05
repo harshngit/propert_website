@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
-import { submitEnquiry } from "../api/leads";
+import { representativeLine, submitEnquiry } from "../api/leads";
 import { apiRequest } from "../api/client";
 import { getDisclaimers } from "../api/content";
 import { useAuth } from "../context/AuthContext";
@@ -168,13 +168,13 @@ function ServiceForm({ config }) {
       : [form.city].filter(Boolean).join("");
     setState({ status: "submitting", message: "" });
     try {
-      await submitEnquiry({
+      const res = await submitEnquiry({
         fullName: form.fullName,
         mobile: form.mobile,
         email: form.email,
         message: `[${config.topic}] ${details}${form.note ? ` - ${form.note}` : ""}`,
       });
-      setState({ status: "done", message: "Thank you - your A R Buildwel representative will get in touch shortly." });
+      setState({ status: "done", message: `Thank you - ${representativeLine(res?.data?.representative)} will get in touch shortly.` });
     } catch (err) {
       setState({ status: "error", message: err.message });
     }

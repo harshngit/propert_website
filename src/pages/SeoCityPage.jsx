@@ -6,6 +6,7 @@ import PropertyCard from "../components/PropertyCard";
 import EnquiryModal from "../components/EnquiryModal";
 import { getCityPage } from "../api/content";
 import { normalizeProperty } from "../utils/normalizeProperty";
+import { applySeo, breadcrumbSchema, faqSchema } from "../lib/seo";
 
 // SEO city routes (Annexure A sec. 21.4): /buy-property-in-<city>,
 // /sell-property-in-<city>, /rent-property-in-<city>, /school-for-sale-<city>
@@ -20,17 +21,6 @@ const LISTINGS_LINK = {
 };
 const INSTITUTIONAL = new Set(["school_for_sale", "acquire_college", "university_campus_for_sale"]);
 
-function setMeta(title, description) {
-  if (title) document.title = title;
-  let tag = document.querySelector('meta[name="description"]');
-  if (!tag) {
-    tag = document.createElement("meta");
-    tag.setAttribute("name", "description");
-    document.head.appendChild(tag);
-  }
-  if (description) tag.setAttribute("content", description);
-}
-
 function SeoCityPage() {
   const { seoSlug } = useParams();
   const [state, setState] = useState({ status: "loading", page: null });
@@ -44,7 +34,15 @@ function SeoCityPage() {
       .then((page) => {
         if (cancelled) return;
         setState({ status: "ready", page });
-        setMeta(page.seo_title || page.title, page.seo_description);
+        applySeo({
+          title: page.seo_title || page.title,
+          description: page.seo_description,
+          path: `/${seoSlug}`,
+          jsonLd: [
+            breadcrumbSchema([["Home", "/"], [page.title || page.city_name || seoSlug, `/${seoSlug}`]]),
+            ...(Array.isArray(page.faqs) && page.faqs.length ? [faqSchema(page.faqs.map((f) => [f.question || f.q, f.answer || f.a]).filter(([q, a]) => q && a))] : []),
+          ],
+        });
       })
       .catch(() => !cancelled && setState({ status: "missing", page: null }));
     return () => {

@@ -233,7 +233,6 @@ function ToolsPage() {
   };
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Property Investment Calculators | PropertySerch";
   }, []);
   return (
     <main className="min-h-screen bg-white text-[#111827]">

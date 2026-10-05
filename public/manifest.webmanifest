@@ -1,0 +1,24 @@
+{
+  "name": "PropertySerch - Property in India",
+  "short_name": "PropertySerch",
+  "description": "Buy, sell and rent verified property across India with a dedicated A R Buildwel representative.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#E51C23",
+  "lang": "en-IN",
+  "categories": ["business", "finance", "lifestyle"],
+  "icons": [
+    { "src": "/icons/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pwa-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Search property", "url": "/properties?source=pwa", "icons": [{ "src": "/icons/pwa-192.png", "sizes": "192x192" }] },
+    { "name": "My dashboard", "url": "/dashboard?source=pwa", "icons": [{ "src": "/icons/pwa-192.png", "sizes": "192x192" }] },
+    { "name": "Post property", "url": "/post-property?source=pwa", "icons": [{ "src": "/icons/pwa-192.png", "sizes": "192x192" }] }
+  ]
+}

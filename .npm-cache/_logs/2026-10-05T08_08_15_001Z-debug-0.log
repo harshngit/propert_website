@@ -1,0 +1,25 @@
+0 verbose cli /Users/aniketjha/.nvm/versions/node/v20.19.0/bin/node /Users/aniketjha/.nvm/versions/node/v20.19.0/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@11.9.0
+2 info using node@v20.19.0
+3 silly config load:file:/Users/aniketjha/.nvm/versions/node/v20.19.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npmrc
+5 silly config load:file:/Users/aniketjha/.npmrc
+6 silly config load:file:/Users/aniketjha/.nvm/versions/node/v20.19.0/etc/npmrc
+7 verbose title npm exec vite build --outDir /private/tmp/claude-501/-Users-aniketjha-Desktop-work-clients-propertysearch/***/scratchpad/build_web
+8 verbose argv "exec" "--" "vite" "build" "--outDir" "/private/tmp/claude-501/-Users-aniketjha-Desktop-work-clients-propertysearch/***/scratchpad/build_web"
+9 verbose logfile logs-max:10 dir:/Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-05T08_08_15_001Z-
+10 verbose logfile /Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-05T08_08_15_001Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 http fetch GET 200 https://registry.npmjs.org/npm 323ms
+14 verbose cwd /Users/aniketjha/Desktop/work/clients/propertysearch/propert_website
+15 verbose os Darwin 25.5.0
+16 verbose node v20.19.0
+17 verbose npm  v11.9.0
+18 notice
+18 notice New minor version of npm available! 11.9.0 -> 11.21.0
+18 notice Changelog: https://github.com/npm/cli/releases/tag/v11.21.0
+18 notice To update run: npm install -g npm@11.21.0
+18 notice  { force: true, [Symbol(proc-log.meta)]: true }
+19 verbose exit 0
+20 info ok

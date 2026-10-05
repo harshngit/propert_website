@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { track } from "../lib/tracker";
 import { apiRequest, configureAuthClient } from "../api/client";
 
 const STORAGE_KEY = "ps_site_session";
@@ -124,6 +125,7 @@ export function AuthProvider({ children }) {
       setUser(loggedInUser);
       setAccessToken(res.data.accessToken);
       setRefreshToken(res.data.refreshToken);
+      track("login", { method: "password" });
       return loggedInUser;
     } catch (err) {
       setError(err.message);
@@ -199,6 +201,7 @@ export function AuthProvider({ children }) {
     async ({ fullName, email, mobile, password, referralCode }) => {
       setError(null);
       try {
+        track("registration_started", {});
         await apiRequest("/auth/register", {
           method: "POST",
           body: {
@@ -212,6 +215,7 @@ export function AuthProvider({ children }) {
           },
           skipAuthRefresh: true,
         });
+        track("registration_completed", { role: "customer" });
         return await login({ identifier: email || mobile, password });
       } catch (err) {
         setError(err.message);

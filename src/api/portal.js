@@ -49,6 +49,17 @@ export const portal = {
     return apiRequest(`/due-diligence/properties/${id}/documents`, { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
   },
 
+  // Exclusive Mandate (Module 46): OTP fee consent -> one-time consentToken
+  consentTerms: (token) => get("/mandates/consent-terms", token),
+  sendConsentOtp: (token) => send("POST", "/mandates/consent/otp", token),
+  verifyConsentOtp: (token, otp, kind) => send("POST", "/mandates/consent/verify", token, { otp, kind }),
+  myMandates: (token) => get("/mandates/mine", token),
+  mandatePdf: async (token, id, which) => {
+    const res = await fetch(`${API_BASE_URL}/mandates/${id}/${which === "summary" ? "summary" : "consent"}-pdf`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error("Could not load the document");
+    return res.blob();
+  },
+
   // Deal progress + professional-fee invoices (Module 40)
   myDeals: (token) => get("/orchestration/my-deals", token),
   invoicePdf: async (token, id) => {

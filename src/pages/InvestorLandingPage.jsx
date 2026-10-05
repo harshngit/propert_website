@@ -6,6 +6,7 @@ import EnquiryModal from "../components/EnquiryModal";
 import { listPublicOpportunities } from "../api/opportunities";
 import { getDisclaimers } from "../api/content";
 import { useAuth } from "../context/AuthContext";
+import { applySeo } from "../lib/seo";
 import { formatAuctionDate } from "../utils/normalizeOpportunity";
 
 // Role landing pages from the SEO plan (/for-nri, /for-hni) - Engine 3.
@@ -107,9 +108,7 @@ function InvestorLandingPage({ kind }) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = page.title;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", page.metaDescription);
+    applySeo({ title: page.title, description: page.metaDescription, path: `/for-${kind}` });
     getDisclaimers(page.disclaimerTypes).then((d) => setDisclaimers(d || [])).catch(() => setDisclaimers([]));
   }, [page]);
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { submitEnquiry } from "../api/leads";
+import { representativeLine, submitEnquiry } from "../api/leads";
 import { useAuth } from "../context/AuthContext";
 
 // Reusable "talk to us" form for home-page and service CTAs (relationship
@@ -46,8 +46,8 @@ function EnquiryModal({ open, onClose, topic, title, description, propertyId, su
     }
     setState({ status: "submitting", message: "" });
     try {
-      await submitEnquiry({ fullName, mobile, email, propertyId, message: `[${topic}] ${note}`.trim() });
-      setState({ status: "done", message: "Thank you - your A R Buildwel representative will get in touch shortly." });
+      const res = await submitEnquiry({ fullName, mobile, email, propertyId, message: `[${topic}] ${note}`.trim() });
+      setState({ status: "done", message: `Thank you - ${representativeLine(res?.data?.representative)} will get in touch shortly.` });
     } catch (err) {
       setState({ status: "error", message: err.message });
     }

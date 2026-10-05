@@ -8,6 +8,9 @@ import { buildPropertyDetailPath } from "../utils/propertySearch";
 import { getPropertyById } from "../api/properties";
 import { normalizeProperty } from "../utils/normalizeProperty";
 import EnquiryModal from "../components/EnquiryModal";
+import GuestInterestModal from "../components/GuestInterestModal";
+import { breadcrumbSchema, listingSchema, useSeo } from "../lib/seo";
+import { track } from "../lib/tracker";
 import ListerTrustCard from "../components/ListerTrustCard";
 import { useFavourites } from "../hooks/useFavourites";
 import { useAuth } from "../context/AuthContext";
@@ -310,6 +313,28 @@ function PropertyDetailPage() {
   }, [accessToken, user?.role, id]);
   const property = routeProperty || location.state?.property || fetchedProperty;
   const isFavorite = property ? isFavourite(property.id) : false;
+  const [guestOpen, setGuestOpen] = useState(false);
+  const realListing = property && /^[0-9a-f-]{36}$/i.test(String(property.id));
+
+  // Per-listing meta + RealEstateListing schema (area and locality only).
+  useSeo(
+    property
+      ? {
+          title: `${property.title}${property.location ? ` in ${property.location}` : ""}`,
+          description: `${property.details || "Property"}${property.area ? `, ${property.area}` : ""}${property.location ? ` in ${property.location}` : ""}${property.price ? ` - ${property.price}` : ""}. ${String(property.description || "").slice(0, 140)}`,
+          path: `/properties/${property.id}`,
+          image: property.image || undefined,
+          jsonLd: [
+            listingSchema({ id: property.id, title: property.title, description: property.description, image: property.image, price: property.priceValue, city: property.city, locality: property.location, propertyType: property.propertyType, bedrooms: property.bedrooms, areaSqft: property.areaSqft, transactionType: property.transactionType }),
+            breadcrumbSchema([["Home", "/"], ["Properties", "/properties"], [property.title, `/properties/${property.id}`]]),
+          ],
+        }
+      : null,
+    [property?.id, property?.title]
+  );
+  useEffect(() => {
+    if (realListing) track("property_view", { property_id: property.id, city: property.city });
+  }, [realListing, property?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Native share sheet where available (phones), otherwise copy the link.
   const shareListing = async () => {
@@ -793,12 +818,13 @@ function PropertyDetailPage() {
               </p>
 
               <div className="mt-6 flex items-center gap-3">
+                {/* Guests: mobile + OTP only (Guest Interest). Signed-in users: the usual enquiry. */}
                 <button
                   type="button"
-                  onClick={() => setEnquiryOpen(true)}
+                  onClick={() => (!user && realListing ? setGuestOpen(true) : setEnquiryOpen(true))}
                   className="cta-red inline-flex h-[46px] flex-1 items-center justify-center rounded-[12px] px-5 text-[14px] font-bold text-white"
                 >
-                  Enquire Now
+                  {!user && realListing ? "I'm Interested" : "Enquire Now"}
                 </button>
                 <button
                   type="button"
@@ -923,6 +949,12 @@ function PropertyDetailPage() {
         title="Enquire about this property"
         description={`${property.title}${property.location ? ` - ${property.location}` : ""}. Your A R Buildwel representative will call you back and can arrange a site visit.`}
         propertyId={/^[0-9a-f-]{36}$/i.test(String(property.id)) ? property.id : undefined}
+      />
+      <GuestInterestModal
+        open={guestOpen}
+        onClose={() => setGuestOpen(false)}
+        propertyId={realListing ? property.id : undefined}
+        subject={`${property.title}${property.location ? ` - ${property.location}` : ""}`}
       />
       <CompanyFooterSection />
     </main>
