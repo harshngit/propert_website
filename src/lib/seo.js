@@ -1,3 +1,4 @@
+import { getLanguages } from "./i18n";
 import { useEffect } from "react";
 
 // Per-page SEO (sec. 21.2): title, meta description, canonical, Open Graph /
@@ -44,6 +45,18 @@ export function applySeo({ title, description, path, image, jsonLd, noindex = fa
   setMeta("name", "description", desc);
   setMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
   setLink("canonical", url);
+  // Module 30: one hreflang alternate per offered language (only when more than English is on).
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+  const languages = getLanguages();
+  if (languages.length > 1 && !noindex) {
+    for (const l of [...languages, { code: "x-default" }]) {
+      const el = document.createElement("link");
+      el.setAttribute("rel", "alternate");
+      el.setAttribute("hreflang", l.code === "x-default" ? l.code : `${l.code}-IN`);
+      el.setAttribute("href", l.code === "en" || l.code === "x-default" ? url : `${url}${url.includes("?") ? "&" : "?"}lang=${l.code}`);
+      document.head.appendChild(el);
+    }
+  }
   setMeta("property", "og:site_name", SITE_NAME);
   setMeta("property", "og:type", type);
   setMeta("property", "og:title", fullTitle);
@@ -158,6 +171,8 @@ export const ROUTE_META = [
   [/^\/city\/.+/, { title: "Property in your city", description: "Property for sale and rent, locality insights and market trends for this city." }],
   [/^\/buy\/bank-auction-properties/, { title: "Bank Auction Properties in India", description: "Bank auction properties from SBI, IBAPI, MSTC and other banks - reserve price, EMD, auction dates and investment score in one place." }],
   [/^\/buy\/special-situation-properties/, { title: "Special Situation Properties - High-Opportunity Investment Deals", description: "Curated special situation properties with investment score, discount to market and liquidity rating for verified investors." }],
+  [/^\/institutional\/asset\//, { title: 'Confidential institutional listing', description: 'Institutional asset on PropertySerch - details are shared with verified buyers under NDA.' }],
+  [/^\/post-institutional/, { title: 'List an Institution' }],
   [/^\/buy\/institutional-properties/, { title: "Institutional Properties - Schools, Colleges & Campuses", description: "Schools, colleges, university campuses and other institutional assets for acquisition, with NDA-protected deal rooms." }],
   [/^\/deals\/.+/, { title: "Investment deal", description: "Investment deal on PropertySerch - verified investors see full details, score and documents." }],
   [/^\/rent/, { title: "Property for Rent in India", description: "Family homes, studio homes, PG and co-living and furnished flats for rent - with lease, rent and maintenance tracked online." }],

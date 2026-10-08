@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import { expressInterest, getOpportunity } from "../api/opportunities";
@@ -278,6 +278,8 @@ function OpportunityDetailPage() {
   }
 
   const category = deal.listing_category;
+  // Institutional assets have their own page (NDA gate, nine-stage tracker).
+  if (category === "institutional") return <Navigate to={`/institutional/asset/${deal.id}`} replace />;
   const locked = deal.locked !== false && deal.access?.full !== true;
   const images = (deal.media || []).map((m) => m.url).filter(Boolean);
   const heroImage = images[0] || deal.primary_image || "/images/1st,4th.png";

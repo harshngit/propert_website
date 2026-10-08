@@ -12,6 +12,8 @@ const DOC_TYPE_LABELS = {
   auction_notice: "Auction notice", sale_notice: "Sale notice", emd_receipt: "EMD details", title_documents: "Title documents",
   valuation_report: "Valuation report", legal_opinion: "Legal opinion", inspection_report: "Inspection report",
   term_sheet: "Term sheet", financials: "Financials", photos: "Photos", other: "Document",
+  land_records: "Land records", noc: "NOC", fire_noc: "Fire NOC", municipal_approval: "Municipal approval", encumbrance_certificate: "Encumbrance certificate",
+  audited_financials: "Audited financials", affiliation_certificate: "Affiliation certificate", trust_deed: "Trust deed", enrollment_records: "Enrollment records", regulatory_approval: "Regulatory approval",
 };
 
 // A stable, non-identifying device fingerprint for the access log.
@@ -64,7 +66,8 @@ function Viewer({ doc, url, onClose }) {
   );
 }
 
-function DealRoomPanel({ dealId }) {
+// `onChanged` (optional) fires after the NDA is signed; `profileLink` overrides where an unverified buyer is sent.
+function DealRoomPanel({ dealId, onChanged, profileLink }) {
   const { accessToken, isAuthenticated, user } = useAuth();
   const location = useLocation();
   const [room, setRoom] = useState(null);
@@ -111,6 +114,7 @@ function DealRoomPanel({ dealId }) {
       const res = await apiRequest(`/deal-room/${dealId}/nda`, { method: "POST", token: accessToken, body: { fullName: name, accept: accepted } });
       setRoom(res.data);
       setShowNda(false);
+      onChanged?.();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -157,7 +161,7 @@ function DealRoomPanel({ dealId }) {
       {!a.verified && a.status !== "staff" && (
         <div className="mt-3 text-[13px] text-[#6B7280]">
           {a.verifiedReason}{" "}
-          <Link to="/account/investor-profile" className="font-bold text-[#E51C23]">Investor profile →</Link>
+          <Link to={profileLink?.to || "/account/investor-profile"} className="font-bold text-[#E51C23]">{profileLink?.label || "Investor profile"} →</Link>
         </div>
       )}
 

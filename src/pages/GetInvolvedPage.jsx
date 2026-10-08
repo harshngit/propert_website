@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import EnquiryModal from "../components/EnquiryModal";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
-import { guideItems } from "../data/homeContent";
+import { useGuideCards } from "../hooks/useArticles";
 import { submitBdLead, submitCareersApplication } from "../api/bdLeads";
 import { apiRequest } from "../api/client";
 
@@ -496,6 +496,7 @@ function CareersPromoSection() {
 }
 
 function GuidesSearchBenefitsSection() {
+  const guideItems = useGuideCards(2);
   const searchTags = [
     "Flats for Sale in Mumbai",
     "Luxury Villas in Goa",
@@ -518,7 +519,7 @@ function GuidesSearchBenefitsSection() {
 
             <div className="mt-6 space-y-5">
               {guideItems.slice(0, 2).map((item) => (
-                <div key={item.title} className="flex items-start gap-4">
+                <a key={item.slug} href={`/news-guide/article/${item.slug}`} className="flex items-start gap-4">
                   <div className="h-[56px] w-[74px] shrink-0 overflow-hidden rounded-[8px] bg-[#F3F4F6]">
                     <img
                       src={item.thumbImage}
@@ -535,7 +536,7 @@ function GuidesSearchBenefitsSection() {
                       {item.meta}
                     </p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>

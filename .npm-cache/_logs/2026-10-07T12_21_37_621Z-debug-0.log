@@ -5,10 +5,10 @@
 4 silly config load:file:/Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npmrc
 5 silly config load:file:/Users/aniketjha/.npmrc
 6 silly config load:file:/Users/aniketjha/.nvm/versions/node/v20.19.0/etc/npmrc
-7 verbose title npm exec vite build --outDir /private/tmp/claude-501/-Users-aniketjha-Desktop-work-clients-propertysearch/***/scratchpad/build_web
-8 verbose argv "exec" "--" "vite" "build" "--outDir" "/private/tmp/claude-501/-Users-aniketjha-Desktop-work-clients-propertysearch/***/scratchpad/build_web"
-9 verbose logfile logs-max:10 dir:/Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-04T07_22_51_416Z-
-10 verbose logfile /Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-04T07_22_51_416Z-debug-0.log
+7 verbose title npm exec vite build
+8 verbose argv "exec" "--" "vite" "build"
+9 verbose logfile logs-max:10 dir:/Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-07T12_21_37_621Z-
+10 verbose logfile /Users/aniketjha/Desktop/work/clients/propertysearch/propert_website/.npm-cache/_logs/2026-10-07T12_21_37_621Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
 13 verbose cwd /Users/aniketjha/Desktop/work/clients/propertysearch/propert_website

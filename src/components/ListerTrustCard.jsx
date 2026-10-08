@@ -27,7 +27,10 @@ function ListerTrustCard({ propertyId }) {
       .catch(() => setData(null));
   }, [propertyId]);
   if (!data) return null;
-  const reviews = showAll ? data.reviews : data.reviews.slice(0, 3);
+  // Reviews of this very listing have their own section (PropertyReviews);
+  // here we show what customers said about the lister on other listings.
+  const others = data.reviews.filter((r) => !r.for_this_listing);
+  const reviews = showAll ? others : others.slice(0, 3);
   return (
     <section className="mt-8 rounded-[20px] border border-[#E5E7EB] bg-white p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -66,6 +69,7 @@ function ListerTrustCard({ propertyId }) {
           )}
         </p>
         <p className="mt-1 text-[12px] text-[#6B7280]">Only customers with a closed deal, completed site visit or confirmed lease can review.</p>
+        {reviews.length > 0 && <p className="mt-4 text-[12px] font-bold uppercase tracking-[0.06em] text-[#6B7280]">Reviews from this lister's other listings</p>}
         {reviews.map((r) => (
           <div key={r.id} className="mt-4">
             <p className="flex flex-wrap items-center gap-2 text-[13px]">
@@ -79,9 +83,9 @@ function ListerTrustCard({ propertyId }) {
             {r.reply && <p className="mt-2 rounded-[10px] bg-[#F9FAFB] px-3 py-2 text-[13px] text-[#4B5563]"><b>Reply:</b> {r.reply}</p>}
           </div>
         ))}
-        {data.reviews.length > 3 && (
+        {others.length > 3 && (
           <button type="button" onClick={() => setShowAll((v) => !v)} className="mt-3 text-[13px] font-bold text-[#E51C23]">
-            {showAll ? "Show fewer" : `Show all ${data.reviews.length} reviews`}
+            {showAll ? "Show fewer" : `Show all ${others.length} reviews`}
           </button>
         )}
       </div>

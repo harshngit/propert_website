@@ -12,6 +12,7 @@ import GuestInterestModal from "../components/GuestInterestModal";
 import { breadcrumbSchema, listingSchema, useSeo } from "../lib/seo";
 import { track } from "../lib/tracker";
 import ListerTrustCard from "../components/ListerTrustCard";
+import PropertyReviews from "../components/PropertyReviews";
 import { useFavourites } from "../hooks/useFavourites";
 import { useAuth } from "../context/AuthContext";
 import { portal } from "../api/portal";
@@ -796,6 +797,7 @@ function PropertyDetailPage() {
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
                 verify details with the developer before making any financial commitment.
               </p>
+              <PropertyReviews propertyId={property.id} />
               <ListerTrustCard propertyId={property.id} />
               {/^[0-9a-f-]{36}$/i.test(String(property.id)) && (
                 <p className="mt-4 text-[13px] text-[#6B7280]">

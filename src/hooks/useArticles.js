@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { getArticle, listArticleCategories, listArticles } from "../api/content";
-import { blogArticles, findBlogArticleBySlug } from "../data/blogArticles";
 
-// Blog articles come from the CMS (/content/articles). Until the CMS has
-// published content, the pages fall back to the bundled static articles so
-// they never render empty. CMS rows are mapped to the static data's field
-// names, which is what the page components already render.
+// Blog articles come from the CMS (/content/articles) - always the backend,
+// never bundled sample content. CMS rows are mapped to the field names the
+// page components render.
 
 const FALLBACK_IMAGES = ["/images/seo1.png", "/images/seo2.png", "/images/seo3.png"];
 
@@ -36,42 +34,22 @@ export function fromCms(article, index = 0) {
   };
 }
 
-// Static fallback articles filtered the same way the CMS search does
-// (title / excerpt text and exact category).
-function filterStatic({ search, category } = {}) {
-  const q = (search || "").trim().toLowerCase();
-  return blogArticles.filter(
-    (a) =>
-      (!category || a.category === category) &&
-      (!q || `${a.title} ${a.description || ""} ${a.category || ""}`.toLowerCase().includes(q)),
-  );
-}
-
 // `search` / `category` narrow the list (Blogs & Insights search box and
-// Topics). While the CMS has no published articles at all, the bundled
-// static ones are used - filtered client-side.
+// Topics). Articles always come from the CMS (CRM > Website Content) -
+// nothing is bundled with the site, so what the team publishes is exactly
+// what visitors see.
 export function useArticleList(limit = 12, { search = "", category = "" } = {}) {
-  const [state, setState] = useState({ articles: filterStatic({ search, category }), fromCms: false, loading: true });
+  const [state, setState] = useState({ articles: [], fromCms: true, loading: true, error: null });
 
   useEffect(() => {
     let cancelled = false;
-    const filtering = !!(search || category);
-    Promise.all([
-      listArticles({ limit, search: search || undefined, category: category || undefined }),
-      filtering ? listArticles({ limit: 1 }) : Promise.resolve(null),
-    ])
-      .then(([data, any]) => {
-        if (cancelled) return;
-        const items = data.items || [];
-        const cmsHasContent = items.length > 0 || (any?.items || []).length > 0;
-        setState(
-          cmsHasContent
-            ? { articles: items.map(fromCms), fromCms: true, loading: false }
-            : { articles: filterStatic({ search, category }), fromCms: false, loading: false },
-        );
+    setState((s) => ({ ...s, loading: true }));
+    listArticles({ limit, search: search || undefined, category: category || undefined })
+      .then((data) => {
+        if (!cancelled) setState({ articles: (data.items || []).map(fromCms), fromCms: true, loading: false, error: null });
       })
-      .catch(() => {
-        if (!cancelled) setState({ articles: filterStatic({ search, category }), fromCms: false, loading: false });
+      .catch((err) => {
+        if (!cancelled) setState({ articles: [], fromCms: true, loading: false, error: err.message });
       });
     return () => {
       cancelled = true;
@@ -81,15 +59,21 @@ export function useArticleList(limit = 12, { search = "", category = "" } = {}) 
   return state;
 }
 
+// Latest guides as small cards (home page, city pages, Get Involved).
+export function useGuideCards(limit = 2) {
+  const { articles } = useArticleList(limit);
+  return articles.slice(0, limit).map((a) => ({ title: a.title, meta: (a.readTime || a.category || "GUIDE").toUpperCase(), thumbImage: a.image, slug: a.slug }));
+}
+
 // Topic list for the Topics menu - CMS categories, else the static ones.
 export function useArticleCategories() {
-  const [categories, setCategories] = useState(() => [...new Set(blogArticles.map((a) => a.category).filter(Boolean))]);
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     let cancelled = false;
     listArticleCategories()
       .then((rows) => {
         const names = (rows || []).map((r) => r.category || r).filter(Boolean);
-        if (!cancelled && names.length) setCategories(names);
+        if (!cancelled) setCategories(names);
       })
       .catch(() => {});
     return () => {
@@ -111,9 +95,7 @@ export function useArticle(slug) {
         setState({ article: fromCms(data), related: (data.related || []).map(fromCms), loading: false });
       })
       .catch(() => {
-        if (cancelled) return;
-        const staticArticle = slug ? blogArticles.find((a) => a.slug === slug) : findBlogArticleBySlug(slug);
-        setState({ article: staticArticle || null, related: [], loading: false });
+        if (!cancelled) setState({ article: null, related: [], loading: false });
       });
     return () => {
       cancelled = true;

@@ -1,3 +1,4 @@
+import { BannerAd } from "../components/AdSlot";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
@@ -366,6 +367,7 @@ function CityLandingPage() {
           titleHighlight={cityLabel}
           descriptionLines={profile.heroDescriptionLines || [profile.heroDescription]}
         />
+        <BannerAd placement="city_banner" city={cityLabel} className="mt-6 px-0 sm:px-6 lg:px-12" />
       </section>
 
       
@@ -425,6 +427,7 @@ function CityLandingPage() {
         <TrustSection
           title={`Testimonials in ${cityLabel}`}
           subtitle={`Trusted by owners, buyers and institutions in ${cityLabel}`}
+          city={cityLabel}
         />
       </section>
 

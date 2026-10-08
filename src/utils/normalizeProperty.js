@@ -61,7 +61,10 @@ export function normalizeProperty(p) {
     image,
     images,
     tags: p.amenities || [],
-    badge: p.badge || (p.is_verified ? "VERIFIED" : null),
+    // Module 28: a sponsored / featured listing ranked inside the results carries its label.
+    badge: p.sponsored ? p.sponsored.label.toUpperCase() : p.badge || (p.is_verified ? "VERIFIED" : null),
+    sponsored: p.sponsored || null,
+    distanceKm: p.distance_km != null ? Number(p.distance_km) : null,
     verified: !!p.is_verified,
     // Sec. 9: 0-4 verification level and the Yellow-band Under Review banner.
     verificationLevel: Number(p.verification_level) || 0,

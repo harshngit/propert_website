@@ -31,6 +31,14 @@ export async function getDisclaimers(contentTypes = [], stateCode) {
   return res.data;
 }
 
+// Testimonials published from the CRM (Website Content > Testimonials).
+export async function listTestimonials({ city, limit = 8 } = {}) {
+  const query = new URLSearchParams({ limit: String(limit) });
+  if (city) query.set("city", city);
+  const res = await apiRequest(`/content/testimonials?${query.toString()}`);
+  return res.data || [];
+}
+
 export async function listArticleCategories() {
   const res = await apiRequest("/content/articles/categories");
   return res.data;

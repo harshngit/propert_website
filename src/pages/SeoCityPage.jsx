@@ -1,3 +1,4 @@
+import { BannerAd } from "../components/AdSlot";
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
@@ -70,6 +71,7 @@ function SeoCityPage() {
   return (
     <main className="min-h-screen bg-white text-[#111827]">
       <SiteHeader />
+      <BannerAd placement="city_banner" city={city} className="px-4 py-4 sm:px-6 lg:px-12" />
 
       <section className="bg-[#111827] px-4 py-12 text-white sm:px-6 lg:px-12 lg:py-16">
         <div className="mx-auto max-w-[1200px]">

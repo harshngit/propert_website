@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
+import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
 import { EmptyState, LoadState, SectionHeader, formatDate, linkButton, secondaryButton, useLoad } from "./ui";
 import { disablePush, enablePush, pushState, sendTestPush } from "../../lib/pwa";
@@ -68,6 +69,61 @@ function PushToggle() {
   );
 }
 
+// Which topics are pushed and the quiet hours (saved to the account). The
+// list below always keeps every notification - this only controls push.
+function PushPreferences() {
+  const { accessToken } = useAuth();
+  const [prefs, setPrefs] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState("");
+  useEffect(() => {
+    apiRequest("/notifications/preferences", { token: accessToken }).then((r) => setPrefs(r.data)).catch(() => setPrefs(null));
+  }, [accessToken]);
+  if (!prefs) return null;
+  const save = async (patch) => {
+    const next = { ...prefs, ...patch };
+    setPrefs(next);
+    setNote("");
+    try {
+      const r = await apiRequest("/notifications/preferences", { method: "PUT", token: accessToken, body: { pushEnabled: next.pushEnabled, pushMuted: next.pushMuted, quietStart: next.quietStart || null, quietEnd: next.quietEnd || null, timezone: next.timezone } });
+      setPrefs(r.data);
+      setNote("Saved.");
+    } catch (err) {
+      setNote(err.message);
+    }
+  };
+  const toggle = (key) => save({ pushMuted: prefs.pushMuted.includes(key) ? prefs.pushMuted.filter((k) => k !== key) : [...prefs.pushMuted, key] });
+  return (
+    <div className="mb-4 rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3">
+      <button type="button" onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between text-left text-[14px] font-bold text-[#111827]" aria-expanded={open}>
+        Notification settings
+        <span className="text-[12px] font-semibold text-[#E51C23]">{open ? "Hide" : "Topics and quiet hours"}</span>
+      </button>
+      {open && (
+        <div className="mt-3 flex flex-col gap-2">
+          {prefs.topics.map((t) => (
+            <label key={t.key} className="flex items-center justify-between gap-3 text-[13px] text-[#374151]">
+              {t.label}
+              <input id={`np-${t.key}`} type="checkbox" checked={!prefs.pushMuted.includes(t.key)} onChange={() => toggle(t.key)} className="h-4 w-4 accent-[#E51C23]" />
+            </label>
+          ))}
+          <div className="mt-2 flex flex-wrap items-end gap-3 border-t border-[#F3F4F6] pt-3">
+            <label className="text-[12px] font-semibold text-[#6B7280]">Quiet from
+              <input id="np-quiet-start" type="time" value={prefs.quietStart || ""} onChange={(e) => setPrefs({ ...prefs, quietStart: e.target.value })} className="mt-1 block h-[38px] rounded-[10px] border border-[#E5E7EB] px-2 text-[14px] text-[#111827]" />
+            </label>
+            <label className="text-[12px] font-semibold text-[#6B7280]">Until
+              <input id="np-quiet-end" type="time" value={prefs.quietEnd || ""} onChange={(e) => setPrefs({ ...prefs, quietEnd: e.target.value })} className="mt-1 block h-[38px] rounded-[10px] border border-[#E5E7EB] px-2 text-[14px] text-[#111827]" />
+            </label>
+            <button type="button" className={secondaryButton} disabled={!!prefs.quietStart !== !!prefs.quietEnd} onClick={() => save({})}>Save quiet hours</button>
+            {(prefs.quietStart || prefs.quietEnd) && <button type="button" className={linkButton} onClick={() => save({ quietStart: null, quietEnd: null })}>Clear</button>}
+          </div>
+          <p className="text-[11px] text-[#9CA3AF]">No push is sent during quiet hours ({prefs.timezone}); it stays in this list. {note}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function NotificationsSection() {
   const { accessToken } = useAuth();
   const [page, setPage] = useState(1);
@@ -98,6 +154,7 @@ function NotificationsSection() {
         }
       />
       <PushToggle />
+      <PushPreferences />
       <LoadState loading={loading} error={error} onRetry={reload} />
       {data && !items.length && <EmptyState title="No notifications yet" body="We'll let you know when there's a new match or an update on your enquiries." />}
       {items.length > 0 && (

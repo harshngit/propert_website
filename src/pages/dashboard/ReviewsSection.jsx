@@ -66,7 +66,7 @@ function ReviewsSection() {
       setWriting(null);
       setNotice({
         tone: "green",
-        text: r.status === "published" ? "Thanks - your review is live." : "Thanks - your review will appear after a quick check by our team.",
+        text: r.status === "published" ? "Thanks - your review is live. It shows on that property's page, under the lister's trust score." : "Thanks - your review is being checked by our team and will appear on the property's page once approved.",
       });
       reviewable.reload();
       mine.reload();

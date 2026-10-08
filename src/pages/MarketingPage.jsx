@@ -43,7 +43,7 @@ function InlineForm({ form, page }) {
     setState({ status: "submitting", message: "" });
     try {
       if (form.kind === "enquiry") {
-        const res = await submitEnquiry({ fullName: f.fullName, mobile, email: f.email, message: `[${form.topic}] ${f.message}`.trim() });
+        const res = await submitEnquiry({ fullName: f.fullName, mobile, email: f.email, topic: form.topic, message: `[${form.topic}] ${f.message}`.trim() });
         setState({ status: "done", message: `Thank you - ${representativeLine(res?.data?.representative)} will get in touch shortly.` });
       } else {
         await submitBdLead({

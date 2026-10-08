@@ -647,7 +647,7 @@ function ResultCard({
               <>
             <div className={item.context === "institutional" || item.context === "auction" ? "flex items-baseline gap-[12px]" : ""}>
               <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[22px] text-[#111827]">
-                {item.priceDisplay || `₹${item.price}`}
+                {item.priceDisplay || `₹${String(item.price).replace(/^₹\s*/, "")}`}
               </h3>
 
               {(item.rateDisplay || item.rate) && (
@@ -1010,7 +1010,7 @@ function ResultTileCard({
             : "text-[17px] leading-[22px]",
         ].join(" ")}
       >
-        {item.priceDisplay || `₹${item.price}`}
+        {item.priceDisplay || `₹${String(item.price).replace(/^₹\s*/, "")}`}
       </h3>
 
       {(item.rateDisplay || item.rate) && (
@@ -1309,7 +1309,7 @@ function MapResultCard({
       <div className="flex min-w-0 flex-1 flex-col gap-[8px] p-[12px]">
         <div className="flex items-baseline justify-between gap-[8px]">
           <h3 className="whitespace-nowrap text-[18px] font-extrabold leading-[24px] text-[#111827]">
-            {item.priceDisplay || `₹${item.price}`}
+            {item.priceDisplay || `₹${String(item.price).replace(/^₹\s*/, "")}`}
           </h3>
 
           <span className="whitespace-nowrap text-[11px] leading-[18px] text-[#6B7280]">
@@ -1510,6 +1510,26 @@ function PropertiesPage({
   const [apiError, setApiError] = React.useState(null);
   const [disclaimers, setDisclaimers] = React.useState([]);
   const [dealAccess, setDealAccess] = React.useState(null);
+  const [didYouMean, setDidYouMean] = React.useState(null);
+  const [locating, setLocating] = React.useState(false);
+  // "Search near me": the browser's location becomes a radius search.
+  const searchNearMe = () => {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocating(false);
+        const next = new URLSearchParams(searchParams);
+        next.set("lat", pos.coords.latitude.toFixed(5));
+        next.set("lng", pos.coords.longitude.toFixed(5));
+        next.set("radiusKm", "5");
+        next.delete("city");
+        navigate(`/properties?${next}`);
+      },
+      () => setLocating(false),
+      { timeout: 10000 }
+    );
+  };
 
   const results = apiItems;
   const presetKey = JSON.stringify(presetFilters || {});
@@ -1792,6 +1812,10 @@ function PropertiesPage({
         verified: verifiedParam || undefined,
         q: searchParams.get("q") || undefined,
         propertyType: searchParams.get("propertyType") || presetFilters?.propertyType || undefined,
+        // Module 28: geo-radius search ("near me").
+        lat: searchParams.get("lat") || undefined,
+        lng: searchParams.get("lng") || undefined,
+        radiusKm: searchParams.get("radiusKm") || undefined,
         minPrice: searchParams.get("minPrice") || undefined,
         maxPrice: searchParams.get("maxPrice") || undefined,
         bedrooms: searchParams.get("bedrooms") || presetFilters?.bedrooms || undefined,
@@ -1805,13 +1829,14 @@ function PropertiesPage({
             ? sortValue === "price-high" ? "price_desc" : sortValue === "price-low" ? "price_asc" : "newest"
             : sortValue === "price-high" ? "rate_desc" : sortValue === "price-low" ? "rate_asc" : sortValue === "newest" ? "newest" : "recommended",
       };
-      request = searchProperties(params).then((data) => ({
+      request = searchProperties(params, accessToken || undefined).then((data) => ({
         items: (data.items || []).map((item) =>
           resultContext === "institutional" ? normalizeOpportunity(item, "institutional") : normalizeProperty(item)
         ),
         pagination: data.pagination,
         disclaimers: data.disclaimers || [],
         access: null,
+        didYouMean: data.didYouMean || null,
       }));
     }
 
@@ -1826,6 +1851,7 @@ function PropertiesPage({
         });
         setDisclaimers(data.disclaimers);
         setDealAccess(data.access);
+        setDidYouMean(data.didYouMean || null);
         // Module 48: search_performed with the filters used and the result count.
         if ((data.pagination?.page || 1) === 1) {
           track("search_performed", { query: searchParams.get("q") || undefined, filters: Object.fromEntries([...searchParams.entries()].filter(([k]) => k !== "q" && k !== "page")), result_count: data.pagination?.total || 0 });
@@ -2494,6 +2520,26 @@ function PropertiesPage({
                 {!isResidential && dealAccess && dealAccess.full === false && pagedResults.length > 0 && (
                   <div className="mt-[20px] w-full rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
                     {dealAccess.reason || "Sign in with a verified investor profile to unlock full deal details."}
+                  </div>
+                )}
+
+                {/* Module 28: search near me, and a suggestion when a search finds nothing. Sponsored and
+                    featured listings are ranked inside the results below and carry their own label. */}
+                {resultContext !== "auction" && resultContext !== "special_situation" && (
+                  <div className="mt-[16px] flex w-full flex-wrap items-center gap-3 text-[13px]">
+                    {searchParams.get("lat") ? (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#FEF2F2] px-3 py-1.5 font-semibold text-[#B91C1C]">
+                        Within {searchParams.get("radiusKm") || 5} km of you
+                        <button type="button" className="font-bold underline" onClick={() => { const next = new URLSearchParams(searchParams); ["lat", "lng", "radiusKm"].forEach((k) => next.delete(k)); navigate(`/properties?${next}`); }}>Clear</button>
+                      </span>
+                    ) : (
+                      <button type="button" disabled={locating} onClick={searchNearMe} className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 font-semibold text-[#111827] hover:border-[#FCA5A5]">{locating ? "Locating…" : "Search near me"}</button>
+                    )}
+                    {didYouMean && (
+                      <span className="text-[#4B5563]">Did you mean{" "}
+                        <button type="button" className="font-bold text-[#E51C23] underline" data-no-translate onClick={() => { const next = new URLSearchParams(searchParams); if (didYouMean.kind === "city") { next.set("city", didYouMean.term); next.delete("q"); } else { next.set("q", didYouMean.term); if (didYouMean.city) next.set("city", didYouMean.city); } navigate(`/properties?${next}`); }}>{didYouMean.term}</button>?
+                      </span>
+                    )}
                   </div>
                 )}
 

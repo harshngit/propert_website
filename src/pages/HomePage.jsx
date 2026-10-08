@@ -13,6 +13,7 @@ import DealSupportSection from "../components/home/DealSupportSection";
 import TrustSection from "../components/home/TrustSection";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import EnquiryModal from "../components/EnquiryModal";
+import { BannerAd, CardAds, SponsoredListings } from "../components/AdSlot";
 import { apiRequest } from "../api/client";
 import { searchProperties } from "../api/properties";
 import { normalizeProperty } from "../utils/normalizeProperty";
@@ -103,6 +104,8 @@ function HomePage() {
 
         <section className="bg-white px-4 sm:px-6 lg:px-12">
           <HomeHeroSection />
+          <BannerAd placement="home_hero" city={visitor.city?.name} className="mt-6" />
+          <SponsoredListings placement="featured_listing" city={visitor.city?.name} heading="Featured" className="mx-auto mt-8 max-w-[1200px]" />
           {latest.length > 0 && (
             <VerifiedListingsSection
               title="Latest Listings"
@@ -119,6 +122,7 @@ function HomePage() {
               viewAllTo="/properties?purpose=all&verified=true"
             />
           )}
+          <CardAds city={visitor.city?.name} className="my-8" />
           <ExclusiveCitySection
             city={cityListings.city}
             items={cityListings.items}

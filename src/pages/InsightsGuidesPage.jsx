@@ -301,8 +301,17 @@ function InsightsGuidesPage() {
             )
           ) : (
             <>
-              <FeaturedArticleSection featuredArticle={featured} />
-              <LatestArticlesSection articles={latest.slice(0, 6)} />
+              {featured ? (
+                <>
+                  <FeaturedArticleSection featuredArticle={featured} />
+                  <LatestArticlesSection articles={latest.slice(0, 6)} />
+                </>
+              ) : (
+                <section className="mx-auto w-full max-w-[1440px] px-4 py-12 text-center sm:px-6">
+                  <p className="font-['Plus_Jakarta_Sans'] text-[18px] font-bold text-[#111827]">{loading ? "Loading articles…" : "No articles published yet"}</p>
+                  {!loading && <p className="mt-1 text-[14px] text-[#6B7280]">New guides will appear here as soon as they are published.</p>}
+                </section>
+              )}
               {latest.length > 6 && <LatestArticlesSection articles={latest.slice(6, 12)} heading="More Articles" />}
             </>
           )}

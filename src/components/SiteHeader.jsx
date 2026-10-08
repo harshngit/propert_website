@@ -1,3 +1,4 @@
+import LanguageSwitcher from "./LanguageSwitcher";
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -527,6 +528,8 @@ function SiteHeader() {
         </nav>
 
         <div className="hidden h-10  items-center gap-3 lg:flex">
+          {/* Fits beside the menu from 1280px; on narrower screens App.jsx shows it in the bottom corner. */}
+          <LanguageSwitcher className="hidden xl:block" />
           {isAuthenticated ? (
             <AccountMenu
               isOpen={openMenu === "account"}

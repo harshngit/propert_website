@@ -5,7 +5,11 @@ import CityLandingPage from "./pages/CityLandingPage";
 import PropertiesPage from "./pages/PropertiesPage";
 import PropertyDetailPage from "./pages/PropertyDetailPage";
 import RoutePage from "./pages/RoutePage";
-import InstitutionalPropertiesPage from "./pages/InstitutionalPropertiesPage";
+import { LoginSplashAd } from "./components/AdSlot";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import InstitutionalMarketPage from "./pages/InstitutionalMarketPage";
+import InstitutionalAssetPage from "./pages/InstitutionalAssetPage";
+import PostInstitutionalPage from "./pages/PostInstitutionalPage";
 import BankAuctionPropertiesPage from "./pages/BankAuctionPropertiesPage";
 import SpecialSituationPropertiesPage from "./pages/SpecialSituationPropertiesPage";
 import GetInvolvedPage from "./pages/GetInvolvedPage";
@@ -69,6 +73,9 @@ function App() {
       <IdentityBridge />
       <ConsentBanner />
       <InstallPrompt />
+      <LoginSplashAd />
+      {/* Module 30: language menu for screens narrower than 1280px (the header shows it above that). */}
+      <LanguageSwitcher className="fixed bottom-4 left-4 z-[60] shadow-lg xl:hidden" />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/city/:citySlug" element={<CityLandingPage />} />
@@ -83,7 +90,9 @@ function App() {
             />
           }
         />
-        <Route path="/buy/institutional-properties" element={<InstitutionalPropertiesPage />} />
+        <Route path="/buy/institutional-properties" element={<InstitutionalMarketPage />} />
+        <Route path="/institutional/asset/:id" element={<InstitutionalAssetPage />} />
+        <Route path="/post-institutional" element={<PostInstitutionalPage />} />
         <Route path="/buy/bank-auction-properties" element={<BankAuctionPropertiesPage />} />
         <Route path="/buy/special-situation-properties" element={<SpecialSituationPropertiesPage />} />
         <Route path="/buy" element={<Navigate to="/properties?purpose=buy" replace />} />
@@ -113,7 +122,6 @@ function App() {
         <Route path="/guides" element={<Navigate to="/news-guide/insights-guides" replace />} />
         <Route path="/documents" element={<Navigate to="/dashboard/documents" replace />} />
         <Route path="/account" element={<Navigate to="/dashboard/profile" replace />} />
-        <Route path="/post-institutional" element={<Navigate to="/dashboard/listings?new=1" replace />} />
         <Route path="/news-guide/insights-guides" element={<InsightsGuidesPage />} />
         <Route path="/news-guide/article/:slug" element={<BlogContentPage />} />
         {/* SEO city pages from the CMS, e.g. /buy-property-in-gurugram (unknown slugs go home) */}

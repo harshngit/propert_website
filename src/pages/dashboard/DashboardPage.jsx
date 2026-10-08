@@ -21,6 +21,13 @@ import HniSection from "./HniSection";
 import ReviewsSection from "./ReviewsSection";
 import DisputesSection from "./DisputesSection";
 import DealsSection from "./DealsSection";
+import InstitutionalSection from "./InstitutionalSection";
+import RewardsSection from "./RewardsSection";
+import PrivacySection from "./PrivacySection";
+import MessagesSection from "./MessagesSection";
+import ExchangeSection from "./ExchangeSection";
+import WorkFromHomeSection from "./WorkFromHomeSection";
+import DraftDocumentsSection from "./DraftDocumentsSection";
 
 // My Dashboard - the Lite Dashboard (Annexure A sec. 13.1 / 13.2A) for a
 // customer account acting as buyer, tenant, seller and/or owner. Which
@@ -34,17 +41,24 @@ const SECTIONS = [
   { key: "matches", label: "Matched Properties", roles: ["buyer", "tenant"], Component: MatchesSection },
   { key: "saved", label: "Saved", roles: null, Component: SavedSection },
   { key: "enquiries", label: "Enquiries & Visits", roles: null, Component: EnquiriesSection },
+  { key: "messages", label: "Messages", roles: null, Component: MessagesSection },
   { key: "deals", label: "My Deals & Invoices", roles: null, Component: DealsSection },
   { key: "listings", label: "My Listings", roles: ["seller", "owner"], Component: ListingsSection },
+  { key: "exchange", label: "Property Exchange", roles: ["seller", "owner"], Component: ExchangeSection },
   { key: "rentals", label: "Rentals", roles: ["owner", "tenant"], Component: RentalsSection },
   // Shown when the investor profile (Profile > NRI / HNI) marks the person as NRI / HNI.
   { key: "nri", label: "NRI Services", investor: "is_nri", Component: NriSection },
   { key: "hni", label: "HNI Investments", investor: "is_hni", Component: HniSection },
+  { key: "institutional", label: "Institutional", roles: null, Component: InstitutionalSection },
   { key: "reviews", label: "Reviews", roles: null, Component: ReviewsSection },
+  { key: "work-from-home", label: "Work From Home", roles: null, Component: WorkFromHomeSection },
+  { key: "rewards", label: "Rewards", roles: null, Component: RewardsSection },
   { key: "disputes", label: "Help & disputes", roles: null, Component: DisputesSection },
   { key: "documents", label: "Documents", roles: null, Component: DocumentsSection },
+  { key: "draft-documents", label: "Draft documents", roles: null, Component: DraftDocumentsSection },
   { key: "notifications", label: "Notifications", roles: null, Component: NotificationsSection },
   { key: "profile", label: "Profile & Referral", roles: null, Component: ProfileSection },
+  { key: "privacy", label: "Privacy & data", roles: null, Component: PrivacySection },
 ];
 
 const ROLE_LABELS = { buyer: "Buyer", tenant: "Tenant", seller: "Seller", owner: "Owner / Landlord", nri: "NRI", hni: "HNI investor" };
