@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DynamicFields, { RecordFields, fieldErrors, toPayload } from "../../components/DynamicFields";
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
@@ -24,6 +25,9 @@ function TrustCard() {
   const trust = useLoad((t) => portal.trust(t));
   const [reference, setReference] = useState("");
   const [file, setFile] = useState(null);
+  // The KYC form's added fields (Dynamic Field Manager) go with the submission.
+  const [custom, setCustom] = useState({});
+  const [customErrors, setCustomErrors] = useState({});
   const [msg, setMsg] = useState(null);
   const [busy, setBusy] = useState(false);
   const t = trust.data;
@@ -32,13 +36,16 @@ function TrustCard() {
   const submitKyc = async (e) => {
     e.preventDefault();
     setBusy(true);
+    setCustomErrors({});
     try {
-      await portal.submitVerification(accessToken, { kind: "kyc", reference, file });
+      await portal.submitVerification(accessToken, { kind: "kyc", reference, file, customFields: toPayload(custom) });
       setMsg({ tone: "green", text: "Submitted - your A R Buildwel representative will verify it." });
       setReference("");
       setFile(null);
+      setCustom({});
       trust.reload();
     } catch (err) {
+      setCustomErrors(fieldErrors(err.details));
       setMsg({ tone: "red", text: err.message });
     } finally {
       setBusy(false);
@@ -80,7 +87,7 @@ function TrustCard() {
           KYC {kyc ? <span className="ml-1 text-[12px] font-semibold capitalize text-[#6B7280]">({kyc.status}{kyc.notes ? ` - ${kyc.notes}` : ""})</span> : null}
         </p>
         {(!kyc || kyc.status === "rejected") && (
-          <form onSubmit={submitKyc} className="mt-2 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+          <form onSubmit={submitKyc} className="mt-2 grid gap-3 sm:grid-cols-2 sm:items-end">
             <label className={labelClass}>
               ID number (PAN / Aadhaar)
               <input value={reference} onChange={(e) => setReference(e.target.value)} className={inputClass} placeholder="Only the last 4 characters are stored" />
@@ -89,7 +96,12 @@ function TrustCard() {
               ID document
               <input type="file" accept=".pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className={`${inputClass} py-2`} />
             </label>
-            <button type="submit" disabled={busy || (!reference && !file)} className={primaryButton}>{busy ? "Sending…" : "Submit KYC"}</button>
+            <div className="sm:col-span-2">
+              <DynamicFields entityType="kyc" values={custom} onChange={setCustom} errors={customErrors} />
+            </div>
+            <div className="sm:col-span-2">
+              <button type="submit" disabled={busy || (!reference && !file)} className={primaryButton}>{busy ? "Sending…" : "Submit KYC"}</button>
+            </div>
           </form>
         )}
         {msg && <div className="mt-3"><Notice tone={msg.tone}>{msg.text}</Notice></div>}
@@ -99,7 +111,7 @@ function TrustCard() {
 }
 
 function ProfileSection({ profile, onProfileChange }) {
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
   const prefs = profile.preferences || {};
   const [roles, setRoles] = useState(profile.portalRoles || []);
   const [form, setForm] = useState({
@@ -316,6 +328,7 @@ function ProfileSection({ profile, onProfileChange }) {
           </div>
         </form>
       </Card>
+      <RecordFields entityType="user_profile" entityId={user?.id} title="More about you" />
     </div>
   );
 }

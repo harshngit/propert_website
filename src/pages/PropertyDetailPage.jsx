@@ -13,6 +13,7 @@ import { breadcrumbSchema, listingSchema, useSeo } from "../lib/seo";
 import { track } from "../lib/tracker";
 import ListerTrustCard from "../components/ListerTrustCard";
 import PropertyReviews from "../components/PropertyReviews";
+import { CustomFieldList } from "../components/DynamicFields";
 import { useFavourites } from "../hooks/useFavourites";
 import { useAuth } from "../context/AuthContext";
 import { portal } from "../api/portal";
@@ -797,6 +798,12 @@ function PropertyDetailPage() {
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
                 verify details with the developer before making any financial commitment.
               </p>
+              {property.customFieldList?.length > 0 && (
+                <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-5">
+                  <h2 className="mb-3 font-['Plus_Jakarta_Sans'] text-[18px] font-bold text-[#111827]">More about this property</h2>
+                  <CustomFieldList list={property.customFieldList} />
+                </div>
+              )}
               <PropertyReviews propertyId={property.id} />
               <ListerTrustCard propertyId={property.id} />
               {/^[0-9a-f-]{36}$/i.test(String(property.id)) && (

@@ -92,15 +92,56 @@ function PushPreferences() {
       setNote(err.message);
     }
   };
+  // Per type: mute, how often, and on which channels (Module 43).
+  const saveCategory = async (key, patch) => {
+    setNote("");
+    try {
+      const r = await apiRequest("/notifications/preferences", { method: "PUT", token: accessToken, body: { categories: { [key]: patch } } });
+      setPrefs(r.data);
+      setNote("Saved.");
+    } catch (err) {
+      setNote(err.message);
+    }
+  };
   const toggle = (key) => save({ pushMuted: prefs.pushMuted.includes(key) ? prefs.pushMuted.filter((k) => k !== key) : [...prefs.pushMuted, key] });
   return (
     <div className="mb-4 rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3">
       <button type="button" onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between text-left text-[14px] font-bold text-[#111827]" aria-expanded={open}>
         Notification settings
-        <span className="text-[12px] font-semibold text-[#E51C23]">{open ? "Hide" : "Topics and quiet hours"}</span>
+        <span className="text-[12px] font-semibold text-[#E51C23]">{open ? "Hide" : "Types, channels and quiet hours"}</span>
       </button>
       {open && (
         <div className="mt-3 flex flex-col gap-2">
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px] text-[#374151]">
+              <thead className="text-left text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+                <tr>
+                  <th className="py-1.5 pr-3">Type</th>
+                  <th className="py-1.5 pr-3">Receive</th>
+                  <th className="py-1.5 pr-3">How often</th>
+                  {(prefs.channels || []).map((ch) => <th key={ch.key} className="py-1.5 pr-3">{ch.label}</th>)}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F3F4F6]">
+                {(prefs.categories || []).map((c) => (
+                  <tr key={c.key} className={c.muted ? "opacity-50" : ""}>
+                    <td className="py-2 pr-3 font-semibold text-[#111827]">{c.label}</td>
+                    <td className="py-2 pr-3"><input id={`nc-${c.key}`} type="checkbox" checked={!c.muted} onChange={(e) => saveCategory(c.key, { muted: !e.target.checked })} className="h-4 w-4 accent-[#E51C23]" /></td>
+                    <td className="py-2 pr-3">
+                      <select id={`nf-${c.key}`} disabled={c.muted} value={c.frequency} onChange={(e) => saveCategory(c.key, { frequency: e.target.value })} className="h-[32px] rounded-[8px] border border-[#E5E7EB] px-2 text-[12px] text-[#111827]">
+                        {(prefs.frequencies || []).map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
+                      </select>
+                    </td>
+                    {(prefs.channels || []).map((ch) => (
+                      <td key={ch.key} className="py-2 pr-3"><input id={`nch-${c.key}-${ch.key}`} type="checkbox" disabled={c.muted} checked={!!c.channels[ch.key]} onChange={(e) => saveCategory(c.key, { channels: { [ch.key]: e.target.checked } })} className="h-4 w-4 accent-[#E51C23]" /></td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[11px] text-[#9CA3AF]">{prefs.alwaysInstant}</p>
+          <p className="mt-2 border-t border-[#F3F4F6] pt-3 text-[12px] font-semibold text-[#6B7280]">Push topics on this account</p>
           {prefs.topics.map((t) => (
             <label key={t.key} className="flex items-center justify-between gap-3 text-[13px] text-[#374151]">
               {t.label}
@@ -117,7 +158,7 @@ function PushPreferences() {
             <button type="button" className={secondaryButton} disabled={!!prefs.quietStart !== !!prefs.quietEnd} onClick={() => save({})}>Save quiet hours</button>
             {(prefs.quietStart || prefs.quietEnd) && <button type="button" className={linkButton} onClick={() => save({ quietStart: null, quietEnd: null })}>Clear</button>}
           </div>
-          <p className="text-[11px] text-[#9CA3AF]">No push is sent during quiet hours ({prefs.timezone}); it stays in this list. {note}</p>
+          <p className="text-[11px] text-[#9CA3AF]">During quiet hours ({prefs.timezone}) only critical alerts are sent; the rest goes out together afterwards and always stays in this list. {note}</p>
         </div>
       )}
     </div>
@@ -127,14 +168,22 @@ function PushPreferences() {
 function NotificationsSection() {
   const { accessToken } = useAuth();
   const [page, setPage] = useState(1);
-  const { data, loading, error, reload } = useLoad((token) => portal.notifications(token, page), [page]);
+  // Notification Centre filters: type group, unread only, date range.
+  const [filter, setFilter] = useState({ category: "", unread: false, from: "", to: "" });
+  const query = new URLSearchParams({ page, limit: 20, ...(filter.category ? { category: filter.category } : {}), ...(filter.unread ? { isRead: "false" } : {}), ...(filter.from ? { from: filter.from } : {}), ...(filter.to ? { to: filter.to } : {}) }).toString();
+  const { data, loading, error, reload } = useLoad((token) => apiRequest(`/notifications?${query}`, { token }).then((r) => r.data), [query]);
+  const summary = useLoad((token) => apiRequest("/notifications/summary", { token }).then((r) => r.data), []);
+  const alerts = useLoad((token) => apiRequest("/notifications/alerts", { token }).then((r) => r.data), []);
+  const pick = (patch) => { setPage(1); setFilter((f) => ({ ...f, ...patch })); };
+  const chip = (active) => `rounded-full border px-3 py-1.5 text-[12px] font-bold ${active ? "border-[#E51C23] bg-[#E51C23] text-white" : "border-[#E5E7EB] bg-white text-[#374151]"}`;
 
   const markAll = async () => {
     await portal.markAllNotificationsRead(accessToken).catch(() => {});
     reload();
+    summary.reload();
   };
   const open = (n) => {
-    if (!n.is_read) portal.markNotificationRead(accessToken, n.id).catch(() => {});
+    if (!n.is_read) portal.markNotificationRead(accessToken, n.id).then(() => summary.reload()).catch(() => {});
   };
 
   const items = data?.items || [];
@@ -146,17 +195,46 @@ function NotificationsSection() {
         title="Notifications"
         subtitle="Match alerts, updates from your representative, and rent and maintenance updates."
         action={
-          items.some((n) => !n.is_read) && (
+          (summary.data?.unread > 0 || items.some((n) => !n.is_read)) && (
             <button type="button" onClick={markAll} className={secondaryButton}>
               Mark all as read
             </button>
           )
         }
       />
+      {alerts.data?.total > 0 && (
+        <div className="mb-4 space-y-2">
+          {alerts.data.items.slice(0, 5).map((n) => (
+            <div key={n.id} className="rounded-[14px] border border-[#FECACA] bg-[#FEF2F2] px-4 py-3">
+              <p className="text-[14px] font-bold text-[#991B1B]" data-no-translate>{n.title}</p>
+              {n.message && <p className="text-[13px] text-[#B91C1C]" data-no-translate>{n.message}</p>}
+              <p className="mt-0.5 text-[11px] font-bold uppercase tracking-wide text-[#DC2626]">{n.related_entity_type === "mandate" ? "Stays here until the mandate is renewed or ends" : "Stays here until the invoice is paid"}</p>
+            </div>
+          ))}
+        </div>
+      )}
       <PushToggle />
       <PushPreferences />
+      <div className="mb-4 space-y-3">
+        <div className="flex flex-wrap gap-2">
+          <button type="button" className={chip(!filter.category && !filter.unread)} onClick={() => pick({ category: "", unread: false })}>All</button>
+          <button type="button" className={chip(filter.unread)} onClick={() => pick({ unread: !filter.unread })}>Unread{summary.data?.unread ? ` (${summary.data.unread})` : ""}</button>
+          {(summary.data?.categories || []).map((c) => (
+            <button type="button" key={c.key} className={chip(filter.category === c.key)} onClick={() => pick({ category: filter.category === c.key ? "" : c.key })}>{c.label}{c.unread ? ` (${c.unread})` : ""}</button>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-[12px] font-semibold text-[#6B7280]">From
+            <input id="nf-from" type="date" value={filter.from} onChange={(e) => pick({ from: e.target.value })} className="mt-1 block h-[38px] rounded-[10px] border border-[#E5E7EB] px-2 text-[14px] text-[#111827]" />
+          </label>
+          <label className="text-[12px] font-semibold text-[#6B7280]">To
+            <input id="nf-to" type="date" value={filter.to} onChange={(e) => pick({ to: e.target.value })} className="mt-1 block h-[38px] rounded-[10px] border border-[#E5E7EB] px-2 text-[14px] text-[#111827]" />
+          </label>
+          {(filter.from || filter.to) && <button type="button" className={linkButton} onClick={() => pick({ from: "", to: "" })}>Clear dates</button>}
+        </div>
+      </div>
       <LoadState loading={loading} error={error} onRetry={reload} />
-      {data && !items.length && <EmptyState title="No notifications yet" body="We'll let you know when there's a new match or an update on your enquiries." />}
+      {data && !items.length && <EmptyState title="No notifications yet" body={filter.category || filter.unread || filter.from || filter.to ? "Nothing matches these filters." : "Post a property or requirement to start receiving matches and updates."} />}
       {items.length > 0 && (
         <ul className="divide-y divide-[#F3F4F6] overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white">
           {items.map((n) => {
@@ -167,7 +245,7 @@ function NotificationsSection() {
                 <div className="min-w-0 flex-1">
                   <p className={`text-[14px] ${n.is_read ? "text-[#374151]" : "font-bold text-[#111827]"}`}>{n.title}</p>
                   {n.message && <p className="text-[13px] text-[#6B7280]">{n.message}</p>}
-                  <p className="mt-0.5 text-[12px] text-[#9CA3AF]">{formatDate(n.created_at, true)}</p>
+                  <p className="mt-0.5 text-[12px] text-[#9CA3AF]" title={new Date(n.created_at).toLocaleString("en-IN")}>{formatDate(n.created_at, true)}</p>
                 </div>
               </div>
             );

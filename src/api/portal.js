@@ -95,11 +95,12 @@ export const portal = {
   reviewsAboutMe: (token) => get("/trust/reviews/about-me", token),
   replyReview: (token, id, reply) => send("POST", `/trust/reviews/${id}/reply`, token, { reply }),
   reportReview: (token, id, reason) => send("POST", `/trust/reviews/${id}/report`, token, { reason }),
-  submitVerification: (token, { kind, reference, file }) => {
+  submitVerification: (token, { kind, reference, file, customFields }) => {
     const form = new FormData();
     form.append("kind", kind);
     if (reference) form.append("reference", reference);
     if (file) form.append("file", file);
+    if (customFields) form.append("customFields", JSON.stringify(customFields));
     return apiRequest("/trust/verifications", { method: "POST", token, body: form, isFormData: true }).then((res) => res.data);
   },
 

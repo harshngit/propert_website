@@ -108,14 +108,14 @@ let queue = [];
 let timer = null;
 let authToken = null;
 
-function flush(useBeacon = false) {
+// Also used on pagehide: `keepalive` lets the request outlive the page.
+// Not navigator.sendBeacon - it always sends with credentials mode
+// "include", which the API's wildcard CORS answer rejects (the API uses
+// Bearer tokens, never cookies).
+function flush() {
   if (!queue.length) return;
   const body = JSON.stringify({ anonymousId: anonymousId(), sessionId: sessionId(), attribution: attribution(), events: queue.splice(0, 50) });
   try {
-    if (useBeacon && navigator.sendBeacon && !authToken) {
-      navigator.sendBeacon(`${API_BASE_URL}/events/track`, new Blob([body], { type: "application/json" }));
-      return;
-    }
     fetch(`${API_BASE_URL}/events/track`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}) },
@@ -231,8 +231,8 @@ export function initTracker() {
   captureAttribution();
   anonymousId();
   loadTags();
-  window.addEventListener("pagehide", () => flush(true));
-  document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flush(true));
+  window.addEventListener("pagehide", () => flush());
+  document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flush());
   // Call / WhatsApp links anywhere on the site.
   document.addEventListener(
     "click",

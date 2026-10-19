@@ -1,0 +1,9 @@
+/* Inputs drawn by DynamicFields (fields added in the Dynamic Field Manager). */
+.dyn-fields .field-label { display: block; font-size: 13px; font-weight: 600; color: #374151; }
+.dyn-fields .field-input,
+.dyn-fields .field-select { width: 100%; border: 1px solid #e5e7eb; border-radius: 10px; padding: 9px 12px; font-size: 14px; color: #111827; background: #fff; }
+.dyn-fields .field-input:focus,
+.dyn-fields .field-select:focus { outline: none; border-color: #e51c23; }
+.dyn-fields .field-input.w-36 { width: 9rem; }
+.dyn-fields .field-input.pl-7 { padding-left: 1.75rem; }
+.dyn-fields .btn-outline { border: 1px solid #e5e7eb; border-radius: 10px; padding: 7px 12px; font-size: 12px; font-weight: 700; color: #374151; background: #fff; }

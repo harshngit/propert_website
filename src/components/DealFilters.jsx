@@ -1,16 +1,18 @@
 import React from "react";
+import { getOptions, useOptions } from "../lib/siteConfig";
 
 // Filter drawer for the investment-deal pages (Bank Auction, Special
 // Situation, Institutional). Every option maps to a real API filter -
 // /opportunities(/public) for auction + special situation, /search/properties
-// for institutional teasers - via dealFiltersToParams().
+// for institutional teasers - via dealFiltersToParams(). The lists below are
+// the defaults; the Super Admin edits them in Site configuration.
 
 const TICKET_BANDS = [
-  { key: "u50l", label: "Up to ₹50 Lakh", max: 5e6 },
-  { key: "50l-1c", label: "₹50 Lakh - ₹1 Cr", min: 5e6, max: 1e7 },
-  { key: "1c-5c", label: "₹1 Cr - ₹5 Cr", min: 1e7, max: 5e7 },
-  { key: "5c-25c", label: "₹5 Cr - ₹25 Cr", min: 5e7, max: 2.5e8 },
-  { key: "25c+", label: "Above ₹25 Cr", min: 2.5e8 },
+  { value: "u50l", label: "Up to ₹50 Lakh", max: 5e6 },
+  { value: "50l-1c", label: "₹50 Lakh - ₹1 Cr", min: 5e6, max: 1e7 },
+  { value: "1c-5c", label: "₹1 Cr - ₹5 Cr", min: 1e7, max: 5e7 },
+  { value: "5c-25c", label: "₹5 Cr - ₹25 Cr", min: 5e7, max: 2.5e8 },
+  { value: "25c+", label: "Above ₹25 Cr", min: 2.5e8 },
 ];
 
 const PROPERTY_TYPES = [
@@ -57,7 +59,7 @@ export function createDealFilterState() {
 
 export function dealFiltersToParams(state, context) {
   if (!state) return {};
-  const band = TICKET_BANDS.find((b) => b.key === state.ticket);
+  const band = getOptions("deal_ticket_band", TICKET_BANDS).find((b) => b.value === state.ticket);
   const params = {
     minPrice: band?.min,
     maxPrice: band?.max,
@@ -110,6 +112,12 @@ function Pills({ options, value, onChange }) {
 export function DealFiltersSidebar({ context, drawerState, setDrawerState, resetFilters, onClose, footer = null }) {
   const set = (key) => (value) => setDrawerState((s) => ({ ...s, [key]: value }));
   const s = drawerState || createDealFilterState();
+  const ticketBands = useOptions("deal_ticket_band", TICKET_BANDS);
+  const propertyTypes = useOptions("deal_property_type", PROPERTY_TYPES);
+  const institutionalTypes = useOptions("deal_institutional_type", INSTITUTIONAL_TYPES);
+  const situations = useOptions("deal_situation", SITUATIONS);
+  const sources = useOptions("deal_source", SOURCES);
+  const liquidity = useOptions("deal_liquidity", LIQUIDITY);
   return (
     <>
       <div className="flex w-full shrink-0 items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
@@ -128,20 +136,20 @@ export function DealFiltersSidebar({ context, drawerState, setDrawerState, reset
       </div>
       <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
         <Section title={context === "auction" ? "Reserve price" : "Investment size"}>
-          <Pills options={TICKET_BANDS.map((b) => ({ value: b.key, label: b.label }))} value={s.ticket} onChange={set("ticket")} />
+          <Pills options={ticketBands} value={s.ticket} onChange={set("ticket")} />
         </Section>
         <Section title="Property type">
-          <Pills options={context === "institutional" ? INSTITUTIONAL_TYPES : PROPERTY_TYPES} value={s.propertyType} onChange={set("propertyType")} />
+          <Pills options={context === "institutional" ? institutionalTypes : propertyTypes} value={s.propertyType} onChange={set("propertyType")} />
         </Section>
         {context === "special" && (
           <Section title="Situation">
-            <Pills options={SITUATIONS} value={s.situationTag} onChange={set("situationTag")} />
+            <Pills options={situations} value={s.situationTag} onChange={set("situationTag")} />
           </Section>
         )}
         {context === "auction" && (
           <>
             <Section title="Seller">
-              <Pills options={SOURCES} value={s.sourceType} onChange={set("sourceType")} />
+              <Pills options={sources} value={s.sourceType} onChange={set("sourceType")} />
             </Section>
             <Section title="Possession">
               <Pills options={[{ value: "physical", label: "Physical" }, { value: "symbolic", label: "Symbolic" }]} value={s.possessionType} onChange={set("possessionType")} />
@@ -151,7 +159,7 @@ export function DealFiltersSidebar({ context, drawerState, setDrawerState, reset
         {context !== "institutional" && (
           <>
             <Section title="Liquidity (exit ease)">
-              <Pills options={LIQUIDITY} value={s.liquidityBand} onChange={set("liquidityBand")} />
+              <Pills options={liquidity} value={s.liquidityBand} onChange={set("liquidityBand")} />
             </Section>
             <Section title="Investment score">
               <Pills options={[{ value: "50", label: "50+" }, { value: "65", label: "65+" }, { value: "75", label: "75+" }]} value={s.minScore} onChange={set("minScore")} />

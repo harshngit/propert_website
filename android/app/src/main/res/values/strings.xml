@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PropertySerch Field</string>
+    <string name="title_activity_main">PropertySerch Field</string>
+    <string name="package_name">com.propertyserch.field</string>
+    <string name="custom_url_scheme">com.propertyserch.field</string>
+    <!-- Field partner visit recording (Module 47): the foreground-service notification channel. -->
+    <string name="capacitor_background_geolocation_notification_channel_name">Visit recording</string>
+</resources>

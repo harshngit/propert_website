@@ -6,6 +6,7 @@ import { representativeLine, submitEnquiry } from "../api/leads";
 import { apiRequest } from "../api/client";
 import { getDisclaimers } from "../api/content";
 import { useAuth } from "../context/AuthContext";
+import { useOptions } from "../lib/siteConfig";
 
 // Sell menu pages (List Property, Property Valuation, Owner Services,
 // Broker Tools) on one template in the site's standard layout. Each form
@@ -139,7 +140,7 @@ export const SELL_PAGES = {
   },
 };
 
-const PROPERTY_TYPES = ["Apartment / Flat", "Independent House / Floor", "Villa", "Plot / Land", "Commercial", "Other"];
+const PROPERTY_TYPES = ["Apartment / Flat", "Independent House / Floor", "Villa", "Plot / Land", "Commercial", "Other"].map((t) => ({ value: t, label: t }));
 
 const inputClass =
   "h-[40px] w-full rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] px-[13px] font-['Plus_Jakarta_Sans'] text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#E51C23] focus:ring-1 focus:ring-[#E51C23]/20";
@@ -147,6 +148,7 @@ const labelClass = "mb-[6px] block font-['Plus_Jakarta_Sans'] text-[12px] font-b
 
 function ServiceForm({ config }) {
   const { user } = useAuth();
+  const propertyTypes = useOptions("sell_property_type", PROPERTY_TYPES);
   const [form, setForm] = useState({ fullName: "", mobile: "", email: "", city: "", locality: "", propertyType: "", price: "", note: "" });
   const [consent, setConsent] = useState(true);
   const [state, setState] = useState({ status: "idle", message: "" });
@@ -224,8 +226,8 @@ function ServiceForm({ config }) {
               <span className={labelClass}>Property Type</span>
               <select value={form.propertyType} onChange={set("propertyType")} className={inputClass}>
                 <option value="">Select type</option>
-                {PROPERTY_TYPES.map((t) => (
-                  <option key={t}>{t}</option>
+                {propertyTypes.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
               </select>
             </label>

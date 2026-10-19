@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import SuspendedPrivacyRequest from "../components/SuspendedPrivacyRequest";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
@@ -101,6 +102,8 @@ function PasswordLoginForm({ from }) {
         </p>
       ) : null}
 
+      {/suspended|removed/.test(formError) ? <SuspendedPrivacyRequest /> : null}
+
       <button
         type="submit"
         disabled={submitting}
@@ -200,6 +203,8 @@ function OtpLoginForm({ from }) {
           </p>
         ) : null}
 
+        {/suspended|removed/.test(formError) ? <SuspendedPrivacyRequest /> : null}
+
         <button
           type="submit"
           disabled={sending}
@@ -244,6 +249,8 @@ function OtpLoginForm({ from }) {
           {formError}
         </p>
       ) : null}
+
+      {/suspended|removed/.test(formError) ? <SuspendedPrivacyRequest /> : null}
 
       <button
         type="submit"

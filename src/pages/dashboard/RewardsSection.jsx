@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CouponsCard from "./CouponsCard";
 import { apiRequest } from "../../api/client";
 import { Badge, Card, LoadState, SectionHeader, formatDate, inputClass, useLoad } from "./ui";
 
@@ -56,9 +57,10 @@ export default function RewardsSection() {
   const cities = useLoad((token) => apiRequest("/gamification/cities", { token }).then((r) => r.data));
   if (me.loading || me.error) return <LoadState loading={me.loading} error={me.error} onRetry={me.reload} />;
   const d = me.data;
-  if (!d?.enabled) return <SectionHeader title="Rewards" subtitle="Rewards are switched off at the moment." />;
+  if (!d?.enabled) return <div className="space-y-5"><SectionHeader title="Rewards" subtitle="Rewards are switched off at the moment." /><CouponsCard /></div>;
   return (
     <div className="space-y-5">
+      <CouponsCard />
       <SectionHeader title="Rewards" subtitle="Points come from what you actually do here - posting a requirement, a verified listing, a completed deal, a published review." />
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">

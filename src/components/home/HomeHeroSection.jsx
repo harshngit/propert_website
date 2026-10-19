@@ -3,6 +3,12 @@ import { toMaxBudget, toPropertyType } from "../../utils/searchIntent";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { buildPropertiesPath } from "../../utils/propertySearch";
 import { apiRequest } from "../../api/client";
+import { useSiteContent } from "../../lib/siteConfig";
+
+const DEFAULT_DESCRIPTION = [
+  "Verified properties, legal facilitation, financing, and closure tracked end-to-end on one platform",
+  "Not a portal, an operating system for real estate transactions",
+];
 
 function PinIcon() {
   return (
@@ -61,13 +67,20 @@ function HomeHeroSection({
   showBadge = true,
   titlePrefix = "",
   titleHighlight = "",
-  titleText = "Beyond listings. Built for the entire deal",
+  titleText,
   cityLandingMobile = false,
-  descriptionLines = [
-    "Verified properties, legal facilitation, financing, and closure tracked end-to-end on one platform",
-    "Not a portal, an operating system for real estate transactions",
-  ],
+  descriptionLines,
 }) {
+  // The home page headline, description and search placeholder are set in Site configuration.
+  const line1 = useSiteContent("hero_title_line1", "Beyond listings.");
+  const line2 = useSiteContent("hero_title_line2", "Built for the entire deal");
+  const desc1 = useSiteContent("hero_description_1", DEFAULT_DESCRIPTION[0]);
+  const desc2 = useSiteContent("hero_description_2", DEFAULT_DESCRIPTION[1]);
+  const searchPlaceholder = useSiteContent("hero_search_placeholder", "Search City, Locality or Landmark");
+  const heading = titleText ?? [line1, line2].filter(Boolean).join(" ");
+  const description = descriptionLines ?? [desc1, desc2].filter(Boolean);
+  // The phone layout has its own shorter copy until the Super Admin changes the description.
+  const customDescription = !descriptionLines && (desc1 !== DEFAULT_DESCRIPTION[0] || desc2 !== DEFAULT_DESCRIPTION[1]);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabs = ["Buy", "Rent", "Commercial", "Institutional"];
@@ -153,8 +166,14 @@ function HomeHeroSection({
               </>
             ) : (
               <>
-                <span className="block">Beyond listings.</span>
-                <span className="block">Built for the entire deal</span>
+                {titleText ? (
+                  <span className="block">{titleText}</span>
+                ) : (
+                  <>
+                    <span className="block">{line1}</span>
+                    <span className="block">{line2}</span>
+                  </>
+                )}
               </>
             )}
           </h1>
@@ -168,7 +187,7 @@ function HomeHeroSection({
                 {titlePrefix} <span className="text-[#E51C23]">{titleHighlight}</span>
               </>
             ) : (
-              titleText
+              heading
             )}
           </h1>
         </div>
@@ -176,12 +195,22 @@ function HomeHeroSection({
 
       <div className="mx-auto mt-2 flex w-full max-w-[1184px] items-center justify-center px-3 sm:mt-4 sm:px-0">
         <div className="flex w-full max-w-[340px] flex-col items-center justify-center font-['Lato'] text-[12px] font-normal leading-[20px] text-[#6B7280] sm:hidden">
-          <p className="m-0 text-center">An operating system for real estate transactions with</p>
-          <p className="m-0 text-center">legal facilitation and end-to-end tracking.</p>
+          {customDescription ? (
+            description.map((line) => (
+              <p key={line} className="m-0 text-center">
+                {line}
+              </p>
+            ))
+          ) : (
+            <>
+              <p className="m-0 text-center">An operating system for real estate transactions with</p>
+              <p className="m-0 text-center">legal facilitation and end-to-end tracking.</p>
+            </>
+          )}
         </div>
 
         <div className="hidden w-full max-w-[1020px] flex-col items-center justify-center font-['Lato'] text-[14px] font-normal leading-[20px] text-[#6B7280] sm:flex sm:text-[18px] sm:leading-[29px]">
-          {descriptionLines.map((line) => (
+          {description.map((line) => (
             <p key={line} className="m-0 text-center">
               {line}
             </p>
@@ -258,7 +287,7 @@ function HomeHeroSection({
 
       <input
         type="text"
-        placeholder="Search City, Locality or Landmark"
+        placeholder={searchPlaceholder}
         list="hero-location-suggestions"
         autoComplete="off"
         value={searchLocation}

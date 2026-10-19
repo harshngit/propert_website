@@ -81,6 +81,15 @@ const termsSections = [
   },
   {
     number: "8.",
+    title: "Suspension and removal",
+    body: [
+      // Section 35 of the platform agreement: this clause must appear in the Terms of Service as written.
+      "The platform reserves the right to suspend or remove any user from the platform at any time, with or without notice, and even without assigning any reason. Upon suspension or removal, the user's profile, listings, and requirements cease to be publicly visible and any pending commission settlement due to the user stands frozen. Reinstatement is at the sole discretion of the Super Admin, on the basis of such clarification as the Super Admin may require.",
+      "Removal from public view is not deletion of your data. Your right under the Digital Personal Data Protection Act, 2023 to ask for a copy of your data or for its deletion continues while an account is suspended or removed.",
+    ],
+  },
+  {
+    number: "9.",
     title: "Contact",
     body: [
       "For questions regarding these Terms, please contact our support team through the official PropertySerch contact channels.",

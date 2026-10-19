@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { apiRequest } from "../../api/client";
 import { API_BASE_URL } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
+import { FamilyPanel, LocationTracker, TeamPanel } from "./WfhExtras";
 import { Badge, Card, EmptyState, LoadState, Notice, SectionHeader, formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, useLoad } from "./ui";
 
 // Work From Home (Module 47): earn a fixed amount for each verified field
@@ -157,6 +158,7 @@ function TaskWork({ id, onBack }) {
           <h3 className="font-['Plus_Jakarta_Sans'] text-[16px] font-bold text-[#111827]">Submit evidence</h3>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {needsGps && <div className="sm:col-span-2"><span className={labelClass}>Check in at the property</span><button type="button" disabled={busy} onClick={checkIn} className={`${secondaryButton} mt-1.5`}>{gps ? "Checked in ✓" : "Check in with my location"}</button></div>}
+            {needsGps && <div className="sm:col-span-2"><LocationTracker id={id} /></div>}
             {needsParty && <>
               <label className="block"><span className={labelClass}>Name of the {partyWord}</span><input className={inputClass} value={f.partyName} onChange={set("partyName")} /></label>
               <label className="block"><span className={labelClass}>Mobile number of the {partyWord}</span><input className={inputClass} inputMode="numeric" maxLength={10} value={f.partyPhone} onChange={set("partyPhone")} /></label>
@@ -363,13 +365,21 @@ export default function WorkFromHomeSection() {
       <SectionHeader title={d.programLabel} subtitle="Earn from your neighbourhood: a fixed amount for every field task that passes verification. No licence needed." />
       {!d.joined ? <JoinForm intro={d} onDone={me.reload} /> : (
         <>
+          {d.family?.required && !d.family.declared && tab !== "family" && (
+            <Notice tone="amber">
+              Before you take a task, tell us the mobile numbers of your household - family members cannot be submitted as buyers or owners.{" "}
+              <button type="button" className={linkButton} onClick={() => setTab("family")}>Declare now</button>
+            </Notice>
+          )}
           <div className="flex gap-1 overflow-x-auto rounded-[12px] bg-[#F3F4F6] p-1 sm:w-fit">
-            {[["board", "Task board"], ["tasks", "My tasks"], ["earnings", "My earnings"], ["performance", "My performance"]].map(([k, l]) => <button type="button" key={k} onClick={() => setTab(k)} className={`shrink-0 rounded-[9px] px-4 py-1.5 text-[13px] font-bold ${tab === k ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280]"}`}>{l}</button>)}
+            {[["board", "Task board"], ["tasks", "My tasks"], ["earnings", "My earnings"], ["performance", "My performance"], ["team", "My team"], ["family", "My household"]].map(([k, l]) => <button type="button" key={k} onClick={() => setTab(k)} className={`shrink-0 rounded-[9px] px-4 py-1.5 text-[13px] font-bold ${tab === k ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280]"}`}>{l}</button>)}
           </div>
           {tab === "board" && <Board canAccept={!d.blocker} blocker={d.blocker} onAccepted={(id) => setOpen(id)} />}
           {tab === "tasks" && <MyTasks onOpen={setOpen} />}
           {tab === "earnings" && <Earnings />}
           {tab === "performance" && <Performance p={d.performance} worker={d.worker} />}
+          {tab === "team" && <TeamPanel onChanged={me.reload} />}
+          {tab === "family" && <FamilyPanel onChanged={me.reload} />}
         </>
       )}
     </div>

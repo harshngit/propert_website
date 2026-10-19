@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { CoreField, CoreFieldsProvider } from "../../components/CoreField";
+import DynamicFields, { toPayload } from "../../components/DynamicFields";
 import { Link, useSearchParams } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
+import { useOptions } from "../../lib/siteConfig";
 import {
   Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
@@ -14,10 +17,11 @@ import FeeConsent, { EMPTY_CONSENT, MandateStatus } from "./FeeConsent";
 // Matched Properties.
 
 const URGENCY_LABELS = { immediate: "Immediately", "30_days": "Within 30 days", flexible: "Flexible" };
-const AMENITY_OPTIONS = ["Gym", "Pool", "Parking", "Lift", "Power Backup", "Security", "Clubhouse", "Park", "Play Area"];
+const AMENITY_OPTIONS = ["Gym", "Pool", "Parking", "Lift", "Power Backup", "Security", "Clubhouse", "Park", "Play Area"].map((a) => ({ value: a, label: a }));
 
 function RequirementForm({ profile, onSaved, onCancel }) {
   const { accessToken } = useAuth();
+  const amenityOptions = useOptions("requirement_amenities", AMENITY_OPTIONS);
   const roles = profile.portalRoles || [];
   const prefs = profile.preferences || {};
   const [form, setForm] = useState({
@@ -51,6 +55,7 @@ function RequirementForm({ profile, onSaved, onCancel }) {
   };
   // Module 46 consent block: OTP consent token, mandate type, budget range.
   const [mandate, setMandate] = useState(EMPTY_CONSENT);
+  const [custom, setCustom] = useState({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -84,6 +89,7 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         mandateType: mandate.mandateType,
         consentToken: mandate.consentToken,
         ...(mandate.priceRange ? { priceRange: mandate.priceRange } : {}),
+        customFields: toPayload(custom),
       });
       onSaved(requirement);
     } catch (err) {
@@ -94,6 +100,7 @@ function RequirementForm({ profile, onSaved, onCancel }) {
   };
 
   return (
+    <CoreFieldsProvider entityType="requirement">
     <form onSubmit={submit} className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-2">
         {[
@@ -113,21 +120,18 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         ))}
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className={labelClass}>
-          City *
+        <CoreField k="city" label="City *" className={labelClass}>
           <input required list="req-cities" value={form.city} onChange={set("city")} placeholder="e.g. Gurugram" className={inputClass} />
           <datalist id="req-cities">
             {CITY_SUGGESTIONS.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
-        </label>
-        <label className={labelClass}>
-          Preferred localities
+        </CoreField>
+        <CoreField k="localities" label="Preferred localities" className={labelClass}>
           <input value={form.localities} onChange={set("localities")} placeholder="Sector 56, Golf Course Road" className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Property type
+        </CoreField>
+        <CoreField k="propertyType" label="Property type" className={labelClass}>
           <select value={form.propertyType} onChange={set("propertyType")} className={inputClass}>
             <option value="">Any</option>
             {PROPERTY_TYPES.map((t) => (
@@ -136,9 +140,8 @@ function RequirementForm({ profile, onSaved, onCancel }) {
               </option>
             ))}
           </select>
-        </label>
-        <label className={labelClass}>
-          Bedrooms (at least)
+        </CoreField>
+        <CoreField k="bedrooms" label="Bedrooms (at least)" className={labelClass}>
           <select value={form.bedrooms} onChange={set("bedrooms")} className={inputClass}>
             <option value="">Any</option>
             {[1, 2, 3, 4, 5].map((n) => (
@@ -147,25 +150,20 @@ function RequirementForm({ profile, onSaved, onCancel }) {
               </option>
             ))}
           </select>
-        </label>
-        <label className={labelClass}>
-          Budget from ({unit})
+        </CoreField>
+        <CoreField k="budgetMin" label={`Budget from (${unit})`} className={labelClass}>
           <input type="number" min="0" step="0.01" value={form.budgetMin} onChange={set("budgetMin")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Budget up to ({unit})
+        </CoreField>
+        <CoreField k="budgetMax" label={`Budget up to (${unit})`} className={labelClass}>
           <input type="number" min="0" step="0.01" value={form.budgetMax} onChange={set("budgetMax")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Area from (sq.ft)
+        </CoreField>
+        <CoreField k="areaMinSqft" label="Area from (sq.ft)" className={labelClass}>
           <input type="number" min="0" value={form.areaMin} onChange={set("areaMin")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Area up to (sq.ft)
+        </CoreField>
+        <CoreField k="areaMaxSqft" label="Area up to (sq.ft)" className={labelClass}>
           <input type="number" min="0" value={form.areaMax} onChange={set("areaMax")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          How soon?
+        </CoreField>
+        <CoreField k="urgency" label="How soon?" className={labelClass}>
           <select value={form.urgency} onChange={set("urgency")} className={inputClass}>
             {Object.entries(URGENCY_LABELS).map(([value, label]) => (
               <option key={value} value={value}>
@@ -173,12 +171,12 @@ function RequirementForm({ profile, onSaved, onCancel }) {
               </option>
             ))}
           </select>
-        </label>
+        </CoreField>
       </div>
       <div>
         <span className={labelClass}>Must-have amenities</span>
         <div className="mt-1.5 flex flex-wrap gap-2">
-          {AMENITY_OPTIONS.map((a) => {
+          {amenityOptions.map(({ value: a, label }) => {
             const on = form.amenities.includes(a);
             return (
               <button
@@ -188,7 +186,7 @@ function RequirementForm({ profile, onSaved, onCancel }) {
                 onClick={() => setForm((f) => ({ ...f, amenities: on ? f.amenities.filter((x) => x !== a) : [...f.amenities, a] }))}
                 className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold ${on ? "border-[#E51C23] bg-[#FEF2F2] text-[#E51C23]" : "border-[#E5E7EB] text-[#374151]"}`}
               >
-                {a}
+                {label}
               </button>
             );
           })}
@@ -200,10 +198,10 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         </button>
         <span className="text-[#6B7280]">Optional - matches are scored by distance from this pin (within your city's radius).</span>
       </div>
-      <label className={labelClass}>
-        Anything else? (optional)
+      <CoreField k="notes" label="Anything else? (optional)" className={labelClass}>
         <textarea rows={3} value={form.notes} onChange={set("notes")} placeholder="e.g. near a metro station, east facing, school nearby" className={`${inputClass} h-auto py-2`} />
-      </label>
+      </CoreField>
+      <DynamicFields entityType="requirement" city={form.city} core={form} values={custom} onChange={setCustom} />
       <FeeConsent kind="requirement" accessToken={accessToken} value={mandate} onChange={setMandate} />
       {error && <Notice tone="red">{error}</Notice>}
       <div className="flex flex-wrap gap-2">
@@ -215,6 +213,7 @@ function RequirementForm({ profile, onSaved, onCancel }) {
         </button>
       </div>
     </form>
+    </CoreFieldsProvider>
   );
 }
 

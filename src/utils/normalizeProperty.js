@@ -42,6 +42,8 @@ export function normalizeProperty(p) {
   const image = primaryMedia?.url || p.primary_image || images[0] || null;
 
   return {
+    // Fields added in the Dynamic Field Manager that are marked public.
+    customFieldList: p.customFieldList || [],
     id: p.id,
     // Lister trust (score + badge keys, no identity) from /search/properties.
     listerTrust: p.lister_trust || null,

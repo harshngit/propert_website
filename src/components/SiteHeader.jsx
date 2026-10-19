@@ -1,7 +1,9 @@
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useBranding } from "../lib/branding";
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useSiteContent } from "../lib/siteConfig";
 import { CITY_OPTIONS, buildCityPath, fromCitySlug } from "../utils/city";
 
 const navItems = [
@@ -409,8 +411,33 @@ function GuestMenu({ isOpen, onEnter, onLeave, location }) {
   );
 }
 
+// A one-line notice above the header, set in Site configuration (empty = hidden).
+function AnnouncementBar() {
+  const text = useSiteContent("announcement");
+  const link = useSiteContent("announcement_link");
+  if (!text) return null;
+  const body = <span className="font-semibold">{text}</span>;
+  return (
+    <div className="bg-[#111827] px-4 py-2 text-center text-[12px] text-white sm:text-[13px]">
+      {link ? (
+        /^https?:\/\//.test(link) ? (
+          <a href={link} target="_blank" rel="noreferrer" className="underline-offset-2 hover:underline">{body}</a>
+        ) : (
+          <Link to={link} className="underline-offset-2 hover:underline">{body}</Link>
+        )
+      ) : (
+        body
+      )}
+    </div>
+  );
+}
+
 function SiteHeader() {
   const { isAuthenticated, user, logout } = useAuth();
+  // Sec. 14: on a white-label franchisee host the header carries their brand.
+  const branding = useBranding();
+  const whiteLabel = branding?.brandMode === "white_label" ? branding : null;
+  const brandName = whiteLabel?.brandName || "PropertySerch";
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -440,6 +467,7 @@ function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#F3F4F6] bg-white">
+      <AnnouncementBar />
       {showTicker ? (
         <>
           <div className="hidden sm:block">
@@ -469,7 +497,7 @@ function SiteHeader() {
             to="/"
             className="flex min-w-0 flex-col items-start justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] leading-tight text-[#E51C23]"
           >
-            <span className="text-[16px] font-extrabold tracking-[-0.45px]">PropertySerch</span>
+            {whiteLabel?.logoUrl ? <img src={whiteLabel.logoUrl} alt={brandName} className="h-7 max-w-[130px] object-contain" /> : <span className="text-[16px] font-extrabold tracking-[-0.45px]" data-no-translate={whiteLabel ? "" : undefined}>{brandName}</span>}
           </NavLink>
         </div>
 
@@ -487,10 +515,14 @@ function SiteHeader() {
             to="/"
             className="flex flex-col items-start justify-center whitespace-nowrap font-['Plus_Jakarta_Sans'] leading-tight text-[#E51C23]"
           >
-            <span className="text-[20px] font-extrabold tracking-[-0.6px] sm:text-[24px]">PropertySerch</span>
-            <span className="lg:text-[15px] font-semibold tracking-[0.01em] text-[#6B7280] text-[10px]">
-              A brand of A R Buildwel
-            </span>
+            {whiteLabel?.logoUrl ? <img src={whiteLabel.logoUrl} alt={brandName} className="h-9 max-w-[180px] object-contain" /> : <span className="text-[20px] font-extrabold tracking-[-0.6px] sm:text-[24px]" data-no-translate={whiteLabel ? "" : undefined}>{brandName}</span>}
+            {whiteLabel ? (
+              whiteLabel.headerText ? <span className="lg:text-[15px] font-semibold tracking-[0.01em] text-[#6B7280] text-[10px]" data-no-translate>{whiteLabel.headerText}</span> : null
+            ) : (
+              <span className="lg:text-[15px] font-semibold tracking-[0.01em] text-[#6B7280] text-[10px]">
+                A brand of A R Buildwel
+              </span>
+            )}
           </NavLink>
 
           <div className="hidden sm:block">

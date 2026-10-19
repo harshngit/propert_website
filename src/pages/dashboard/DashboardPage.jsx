@@ -26,6 +26,9 @@ import RewardsSection from "./RewardsSection";
 import PrivacySection from "./PrivacySection";
 import MessagesSection from "./MessagesSection";
 import ExchangeSection from "./ExchangeSection";
+import LegalHelpSection from "./LegalHelpSection";
+import HomeLoanSection from "./HomeLoanSection";
+import InsuranceSection from "./InsuranceSection";
 import WorkFromHomeSection from "./WorkFromHomeSection";
 import DraftDocumentsSection from "./DraftDocumentsSection";
 
@@ -53,6 +56,9 @@ const SECTIONS = [
   { key: "reviews", label: "Reviews", roles: null, Component: ReviewsSection },
   { key: "work-from-home", label: "Work From Home", roles: null, Component: WorkFromHomeSection },
   { key: "rewards", label: "Rewards", roles: null, Component: RewardsSection },
+  { key: "legal-help", label: "Legal help", roles: null, Component: LegalHelpSection },
+  { key: "home-loan", label: "Home loan", roles: null, Component: HomeLoanSection },
+  { key: "insurance", label: "Insurance", roles: null, Component: InsuranceSection },
   { key: "disputes", label: "Help & disputes", roles: null, Component: DisputesSection },
   { key: "documents", label: "Documents", roles: null, Component: DocumentsSection },
   { key: "draft-documents", label: "Draft documents", roles: null, Component: DraftDocumentsSection },

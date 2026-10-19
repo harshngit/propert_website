@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { CoreField, CoreFieldsProvider } from "../../components/CoreField";
+import DynamicFields, { toPayload } from "../../components/DynamicFields";
 import { Link, useSearchParams } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
@@ -60,6 +62,11 @@ function ListingForm({ existing, onSaved, onCancel }) {
   // Engine 4 deal sourcing from direct sellers - never labelled "distressed".
   const [situationTags, setSituationTags] = useState([]);
   const [marketValueLakh, setMarketValueLakh] = useState("");
+  // Fields added in the Dynamic Field Manager; on an edit, the saved values are loaded.
+  const [custom, setCustom] = useState({});
+  useEffect(() => {
+    if (existing?.id) portal.listing(accessToken, existing.id).then((p) => setCustom(p?.customFields || {})).catch(() => {});
+  }, [existing?.id, accessToken]);
   const [saving, setSaving] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState(null);
@@ -105,6 +112,7 @@ function ListingForm({ existing, onSaved, onCancel }) {
       description: form.description.trim() || undefined,
       latitude: num(form.latitude),
       longitude: num(form.longitude),
+      customFields: toPayload(custom),
     };
     try {
       const saved = editing
@@ -128,6 +136,7 @@ function ListingForm({ existing, onSaved, onCancel }) {
   };
 
   return (
+    <CoreFieldsProvider entityType="property">
     <form onSubmit={submit} className="flex flex-col gap-4">
       {editing && existing.status === "approved" && (
         <Notice tone="amber">Saving changes sends your listing back for a quick review before the update goes live.</Notice>
@@ -150,13 +159,11 @@ function ListingForm({ existing, onSaved, onCancel }) {
         ))}
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className={`${labelClass} sm:col-span-2`}>
-          Title *
+        <CoreField k="title" label="Title *" className={`${labelClass} sm:col-span-2`}>
           <input required minLength={5} maxLength={200} value={form.title} onChange={set("title")} placeholder="e.g. 3 BHK apartment with park view" className={inputClass} />
           <span className="mt-1 block text-[11px] font-normal text-[#9CA3AF]">Don't include phone numbers or emails - enquiries come through your representative.</span>
-        </label>
-        <label className={labelClass}>
-          Property type *
+        </CoreField>
+        <CoreField k="propertyType" label="Property type *" className={labelClass}>
           <select value={form.propertyType} onChange={set("propertyType")} className={inputClass}>
             {PROPERTY_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
@@ -164,67 +171,56 @@ function ListingForm({ existing, onSaved, onCancel }) {
               </option>
             ))}
           </select>
-        </label>
-        <label className={labelClass}>
-          {form.transactionType === "rent" ? "Monthly rent (₹) *" : "Expected price (₹ Lakh) *"}
+        </CoreField>
+        <CoreField k="price" label={form.transactionType === "rent" ? "Monthly rent (₹) *" : "Expected price (₹ Lakh) *"} className={labelClass}>
           <input required type="number" min="0" step="0.01" value={form.price} onChange={set("price")} placeholder={form.transactionType === "rent" ? "e.g. 45000" : "e.g. 150"} className={inputClass} />
           {form.price && <span className="mt-1 block text-[11px] font-normal text-[#6B7280]">= {formatINR(form.transactionType === "rent" ? form.price : Number(form.price) * 1e5)}</span>}
-        </label>
-        <label className={labelClass}>
-          City *
+        </CoreField>
+        <CoreField k="city" label="City *" className={labelClass}>
           <input required list="listing-cities" value={form.city} onChange={set("city")} className={inputClass} />
           <datalist id="listing-cities">
             {CITY_SUGGESTIONS.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
-        </label>
-        <label className={labelClass}>
-          Locality / sector *
+        </CoreField>
+        <CoreField k="locality" label="Locality / sector *" className={labelClass}>
           <input required value={form.locality} onChange={set("locality")} placeholder="e.g. Sector 56" className={inputClass} />
-        </label>
-        <label className={`${labelClass} sm:col-span-2`}>
-          Full address (private - never shown publicly)
+        </CoreField>
+        <CoreField k="address" label="Full address (private - never shown publicly)" className={`${labelClass} sm:col-span-2`}>
           <input value={form.address} onChange={set("address")} placeholder="Flat / house no., society, street" className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Built-up area (sq.ft)
+        </CoreField>
+        <CoreField k="areaSqft" label="Built-up area (sq.ft)" className={labelClass}>
           <input type="number" min="1" value={form.areaSqft} onChange={set("areaSqft")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Bedrooms
+        </CoreField>
+        <CoreField k="bedrooms" label="Bedrooms" className={labelClass}>
           <input type="number" min="0" max="20" value={form.bedrooms} onChange={set("bedrooms")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Bathrooms
+        </CoreField>
+        <CoreField k="bathrooms" label="Bathrooms" className={labelClass}>
           <input type="number" min="0" max="20" value={form.bathrooms} onChange={set("bathrooms")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Furnishing
+        </CoreField>
+        <CoreField k="furnishing" label="Furnishing" className={labelClass}>
           <select value={form.furnishing} onChange={set("furnishing")} className={inputClass}>
             <option value="">-</option>
             {FURNISHING.map((f) => (
               <option key={f}>{f}</option>
             ))}
           </select>
-        </label>
-        <label className={labelClass}>
-          Floor
+        </CoreField>
+        <CoreField k="floorNumber" label="Floor" className={labelClass}>
           <input type="number" min="0" value={form.floorNumber} onChange={set("floorNumber")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Total floors
+        </CoreField>
+        <CoreField k="totalFloors" label="Total floors" className={labelClass}>
           <input type="number" min="0" value={form.totalFloors} onChange={set("totalFloors")} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Possession
+        </CoreField>
+        <CoreField k="possessionStatus" label="Possession" className={labelClass}>
           <select value={form.possessionStatus} onChange={set("possessionStatus")} className={inputClass}>
             <option value="">-</option>
             {POSSESSION.map((p) => (
               <option key={p}>{p}</option>
             ))}
           </select>
-        </label>
+        </CoreField>
         <div className={labelClass}>
           Map location
           <div className="mt-1 flex items-center gap-2">
@@ -236,10 +232,9 @@ function ListingForm({ existing, onSaved, onCancel }) {
           <span className="mt-1 block text-[11px] font-normal text-[#9CA3AF]">Use this while you're at the property.</span>
         </div>
       </div>
-      <label className={labelClass}>
-        Description
+      <CoreField k="description" label="Description" className={labelClass}>
         <textarea rows={4} value={form.description} onChange={set("description")} placeholder="What makes it a great home - layout, light, amenities, neighbourhood" className={`${inputClass} h-auto py-2`} />
-      </label>
+      </CoreField>
       {form.transactionType === "rent" && !editing && (
         <label className="flex items-center gap-2 text-[14px] text-[#374151]">
           <input type="checkbox" checked={form.pg} onChange={set("pg")} className="h-4 w-4 accent-[#E51C23]" />
@@ -283,6 +278,7 @@ function ListingForm({ existing, onSaved, onCancel }) {
         </div>
       )}
       {!editing && <FeeConsent kind="listing" accessToken={accessToken} value={mandate} onChange={setMandate} />}
+      <DynamicFields entityType="property" city={form.city} core={form} values={custom} onChange={setCustom} />
       {error && <Notice tone="red">{error}</Notice>}
       <div className="flex flex-wrap gap-2">
         <button type="submit" disabled={saving || (!editing && !mandate.ready)} className={primaryButton}>
@@ -293,6 +289,7 @@ function ListingForm({ existing, onSaved, onCancel }) {
         </button>
       </div>
     </form>
+    </CoreFieldsProvider>
   );
 }
 

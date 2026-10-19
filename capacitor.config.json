@@ -1,0 +1,11 @@
+{
+  "appId": "com.propertyserch.field",
+  "appName": "PropertySerch Field",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "useLegacyBridge": true
+  }
+}

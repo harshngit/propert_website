@@ -8,6 +8,7 @@ import { listOpportunities, listPublicOpportunities } from "../api/opportunities
 import { normalizeProperty } from "../utils/normalizeProperty";
 import { normalizeOpportunity } from "../utils/normalizeOpportunity";
 import { useAuth } from "../context/AuthContext";
+import { CustomFieldFilters } from "../components/DynamicFields";
 import { useFavourites } from "../hooks/useFavourites";
 import { portal } from "../api/portal";
 import EnquiryModal from "../components/EnquiryModal";
@@ -392,7 +393,7 @@ function AmenityChip({ label, active = false, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      style={{ width: widthByLabel[label] || "49px" }}
+      style={widthByLabel[label] ? { width: widthByLabel[label] } : undefined}
       className={[
         "inline-flex h-[30px] items-center justify-center rounded-full px-[12px] text-[12px] font-medium transition",
         active
@@ -1674,7 +1675,15 @@ function PropertiesPage({
   const [selectedFurnishing, setSelectedFurnishing] = React.useState([]);
   const [selectedParking, setSelectedParking] = React.useState([]);
   const [verifiedOnly, setVerifiedOnly] = React.useState(false);
+  // Filters on fields added in the Dynamic Field Manager (marked as search filters).
+  const [customFilters, setCustomFilters] = React.useState({});
   const [reraApproved, setReraApproved] = React.useState(false);
+  // Module 28: area, lister trust, urgency and deal type (the API already supports them).
+  const [areaMin, setAreaMin] = React.useState("");
+  const [areaMax, setAreaMax] = React.useState("");
+  const [minTrust, setMinTrust] = React.useState("");
+  const [urgentOnly, setUrgentOnly] = React.useState(false);
+  const [dealType, setDealType] = React.useState("");
   const [selectedAmenities, setSelectedAmenities] = React.useState([]);
 
   const toggleSelection = (value, setter) => {
@@ -1704,6 +1713,12 @@ function PropertiesPage({
     if (selectedFurnishing.length) next.furnishing = selectedFurnishing.map((t) => DRAWER_VALUES.furnishing[t]).join(",");
     if (selectedParking.length) next.parking = selectedParking.map((p) => p.toLowerCase()).join(",");
     if (verifiedOnly) next.verified = true;
+    if (Number(areaMin) > 0) next.minArea = Number(areaMin);
+    if (Number(areaMax) > 0) next.maxArea = Number(areaMax);
+    if (minTrust) next.minTrust = Number(minTrust);
+    if (urgentOnly) next.urgency = "urgent";
+    if (dealType) next.dealType = dealType;
+    for (const [name, v] of Object.entries(customFilters)) next[`cf_${name}`] = v;
     if (reraApproved) next.rera = true;
     if (selectedAmenities.length) next.amenities = selectedAmenities.join(",");
     setAppliedFilters(next);
@@ -1727,6 +1742,12 @@ function PropertiesPage({
     setSelectedFurnishing([]);
     setSelectedParking([]);
     setVerifiedOnly(false);
+    setAreaMin("");
+    setAreaMax("");
+    setMinTrust("");
+    setUrgentOnly(false);
+    setDealType("");
+    setCustomFilters({});
     setReraApproved(false);
     setSelectedAmenities([]);
   };
@@ -2201,6 +2222,42 @@ function PropertiesPage({
                               </div>
                             </SidebarSection>
 
+                            {/* AREA */}
+                            <SidebarSection title="Area (sq ft)">
+                              <div className="flex w-full items-center gap-2">
+                                <input type="number" min="0" inputMode="numeric" placeholder="Min" aria-label="Minimum area in sq ft" value={areaMin} onChange={(e) => setAreaMin(e.target.value)} className="h-[40px] w-full rounded-[10px] border border-[#E5E7EB] px-3 text-[14px] text-[#111827] outline-none focus:border-[#E51C23]" />
+                                <span className="text-[13px] text-[#9CA3AF]">to</span>
+                                <input type="number" min="0" inputMode="numeric" placeholder="Max" aria-label="Maximum area in sq ft" value={areaMax} onChange={(e) => setAreaMax(e.target.value)} className="h-[40px] w-full rounded-[10px] border border-[#E5E7EB] px-3 text-[14px] text-[#111827] outline-none focus:border-[#E51C23]" />
+                              </div>
+                              {Number(areaMin) > 0 && Number(areaMax) > 0 && Number(areaMin) > Number(areaMax) && <p className="mt-1 text-[12px] text-[#B91C1C]">The minimum is more than the maximum.</p>}
+                            </SidebarSection>
+
+                            {/* DEAL TYPE */}
+                            <SidebarSection title="Deal type">
+                              <div className="flex flex-wrap gap-[8px]">
+                                {(effectivePurpose === "rent" ? [["rent", "Rent"], ["lease", "Lease"]] : [["resale", "Resale"], ["new_launch", "New launch"]]).map(([value, label]) => (
+                                  <AmenityChip key={value} label={label} active={dealType === value} onClick={() => setDealType((current) => (current === value ? "" : value))} />
+                                ))}
+                              </div>
+                            </SidebarSection>
+
+                            {/* LISTER TRUST */}
+                            <SidebarSection title="Lister trust score">
+                              <div className="flex flex-wrap gap-[8px]">
+                                {[["", "Any"], ["50", "50+"], ["70", "70+"], ["85", "85+"]].map(([value, label]) => (
+                                  <AmenityChip key={label} label={label} active={minTrust === value} onClick={() => setMinTrust(value)} />
+                                ))}
+                              </div>
+                            </SidebarSection>
+
+                            <div className="flex w-full items-center justify-between border-t border-[#F3F4F6] pt-4">
+                              <span className="text-[14px] font-semibold text-[#111827]">
+                                Urgent sales only
+                              </span>
+                              <Toggle on={urgentOnly} onClick={() => setUrgentOnly((current) => !current)} />
+                            </div>
+
+                            <CustomFieldFilters city={cityFilter} value={customFilters} onChange={setCustomFilters} />
                             <div className="flex h-[74px] w-full flex-col gap-4 border-t border-[#F3F4F6] pt-4">
                               <div className="flex w-full items-center justify-between">
                                 <span className="text-[14px] font-semibold text-[#111827]">
