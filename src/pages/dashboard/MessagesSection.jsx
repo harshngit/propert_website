@@ -86,8 +86,11 @@ function Conversation({ threadId, onBack, onActivity }) {
     setError(null);
     try {
       const m = await call(`/chat/threads/${threadId}/messages`, { method: "POST", body: { body } });
-      setItems((cur) => [...cur, m]);
-      lastId.current = m.id;
+      // The socket broadcast for this same message can reach this browser
+      // before this REST response does (sender is in the thread's room
+      // too) - dedupe the same way the socket handler does, or it shows twice.
+      lastId.current = Math.max(lastId.current, m.id);
+      setItems((cur) => (cur.some((c) => c.id === m.id) ? cur : [...cur, m]));
       setText("");
       onActivity();
     } catch (err) {
