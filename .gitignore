@@ -3,3 +3,8 @@ dist
 .vite
 .DS_Store
 Thumbs.db
+
+# Local env overrides (e.g. VITE_API_BASE_URL for pointing at a local backend)
+.env
+.env.*
+!.env.example

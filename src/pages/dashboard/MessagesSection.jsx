@@ -2,16 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
 import { Card, LoadState, Notice, SectionHeader, formatDate, linkButton, primaryButton, useLoad } from "./ui";
+import { getSocket } from "../../lib/socket";
 
 // Messages (Module 36): one conversation per enquiry with the lister and
 // your A R Buildwel representative, who is always part of it. Phone numbers,
 // emails and links cannot be sent - the representative connects you.
+// Live via Socket.IO (see ../../lib/socket.js) while a conversation is open;
+// a slow poll stays underneath as a resync fallback if the socket drops.
 
 const PARTY_TONE = { enquirer: "bg-[#EFF6FF] text-[#1D4ED8]", lister: "bg-[#FFFBEB] text-[#B45309]", representative: "bg-[#ECFDF5] text-[#047857]", staff: "bg-[#ECFDF5] text-[#047857]" };
 const time = (v) => new Date(v).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 
 function Conversation({ threadId, onBack, onActivity }) {
-  const { accessToken } = useAuth();
+  const { user, accessToken } = useAuth();
   const [thread, setThread] = useState(null);
   const [items, setItems] = useState([]);
   const [text, setText] = useState("");
@@ -33,6 +36,9 @@ function Conversation({ threadId, onBack, onActivity }) {
         call(`/chat/threads/${threadId}/read`, { method: "POST" }).then(onActivity).catch(() => {});
       })
       .catch((err) => live && setError(err.message));
+
+    // Fallback resync only - the socket below delivers new messages
+    // instantly while connected; this just covers a dropped connection.
     const poll = setInterval(() => {
       if (document.hidden) return;
       call(`/chat/threads/${threadId}/messages?after=${lastId.current}`)
@@ -43,8 +49,32 @@ function Conversation({ threadId, onBack, onActivity }) {
           call(`/chat/threads/${threadId}/read`, { method: "POST" }).catch(() => {});
         })
         .catch(() => {});
-    }, 5000);
-    return () => { live = false; clearInterval(poll); };
+    }, 30000);
+
+    const socket = getSocket();
+    socket.emit("thread:join", threadId);
+    const onMessage = (m) => {
+      if (!live) return;
+      lastId.current = Math.max(lastId.current, m.id);
+      // `mine` on the broadcast is relative to whoever sent it, not this
+      // viewer - recompute it from senderId before storing.
+      const mine = m.senderId === user?.id;
+      setItems((cur) => (cur.some((c) => c.id === m.id) ? cur : [...cur, { ...m, mine }]));
+      call(`/chat/threads/${threadId}/read`, { method: "POST" }).catch(() => {});
+    };
+    const onThreadStatus = (s) => {
+      if (live && s.threadId === threadId) setThread((cur) => (cur ? { ...cur, status: s.status, closedReason: s.closedReason } : cur));
+    };
+    socket.on("chat:message", onMessage);
+    socket.on("chat:thread_status", onThreadStatus);
+
+    return () => {
+      live = false;
+      clearInterval(poll);
+      socket.emit("thread:leave", threadId);
+      socket.off("chat:message", onMessage);
+      socket.off("chat:thread_status", onThreadStatus);
+    };
   }, [threadId, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { bottom.current?.scrollIntoView({ block: "nearest" }); }, [items.length]);
@@ -116,6 +146,14 @@ export default function MessagesSection() {
   const startable = useLoad((token) => apiRequest("/chat/startable", { token }).then((r) => r.data));
   const [active, setActive] = useState(null);
   const [error, setError] = useState(null);
+
+  // Keep unread badges live for threads that aren't currently open.
+  useEffect(() => {
+    const socket = getSocket();
+    const onBump = () => threads.reload();
+    socket.on("chat:unread_bump", onBump);
+    return () => socket.off("chat:unread_bump", onBump);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const start = async (leadId) => {
     setError(null);
     try {

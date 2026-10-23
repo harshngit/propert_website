@@ -4,6 +4,7 @@ import SiteHeader from "../../components/SiteHeader";
 import CompanyFooterSection from "../../components/home/CompanyFooterSection";
 import { useAuth } from "../../context/AuthContext";
 import { portal } from "../../api/portal";
+import { getSocket } from "../../lib/socket";
 import { LoadState, CRM_URL } from "./ui";
 import OnboardingPanel from "./OnboardingPanel";
 import OverviewSection from "./OverviewSection";
@@ -97,6 +98,16 @@ function DashboardPage() {
     if (accessToken && isCustomer) loadProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, isCustomer]);
+
+  // One shared real-time connection for the session (chat messages, unread
+  // badges) - connects while signed in, disconnects on sign-out. The route
+  // itself doesn't remount between dashboard sections, so this only runs
+  // when accessToken actually changes.
+  useEffect(() => {
+    if (accessToken) getSocket().connect();
+    else getSocket().disconnect();
+    return () => getSocket().disconnect();
+  }, [accessToken]);
 
   if (isReady && !isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
 
