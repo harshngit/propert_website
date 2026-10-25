@@ -8,7 +8,7 @@ import { Badge, Card, LoadState, Notice, SectionHeader, formatDate, linkButton, 
 // held about you, see what you consented to, and ask for deletion. Deletion
 // is an anonymisation after a 30-day notice that you can cancel.
 
-const CONSENT_LABEL = { collection: "Collecting your details", usage: "Using them to run your enquiries and deals", sharing: "Sharing them with your assigned representative", retention: "Keeping them while your account is active", rights: "Your rights over your data", security: "How they are protected", marketing: "Offers and marketing messages (optional)" };
+const CONSENT_LABEL = { collection: "Collecting your details", usage: "Using them to run your enquiries and deals", sharing: "Sharing them with your assigned representative", retention: "Keeping them while your account is active", rights: "Your rights over your data", security: "How they are protected", marketing: "Offers and marketing messages (optional)", personalised_matching: "Personalised matching from what you view and shortlist (optional)" };
 
 export default function PrivacySection() {
   const { accessToken } = useAuth();
@@ -44,6 +44,7 @@ export default function PrivacySection() {
     a.click();
   }, "Your data has been downloaded.");
   const marketing = consents.items.find((c) => c.category === "marketing");
+  const matching = consents.items.find((c) => c.category === "personalised_matching");
 
   return (
     <div className="space-y-5">
@@ -76,7 +77,9 @@ export default function PrivacySection() {
         <div className="mt-3 flex flex-wrap gap-4">
           {!consents.upToDate && <button type="button" disabled={busy} className={linkButton} onClick={() => run(() => apiRequest("/user/consent", { method: "POST", token: accessToken, body: {} }), "Consent recorded.")}>I agree to the current privacy policy</button>}
           {marketing && <button type="button" disabled={busy} className={linkButton} onClick={() => run(() => apiRequest("/user/consent", { method: "POST", token: accessToken, body: { categories: ["marketing"], granted: !marketing.granted } }), marketing.granted ? "Marketing messages turned off." : "Marketing messages turned on.")}>{marketing.granted ? "Stop marketing messages" : "Allow marketing messages"}</button>}
+          {matching && <button type="button" disabled={busy} className={linkButton} onClick={() => run(() => apiRequest("/user/consent", { method: "POST", token: accessToken, body: { categories: ["personalised_matching"], granted: !matching.granted } }), matching.granted ? "Personalised matching turned off." : "Personalised matching turned on.")}>{matching.granted ? "Stop personalised matching" : "Allow personalised matching"}</button>}
         </div>
+        <p className="mt-3 text-[12px] leading-5 text-[#6B7280]">Personalised matching uses the deals and properties you view, shortlist and ask about to rank what we show you. It is off unless you allow it, and you can stop it any time - your stated preferences are used either way.</p>
       </Card>
 
       <Card>
