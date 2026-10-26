@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
+import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
 import {
   Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, SectionHeader, StatCard, formatDate, formatINR,
@@ -163,6 +164,8 @@ function HniSection() {
         <StatCard label="Shortlisted deals" value={d.shortlistCount ?? 0} hint={`${(d.activeInterests || []).length} active interest(s)`} />
       </div>
 
+      <PortfolioIdeas />
+
       <div>
         <div className="mb-3 flex items-end justify-between">
           <p className="font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold text-[#111827]">Curated deals for you</p>
@@ -273,3 +276,61 @@ function HniSection() {
 }
 
 export default HniSection;
+
+// Engine 6: a budget-based portfolio suggestion from live listings in the
+// better-scored areas (rule-based, indicative - not investment advice).
+function PortfolioIdeas() {
+  const { accessToken } = useAuth();
+  const [form, setForm] = useState({ budget: "", city: "", risk: "balanced" });
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const run = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const lakh = Number(form.budget);
+      const r = await apiRequest("/market-intel/portfolio", { method: "POST", token: accessToken, body: { budget: Math.round(lakh * 100000), city: form.city || undefined, risk: form.risk } });
+      setResult(r.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Card>
+      <p className="font-['Plus_Jakarta_Sans'] text-[18px] font-extrabold text-[#111827]">Portfolio ideas for your budget</p>
+      <p className="mt-1 text-[13px] text-[#6B7280]">Live listings in the areas our market data scores best, spread across localities.</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-4">
+        <label className={labelClass}>Budget (lakh)<input className={inputClass} type="number" min="5" value={form.budget} onChange={(e) => setForm((f) => ({ ...f, budget: e.target.value }))} placeholder="e.g. 150" /></label>
+        <label className={labelClass}>City (optional)<input className={inputClass} list="hni-cities" value={form.city} onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))} /></label>
+        <label className={labelClass}>Approach
+          <select className={inputClass} value={form.risk} onChange={(e) => setForm((f) => ({ ...f, risk: e.target.value }))}>
+            <option value="conservative">Steady (easy to sell, rental income)</option>
+            <option value="balanced">Balanced</option>
+            <option value="growth">Growth (rising areas)</option>
+          </select>
+        </label>
+        <div className="flex items-end"><button type="button" className={primaryButton} disabled={busy || !(Number(form.budget) >= 5)} onClick={run}>{busy ? "Working…" : "Suggest"}</button></div>
+      </div>
+      <datalist id="hni-cities">{CITY_SUGGESTIONS.map((c) => <option key={c} value={c} />)}</datalist>
+      {error && <div className="mt-3"><Notice tone="red">{error}</Notice></div>}
+      {result && (
+        <div className="mt-4 space-y-2">
+          {!result.holdings.length ? <p className="text-[14px] text-[#6B7280]">{result.note}</p> : result.holdings.map((h) => (
+            <div key={h.propertyId} className="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[#E5E7EB] p-3">
+              <div className="min-w-0">
+                <Link to={`/properties/${h.propertyId}`} className="text-[15px] font-bold text-[#111827] hover:underline" data-no-translate>{h.title}</Link>
+                <p className="text-[12px] text-[#6B7280]" data-no-translate>{[h.locality, h.city].filter(Boolean).join(", ")} · {h.area.recommendation}{h.area.trendPercent != null ? ` · ${h.area.trendPercent > 0 ? "+" : ""}${h.area.trendPercent}%/yr` : ""}</p>
+              </div>
+              <div className="text-right"><p className="text-[15px] font-bold text-[#111827]">{formatINR(h.price)}</p><p className="text-[12px] text-[#6B7280]">{h.sharePercent}% of the plan{h.indicativeMonthlyRent ? ` · ~${formatINR(h.indicativeMonthlyRent)}/mo rent` : ""}</p></div>
+            </div>
+          ))}
+          {result.holdings.length > 0 && <p className="text-[13px] text-[#374151]">Invested {formatINR(result.invested)} of {formatINR(result.budget)}{result.indicativeYieldPercent != null ? ` · indicative rental yield ${result.indicativeYieldPercent}%` : ""}. {result.note}</p>}
+          <p className="text-[11px] italic text-[#6B7280]">{result.disclaimer}</p>
+        </div>
+      )}
+    </Card>
+  );
+}

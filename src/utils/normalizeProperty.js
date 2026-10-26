@@ -58,6 +58,7 @@ export function normalizeProperty(p) {
     // Public API responses carry locality/city only - full addresses stay private.
     location: buildLocation([p.locality, p.city]),
     city: p.city,
+    locality: p.locality || null,
     details: p.bedrooms != null ? `${p.bedrooms} BHK` : typeLabel(p.property_type),
     area: p.area_sqft != null ? `${p.area_sqft} sq.ft` : undefined,
     image,

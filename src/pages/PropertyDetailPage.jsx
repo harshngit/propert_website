@@ -17,6 +17,7 @@ import { CustomFieldList } from "../components/DynamicFields";
 import { useFavourites } from "../hooks/useFavourites";
 import { useAuth } from "../context/AuthContext";
 import { portal } from "../api/portal";
+import AreaOutlook from "../components/AreaOutlook";
 import MatchBadge from "../components/MatchBadge";
 
 function LocationIcon({ className = "text-[#E51C23]" }) {
@@ -595,6 +596,8 @@ function PropertyDetailPage() {
                 </div>
               ))}
             </div>
+
+            {realListing && <AreaOutlook city={property.city} locality={property.locality} />}
 
             <section className="mt-8 w-full lg:mt-10 lg:max-w-[1024px]">
               <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
