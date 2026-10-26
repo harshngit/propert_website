@@ -187,7 +187,7 @@ function InstitutionalAssetPage() {
                 <ul className="mt-2 grid gap-1 sm:grid-cols-2">{dd.checklist.map((c) => <li key={c.type} className={`text-[13px] ${c.present ? "text-[#065F46]" : "text-[#6B7280]"}`}>{c.present ? "✓" : "○"} {c.label}</li>)}</ul>
                 <ul className="mt-3 space-y-1">{dd.review.map((r) => <li key={r.key} className="text-[13px] text-[#374151]"><b className={r.status === "ok" ? "text-[#065F46]" : r.status === "issue" ? "text-red-700" : "text-[#9CA3AF]"}>{r.status === "ok" ? "Checked" : r.status === "issue" ? "Issue raised" : "Pending"}</b> · {r.label}</li>)}</ul>
                 {dd.riskFlags.length > 0 && (
-                  <div className="mt-3 rounded-[12px] bg-[#FFFBEB] p-3 text-[13px] text-[#92400E]"><p className="font-bold">Points to review with your advisers</p><ul className="mt-1 list-disc pl-5">{dd.riskFlags.map((f, i) => <li key={i}>{f.detail}</li>)}</ul></div>
+                  <div className="mt-3 rounded-[12px] bg-[#FFFBEB] p-3 text-[13px] text-[#92400E]"><p className="font-bold">Points to review with your advisers</p><ul className="mt-1 list-disc pl-5">{dd.riskFlags.map((f, i) => <li key={i}>{f.detail}</li>)}</ul>{dd.flagsNotice && <p className="mt-2 text-[12px]">{dd.flagsNotice}</p>}</div>
                 )}
               </section>
             )}
