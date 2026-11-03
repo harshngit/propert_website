@@ -1,3 +1,4 @@
+import { useCitySearchTags } from "../hooks/useCities";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
@@ -497,16 +498,9 @@ function CareersPromoSection() {
 
 function GuidesSearchBenefitsSection() {
   const guideItems = useGuideCards(2);
-  const searchTags = [
-    "Flats for Sale in Mumbai",
-    "Luxury Villas in Goa",
-    "Offices in Gurgaon",
-    "Plot for sale in Bangalore",
-    "Rent in South Delhi",
-    "Penthouses in Pune",
-  ];
+  const searchTags = useCitySearchTags();
 
-  const benefits = ["100% Verified Users Only", "Private Contact Protection", "End-to-End Assistance"];
+  const benefits = ["Verified Users", "Private Contact Protection", "End-to-End Assistance"];
 
   return (
     <section className="w-full bg-white">
@@ -547,7 +541,7 @@ function GuidesSearchBenefitsSection() {
             </h3>
 
             <div className="mt-6 flex flex-wrap gap-2.5">
-              {searchTags.map((tag) => (
+              {searchTags.map(({ label: tag }) => (
                 <span
                   key={tag}
                   className="inline-flex h-[28px] items-center rounded-full bg-[#F3F4F6] px-4 text-[12px] font-medium text-[#6B7280]"

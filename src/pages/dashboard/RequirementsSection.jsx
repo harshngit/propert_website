@@ -6,7 +6,7 @@ import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import { useOptions } from "../../lib/siteConfig";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
+  Badge, CityOptions, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
 } from "./ui";
 import FeeConsent, { EMPTY_CONSENT, MandateStatus } from "./FeeConsent";
@@ -121,11 +121,9 @@ function RequirementForm({ profile, onSaved, onCancel }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <CoreField k="city" label="City *" className={labelClass}>
-          <input required list="req-cities" value={form.city} onChange={set("city")} placeholder="e.g. Gurugram" className={inputClass} />
+          <input required list="req-cities" value={form.city} onChange={set("city")} placeholder="Your city" className={inputClass} />
           <datalist id="req-cities">
-            {CITY_SUGGESTIONS.map((c) => (
-              <option key={c} value={c} />
-            ))}
+            <CityOptions />
           </datalist>
         </CoreField>
         <CoreField k="localities" label="Preferred localities" className={labelClass}>

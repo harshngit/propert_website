@@ -15,6 +15,55 @@ const STATUS = { open: ["Looking for options", "blue"], option_chosen: ["Option 
 const money = (v) => (v === null || v === undefined ? "—" : formatINR(v));
 const gapText = (d) => (d === null || d === undefined ? null : d > 0 ? <>You add <b>{money(d)}</b></> : d < 0 ? <>You keep <b>{money(-d)}</b></> : <>Equal value</>);
 
+// #14 optional AI condition check on the estimate, paid from the owner's AI
+// credits. Shown beside the estimate - the estimate itself never changes.
+function AiEstimate({ id, review: r, open, onDone }) {
+  const { accessToken } = useAuth();
+  const wallet = useLoad((token) => apiRequest("/ai-credits/wallet", { token }).then((x) => x.data).catch(() => null), []);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  const price = wallet.data?.prices?.find((p) => p.key === "exchange_estimate_adjust")?.credits;
+  if (!r && (wallet.loading || price == null)) return null; // switched off, or still loading
+  const short = price != null && (wallet.data?.balance ?? 0) < price;
+  const ask = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await apiRequest(`/exchange/requests/${id}/ai-estimate`, { method: "POST", token: accessToken });
+      wallet.reload();
+      onDone();
+    } catch (err) {
+      setError(err.status === 402 ? "Not enough AI credits for this check." : err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="mt-3 rounded-[10px] border border-[#E5E7EB] px-3 py-3 text-[13px]">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="font-bold text-[#111827]">AI-assisted indicative estimate{r ? <>: <span data-no-translate>{money(r.adjustedEstimate)}</span> ({r.adjustmentPercent > 0 ? "+" : ""}{r.adjustmentPercent}%)</> : ""}</p>
+        {open && price != null && (
+          <button type="button" className={secondaryButton} disabled={busy || short} onClick={ask}>
+            {busy ? "Checking…" : r ? "Check again" : "AI condition check"} · {price} credits
+          </button>
+        )}
+      </div>
+      {r ? (
+        <>
+          {r.stale && <p className="mt-1 text-[#B45309]">Your estimate has changed since this check - run it again for the current figure.</p>}
+          <p className="mt-1 text-[#4B5563]">{r.reasoning}</p>
+          {r.factors?.length > 0 && <ul className="mt-1 list-disc pl-5 text-[#4B5563]">{r.factors.map((f, i) => <li key={i}>{f.factor}: {f.note}</li>)}</ul>}
+          <p className="mt-2 text-[12px] italic text-[#6B7280]">{r.disclaimer}</p>
+        </>
+      ) : (
+        <p className="mt-1 text-[#6B7280]">Optional: an AI reading of your property's age, floor, furnishing and description, paid from your AI credits (balance {wallet.data?.balance ?? 0}). Your estimate above stays as it is.</p>
+      )}
+      {short && !error && <p className="mt-1 text-[12px] text-[#B91C1C]">Not enough AI credits - ask your A R Buildwel representative about adding credits.</p>}
+      {error && <p className="mt-1 text-[12px] text-[#B91C1C]">{error}</p>}
+    </div>
+  );
+}
+
 function RequestForm({ listings, meta, onDone, onCancel }) {
   const { accessToken } = useAuth();
   const free = listings.filter((l) => !l.inExchange);
@@ -147,6 +196,7 @@ function RequestDetail({ id, onBack }) {
           <div><p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#6B7280]">Estimated gap</p><p className="font-['Plus_Jakarta_Sans'] text-[22px] font-extrabold text-[#111827]">{g.estimatedGap === null ? "—" : g.estimatedGap >= 0 ? money(g.estimatedGap) : `+${money(-g.estimatedGap)}`}</p><p className="text-[11px] text-[#6B7280]">{g.estimatedGap === null ? "" : g.estimatedGap >= 0 ? "You would add this" : "Surplus you would keep"}</p></div>
         </div>
         <p className="mt-3 text-[12px] leading-5 text-[#6B7280]">{g.valuationDisclaimer}</p>
+        {g.oldPropertyValuation > 0 && <AiEstimate id={id} review={g.aiEstimate} open={["open", "option_chosen", "in_progress"].includes(d.status)} onDone={state.reload} />}
         {d.representative && <p className="mt-3 rounded-[10px] bg-[#F9FAFB] px-3 py-2 text-[13px] text-[#111827]">Your representative: <b data-no-translate>{d.representative.name}</b>{d.representative.platformNumber ? <span data-no-translate> · {d.representative.platformNumber}</span> : null}</p>}
       </Card>
 

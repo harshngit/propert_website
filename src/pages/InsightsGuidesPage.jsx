@@ -1,3 +1,4 @@
+import { apiRequest } from "../api/client";
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import DropdownLandingPage from "../components/DropdownLandingPage";
@@ -149,7 +150,7 @@ function CityGuideCard({ image, title, count, city }) {
         <h3 className="font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-[1.1] tracking-[-0.02em]">
           {title}
         </h3>
-        <p className="mt-1 text-[12px] font-medium text-white/65">{count} Deep-dive Guides</p>
+        <p className="mt-1 text-[12px] font-medium text-white/65">{count} live listing{count === 1 ? "" : "s"}</p>
 
         <Link
           to={buildCityPath(city)}
@@ -162,23 +163,31 @@ function CityGuideCard({ image, title, count, city }) {
   );
 }
 
+const CITY_GUIDE_IMAGES = ["/images/1st,4th.png", "/images/2nd.png", "/images/3rd.png"];
+
 function UltimateCityGuidesSection() {
-  const cities = [
-    { image: "/images/city-guide-mumbai.png", title: "Mumbai", city: "Mumbai", count: 42 },
-    { image: "/images/city-guide-delhi.png", title: "Delhi NCR", city: "Delhi", count: 35 },
-    { image: "/images/city-guide-bangalore.png", title: "Bangalore", city: "Bengaluru", count: 28 },
-    { image: "/images/city-guide-hyderabad.png", title: "Hyderabad", city: "Hyderabad", count: 22 },
-  ];
+  // Cities with live listings (real counts). Hidden when there are none.
+  const [cities, setCities] = React.useState([]);
+  React.useEffect(() => {
+    let alive = true;
+    apiRequest("/search/home")
+      .then((r) => alive && setCities((r.data?.topCities || []).slice(0, 4).map((c, i) => ({ image: CITY_GUIDE_IMAGES[i % CITY_GUIDE_IMAGES.length], title: c.city, city: c.city, count: c.listings }))))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+  if (!cities.length) return null;
 
   return (
     <section className="w-full bg-white">
       <div className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 xl:px-[9px]">
         <div className="mb-6 max-w-[900px]">
           <h2 className="font-['Plus_Jakarta_Sans'] text-[24px] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#111827] sm:text-[32px]">
-            Ultimate City Guides
+            Explore by City
           </h2>
           <p className="mt-2 text-[14px] leading-[24px] text-[#667085]">
-            Master the micro-markets with our comprehensive neighborhood intelligence reports
+            Cities with live listings on PropertySerch
           </p>
         </div>
 

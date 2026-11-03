@@ -1,8 +1,10 @@
+import { useCitySearchTags } from "../../hooks/useCities";
 import React from "react";
 import GuideCard from "../GuideCard";
-import { footerColumns, guideItems, searchTags, whyItems } from "../../data/homeContent";
+import { footerColumns, guideItems, whyItems } from "../../data/homeContent";
 
 function ResourcesFooterSection() {
+  const searchTags = useCitySearchTags();
   return (
     <>
       <div className="h-11" />
@@ -21,7 +23,7 @@ function ResourcesFooterSection() {
           <div className="xl:-translate-x-6">
             <h3 className="text-[20px] font-black text-slate-900">Popular Searches</h3>
             <div className="mt-5 flex flex-wrap gap-2.5">
-              {searchTags.map((tag) => (
+              {searchTags.map(({ label: tag }) => (
                 <span
                   key={tag}
                   className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-[11px] text-slate-500"

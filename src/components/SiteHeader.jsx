@@ -1,10 +1,11 @@
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useBranding } from "../lib/branding";
+import { useCities } from "../hooks/useCities";
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSiteContent } from "../lib/siteConfig";
-import { CITY_OPTIONS, buildCityPath, fromCitySlug } from "../utils/city";
+import { buildCityPath, fromCitySlug } from "../utils/city";
 
 const navItems = [
   { label: "Buy", to: "/buy", widthClass: "w-[47px]" },
@@ -47,28 +48,11 @@ const navDropdowns = {
   ],
 };
 
+// Plain facts about the service - no offers, prices or launches unless they are real.
 const tickerItems = [
-  {
-    badge: "Offer",
-    badgeClassName: "bg-[#FACC15] text-[#111827]",
-    text: "Limited Time Offer: 0% Brokerage on Delhi Collection",
-    textWidthClass: "w-[342px]",
-    itemWidthClass: "w-[402px]",
-  },
-  {
-    badge: "New",
-    badgeClassName: "bg-[#E31E24] text-white",
-    text: "New Launch: A R Buildwel starting at \u20B91.2 Cr in New Delhi",
-    textWidthClass: "w-[356px]",
-    itemWidthClass: "w-[405px]",
-  },
-  {
-    badge: "Offer",
-    badgeClassName: "bg-[#FACC15] text-[#111827]",
-    text: "Limited Time Offer: 0% Brokerage on West Mumbai Collection",
-    textWidthClass: "w-[398px]",
-    itemWidthClass: "w-[458px]",
-  },
+  { badge: "Private", badgeClassName: "bg-[#FACC15] text-[#111827]", text: "Your contact details stay private on every enquiry" },
+  { badge: "Support", badgeClassName: "bg-[#E31E24] text-white", text: "An A R Buildwel representative handles every enquiry" },
+  { badge: "Post", badgeClassName: "bg-[#FACC15] text-[#111827]", text: "Post your requirement or property on the website, WhatsApp or Telegram" },
 ];
 
 const CONSOLE_URL = "https://property-dashboard-one-navy.vercel.app/";
@@ -132,12 +116,12 @@ function ScrollingTicker() {
       <div className="ticker-track flex w-max items-center gap-6">
         {track.map((item, index) => (
           <React.Fragment key={`${item.badge}-${item.text}-${index}`}>
-            <div className={`ticker-item flex h-5 shrink-0 items-center gap-3 ${item.itemWidthClass}`}>
+            <div className={`ticker-item flex h-5 shrink-0 items-center gap-3 w-max`}>
               <TickerBadge className={item.badgeClassName}>{item.badge}</TickerBadge>
               <span
                 className={[
                   "flex h-5 items-center font-['Plus_Jakarta_Sans'] text-[14px] font-semibold leading-5 tracking-[-0.35px] text-white",
-                  item.textWidthClass,
+                  "whitespace-nowrap",
                 ].join(" ")}
               >
                 {item.text}
@@ -202,6 +186,7 @@ function DropdownPanel({ items, className = "", isOpen, onSelect }) {
 }
 
 function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
+  const cities = useCities();
   return (
     <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <button
@@ -215,7 +200,7 @@ function CitySelector({ isOpen, onEnter, onLeave, selectedCity, onSelect }) {
       </button>
 
       <DropdownPanel
-        items={CITY_OPTIONS}
+        items={cities}
         isOpen={isOpen}
         onSelect={onSelect}
         className="left-1/2 -translate-x-1/2"
@@ -450,7 +435,8 @@ function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileCityOpen, setMobileCityOpen] = React.useState(false);
   const [mobileNavOpen, setMobileNavOpen] = React.useState(null);
-  const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "Mumbai";
+  const mobileCities = useCities();
+  const selectedCity = params.citySlug ? fromCitySlug(params.citySlug) : searchParams.get("city") || "City";
   const hasSelectedCity = Boolean(params.citySlug || searchParams.get("city"));
   const cityLabel = location.pathname === "/" ? "City" : selectedCity;
 
@@ -619,7 +605,7 @@ function SiteHeader() {
 
             {mobileCityOpen ? (
               <div className="mt-3 flex flex-wrap gap-2">
-                {CITY_OPTIONS.map((city) => (
+                {mobileCities.map((city) => (
                   <button
                     key={city}
                     type="button"

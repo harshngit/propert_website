@@ -1,3 +1,4 @@
+import { useCities } from "../../hooks/useCities";
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -17,10 +18,11 @@ export const secondaryButton =
   "inline-flex h-[42px] items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white px-4 font-['Plus_Jakarta_Sans'] text-[14px] font-semibold text-[#374151] transition hover:border-[#D1D5DB] hover:bg-slate-50 disabled:opacity-60";
 export const linkButton = "font-['Plus_Jakarta_Sans'] text-[13px] font-bold text-[#E51C23] transition hover:text-red-700 disabled:opacity-50";
 
-export const CITY_SUGGESTIONS = [
-  "Delhi", "Gurugram", "Noida", "Greater Noida", "Ghaziabad", "Faridabad", "Mumbai", "Navi Mumbai", "Thane", "Pune",
-  "Bengaluru", "Hyderabad", "Chennai", "Kolkata", "Ahmedabad", "Jaipur", "Chandigarh", "Lucknow", "Indore", "Kochi",
-];
+// <datalist> options from the live cities (master data).
+export function CityOptions() {
+  const cities = useCities();
+  return cities.map((c) => <option key={c} value={c} />);
+}
 
 export const PROPERTY_TYPES = [
   { value: "apartment", label: "Apartment / Flat" },

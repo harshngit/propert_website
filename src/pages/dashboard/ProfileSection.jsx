@@ -3,7 +3,7 @@ import DynamicFields, { RecordFields, fieldErrors, toPayload } from "../../compo
 import { Link } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
-import { CITY_SUGGESTIONS, CRM_URL, Card, Notice, PROPERTY_TYPES, SectionHeader, formatDate, inputClass, labelClass, primaryButton, secondaryButton, useLoad } from "./ui";
+import { CityOptions, CRM_URL, Card, Notice, PROPERTY_TYPES, SectionHeader, formatDate, inputClass, labelClass, primaryButton, secondaryButton, useLoad } from "./ui";
 
 // Profile & Referral: portal roles, buyer / tenant preferences (used for
 // matching), the permanent referral code with one-tap WhatsApp share
@@ -269,11 +269,9 @@ function ProfileSection({ profile, onProfileChange }) {
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
               <label className={labelClass}>
                 Preferred cities / localities
-                <input list="profile-cities" value={form.locations} onChange={set("locations")} placeholder="Gurugram, Noida" className={inputClass} />
+                <input list="profile-cities" value={form.locations} onChange={set("locations")} placeholder="Cities, separated by commas" className={inputClass} />
                 <datalist id="profile-cities">
-                  {CITY_SUGGESTIONS.map((c) => (
-                    <option key={c} value={c} />
-                  ))}
+                  <CityOptions />
                 </datalist>
               </label>
               <label className={labelClass}>

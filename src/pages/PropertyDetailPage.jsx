@@ -3,9 +3,8 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import PropertyGallery from "../components/PropertyGallery";
-import { propertyResults } from "../data/propertyResults";
 import { buildPropertyDetailPath } from "../utils/propertySearch";
-import { getPropertyById } from "../api/properties";
+import { getPropertyById, searchProperties } from "../api/properties";
 import { normalizeProperty } from "../utils/normalizeProperty";
 import EnquiryModal from "../components/EnquiryModal";
 import GuestInterestModal from "../components/GuestInterestModal";
@@ -134,7 +133,8 @@ function formatRupeeValue(value) {
   return String(value).replace(/^₹\s*/, "");
 }
 
-const AMENITY_LIFESTYLE = [
+// Icons for common amenities; a listing shows only the amenities it has.
+const AMENITY_ICONS = [
   {
     label: "Gymnasium",
     icon: <img src="/icons/gym.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
@@ -168,68 +168,8 @@ const AMENITY_LIFESTYLE = [
     icon: <img src="/icons/wifi.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain sm:h-7 sm:w-7" />,
   },
 ];
-const FAQS = [
-  {
-    question: "Is this project RERA registered?",
-    answer:
-      "Yes, the project includes RERA details in the listing and the number is shown in the Property Details section for quick reference.",
-  },
-  {
-    question: "What are the maintenance charges?",
-    answer:
-      "Maintenance charges depend on the society and final handover terms. Please use the enquiry form to request the latest estimate.",
-  },
-  {
-    question: "Are there any nearby schools?",
-    answer:
-      "Yes, the neighborhood has multiple schools, parks, and daily convenience options within easy driving distance.",
-  },
-];
-
-const SIMILAR_PROPERTIES = [
-  {
-    title: "Emaar Palm Heights",
-    location: "Sector 77, Gurgaon",
-    price: "₹1.45 Cr",
-    rate: "₹12,400/sq.ft",
-    details: "3 BHK",
-    sqft: "1850 sqft",
-    image: "/images/1st,4th.png",
-    featured: true,
-    verified: true,
-  },
-  {
-    title: "Godrej Woodscapes",
-    location: "Whitefield, Bangalore",
-    price: "₹85 Lakh",
-    rate: "₹6,200/sq.ft",
-    details: "2 BHK",
-    sqft: "1245 sqft",
-    image: "/images/2nd.png",
-    badge: "NEW LAUNCH",
-  },
-  {
-    title: "Oberoi Sky City",
-    location: "Borivali East, Mumbai",
-    price: "₹4.2 Cr",
-    rate: "₹18,500/sq.ft",
-    details: "4 BHK",
-    sqft: "2600 sqft",
-    image: "/images/3rd.png",
-    verified: true,
-  },
-  {
-    title: "Emaar Palm Heights",
-    location: "Sector 77, Gurgaon",
-    price: "₹1.45 Cr",
-    rate: "₹12,400/sq.ft",
-    details: "3 BHK",
-    sqft: "1850 sqft",
-    image: "/images/1st,4th.png",
-    featured: true,
-    verified: true,
-  },
-];
+const titleWords = (v) => String(v || "").replace(/[_-]+/g, " ").replace(/^./, (c) => c.toUpperCase());
+const amenityIcon = (name) => AMENITY_ICONS.find((a) => { const l = a.label.toLowerCase().split(" ")[0]; const n = String(name).toLowerCase(); return n.includes(l) || l.includes(n); })?.icon || <span className="text-[16px] font-bold text-[#E51C23]">✓</span>;
 
 function SimilarPropertyCard({ item }) {
   const detailPath = buildPropertyDetailPath(item);
@@ -243,18 +183,14 @@ function SimilarPropertyCard({ item }) {
       aria-label={`${item.title} - ${item.location}`}
     >
       <div className="relative h-[195px] overflow-hidden sm:aspect-[1.18] sm:h-auto">
-        <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+        {item.image ? <img src={item.image} alt={item.title} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center bg-[#F3F4F6] text-[12px] text-[#9CA3AF]">No photos yet</div>}
         <div className="absolute left-3 top-3 flex items-center gap-2">
-          {item.featured ? (
+          {item.sponsored ? (
             <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
-              FEATURED
+              {item.sponsored.label}
             </span>
           ) : null}
-          {item.badge === "NEW LAUNCH" ? (
-            <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#F04444] px-3 text-[10px] font-bold leading-[15px] text-white">
-              NEW LAUNCH
-            </span>
-          ) : item.verified ? (
+          {item.verified ? (
             <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-[0_1px_2px_rgba(15,23,42,0.12)]">
               <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
                 <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
@@ -288,8 +224,8 @@ function SimilarPropertyCard({ item }) {
         <div className="mt-4 flex items-center gap-2 border-t border-[#F3F4F6] pt-3 text-[13px] font-semibold text-[#111827]">
           <BedIcon />
           <span>{item.details}</span>
-          <AreaIcon />
-          <span className="whitespace-nowrap">{item.sqft}</span>
+          {item.area && <AreaIcon />}
+          {item.area && <span className="whitespace-nowrap">{item.area}</span>}
         </div>
       </div>
     </Link>
@@ -299,12 +235,10 @@ function SimilarPropertyCard({ item }) {
 function PropertyDetailPage() {
   const { id } = useParams();
   const location = useLocation();
-  const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const { isFavourite, toggleFavourite } = useFavourites();
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [shareNote, setShareNote] = useState("");
-  const routeProperty = propertyResults.find((item) => String(item.id) === id);
   const [fetchedProperty, setFetchedProperty] = useState(null);
   const [fetchFailed, setFetchFailed] = useState(false);
   // Sec. 7.3: the signed-in buyer's real match against their requirements.
@@ -314,7 +248,9 @@ function PropertyDetailPage() {
     if (!accessToken || user?.role !== "customer" || !/^[0-9a-f-]{36}$/i.test(String(id))) return;
     portal.matchScores(accessToken, [id]).then((m) => setMatch(m?.[id] || null)).catch(() => setMatch(null));
   }, [accessToken, user?.role, id]);
-  const property = routeProperty || location.state?.property || fetchedProperty;
+  // The full listing always comes from the API; a card's route state only fills the gap while it loads.
+  const property = (String(fetchedProperty?.id) === String(id) ? fetchedProperty : null) || (String(location.state?.property?.id) === String(id) ? location.state.property : null);
+  const [similar, setSimilar] = useState([]);
   const isFavorite = property ? isFavourite(property.id) : false;
   const [guestOpen, setGuestOpen] = useState(false);
   const realListing = property && /^[0-9a-f-]{36}$/i.test(String(property.id));
@@ -356,12 +292,12 @@ function PropertyDetailPage() {
     setTimeout(() => setShareNote(""), 2500);
   };
 
-  // Real listings (a UUID id, not one of the small mock array's numeric
-  // ids) aren't in `propertyResults` and only arrive via route state when
-  // navigated to from a PropertyCard click - a direct visit/refresh needs
-  // to fetch it from the real backend instead.
   useEffect(() => {
-    if (routeProperty || location.state?.property || !id) return undefined;
+    setFetchFailed(false);
+    if (!/^[0-9a-f-]{36}$/i.test(String(id))) {
+      setFetchFailed(true);
+      return undefined;
+    }
     let cancelled = false;
     getPropertyById(id)
       .then((data) => {
@@ -373,7 +309,23 @@ function PropertyDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, routeProperty, location.state]);
+  }, [id]);
+
+  // Similar listings: live ones in the same city and type. Hidden when there are none.
+  useEffect(() => {
+    if (!realListing || !property?.city) return undefined;
+    let cancelled = false;
+    searchProperties({ city: property.city, propertyType: property.propertyType, limit: 5 })
+      .then((data) => {
+        if (!cancelled) setSimilar((data.items || []).map(normalizeProperty).filter((x) => x.id !== property.id).slice(0, 4));
+      })
+      .catch(() => {
+        if (!cancelled) setSimilar([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [realListing, property?.id, property?.city, property?.propertyType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!property && !fetchFailed) {
     return (
@@ -406,6 +358,33 @@ function PropertyDetailPage() {
     );
   }
 
+  // Everything below shows only what this listing actually has.
+  const areaLabel = property.carpetAreaSqft ? `${property.carpetAreaSqft} sq.ft` : property.area || null;
+  const keyFacts = [
+    property.reraNumber && { label: "RERA number", value: property.reraNumber },
+    property.builderName && { label: "Builder", value: property.builderName },
+    property.listingCategory && property.listingCategory !== "residential" && { label: "Category", value: titleWords(property.listingCategory) },
+  ].filter(Boolean);
+  const facts = [
+    property.details && { label: "Configuration", value: property.bedrooms != null && property.propertyType ? `${property.bedrooms} BHK ${titleWords(property.propertyType)}` : property.details, icon: <RedBedIcon /> },
+    areaLabel && { label: property.carpetAreaSqft ? "Carpet Area" : "Area", value: areaLabel, icon: <RedAreaIcon /> },
+    property.facing && { label: "Facing", value: titleWords(property.facing), icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" /> },
+    property.possessionStatus && { label: "Status", value: titleWords(property.possessionStatus), icon: <PromiseIcon /> },
+  ].filter(Boolean);
+  const details = [
+    property.floorNumber != null && { label: "Floor", value: property.totalFloors != null ? `${property.floorNumber} of ${property.totalFloors}` : String(property.floorNumber) },
+    property.bathrooms != null && { label: "Bathrooms", value: String(property.bathrooms) },
+    property.furnishing && { label: "Furnishing", value: titleWords(property.furnishing) },
+    property.parkingSpots != null && { label: "Parking", value: `${property.parkingSpots}${property.parkingType ? ` ${titleWords(property.parkingType)}` : ""}` },
+    property.ageOfProperty && { label: "Age of Property", value: titleWords(property.ageOfProperty) },
+    property.gatedCommunity === true && { label: "Gated Community", value: "Yes" },
+  ].filter(Boolean);
+  const marketFacts = [
+    property.annualAppreciationPercent != null && { label: "Annual Appreciation (indicative)", value: `${Number(property.annualAppreciationPercent) > 0 ? "+" : ""}${Number(property.annualAppreciationPercent)}%` },
+    property.estimatedRentMonthly != null && { label: "Estimated Rent (indicative)", value: `₹${Number(property.estimatedRentMonthly).toLocaleString("en-IN")} / mo` },
+    property.localityRating != null && { label: "Locality Rating", value: `${Number(property.localityRating)} / 5` },
+  ].filter(Boolean);
+
   return (
     <main className="min-h-screen w-full bg-white text-[#0F172A]">
       <SiteHeader />
@@ -418,41 +397,33 @@ function PropertyDetailPage() {
           <span aria-hidden="true" className="text-[#D1D5DB]">
             &gt;
           </span>
-          <Link
-            to="/properties?city=Mumbai"
-            className="font-normal text-[#9CA3AF] transition hover:text-[#111827]"
-          >
-            Mumbai
-          </Link>
-          <span aria-hidden="true" className="text-[#D1D5DB]">
-            &gt;
-          </span>
-          <Link
-            to="/properties?city=Mumbai&type=Flat"
-            className="font-normal text-[#9CA3AF] transition hover:text-[#111827]"
-          >
-            Flats
-          </Link>
-          <span aria-hidden="true" className="text-[#D1D5DB]">
-            &gt;
-          </span>
+          {property.city && (
+            <>
+              <Link to={`/properties?city=${encodeURIComponent(property.city)}`} className="font-normal text-[#9CA3AF] transition hover:text-[#111827]">
+                <span data-no-translate>{property.city}</span>
+              </Link>
+              <span aria-hidden="true" className="text-[#D1D5DB]">
+                &gt;
+              </span>
+            </>
+          )}
           <span className="font-semibold text-[#111827]">{property.title}</span>
         </nav>
       </section>
 
       <section className="mx-auto max-w-full px-0 py-0 sm:px-6 sm:py-6 lg:px-12 lg:py-10">
         <PropertyGallery
-          images={[
-            "/images/detail%201.png",
-            ...(property.images && property.images.length ? property.images : [property.image]),
-          ]}
+          images={property.images?.length ? property.images : property.image ? [property.image] : []}
           title={property.title}
           heroOverlay={
             <>
               <div className="absolute left-4 top-4 flex items-center gap-2">
+                {property.badge && property.badge !== "VERIFIED" && (
                 <span className="inline-flex h-[23px] items-center justify-center rounded-full bg-[#EF4444] px-3 text-[10px] font-bold leading-[15px] text-white">
-                  FEATURED
+                  {property.badge}
                 </span>
+                )}
+                {property.verified && (
                 <span className="inline-flex h-[23px] items-center gap-1 rounded-full bg-white px-3 text-[10px] font-bold leading-[15px] text-[#111827] shadow-sm">
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E41C23]">
                     <svg aria-hidden="true" viewBox="0 0 16 16" className="h-[10px] w-[10px]" fill="none">
@@ -467,6 +438,7 @@ function PropertyDetailPage() {
                   </span>
                   <span>VERIFIED</span>
                 </span>
+                )}
               </div>
               <button
                 type="button"
@@ -482,7 +454,7 @@ function PropertyDetailPage() {
               >
                 <span className="text-[22px] leading-none">{isFavorite ? "♥" : "♡"}</span>
               </button>
-              <span className="absolute bottom-3 right-3 rounded-[3px] bg-black/45 px-1.5 py-0.5 text-[11px] font-medium text-white sm:hidden">1/12 Images</span>
+              <span className="absolute bottom-3 right-3 rounded-[3px] bg-black/45 px-1.5 py-0.5 text-[11px] font-medium text-white sm:hidden">1/{(property.images || []).length} Images</span>
             </>
           }
         />
@@ -532,270 +504,112 @@ function PropertyDetailPage() {
               </div>
             </div>
 
-            <div className="mt-6 hidden flex-col border-y border-[#F3F4F6] py-5 sm:flex sm:flex-row sm:items-stretch sm:gap-0">
-              {[
-                { label: "RERA Approved", value: "P51800003521" },
-                { label: "Top Builder", value: property.builderName || "—" },
-                { label: "95% Match", value: "For your profile" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className={[
-                    "flex items-center border-r border-[#F3F4F6] py-0",
-                    item.label === "RERA Approved"
-                      ? "w-[150px] pr-8 sm:pr-6"
-                      : item.label === "Top Builder"
-                        ? "w-[150px] px-8 sm:px-8"
-                        : "w-[150px] px-8 sm:px-8 border-r-0",
-                  ].join(" ")}
-                >
-                  <div className="w-full">
+            {keyFacts.length > 0 && (
+              <div className="mt-6 hidden flex-wrap gap-x-10 gap-y-3 border-y border-[#F3F4F6] py-5 sm:flex">
+                {keyFacts.map((item) => (
+                  <div key={item.label}>
                     <div className="whitespace-nowrap text-[14px] font-bold leading-tight text-[#111827]">{item.label}</div>
-                    <div className="mt-1 whitespace-nowrap text-[13px] leading-tight text-[#6B7280]">{item.value}</div>
+                    <div className="mt-1 whitespace-nowrap text-[13px] leading-tight text-[#6B7280]" data-no-translate>{item.value}</div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
-            <div className="mt-6 hidden grid-cols-2 gap-x-5 gap-y-6 sm:mt-8 sm:grid sm:grid-cols-3 sm:gap-4">
-                {[
-                  { label: "Configuration", value: "3 BHK Apartment", icon: <RedBedIcon /> },
-                  { label: "Carpet Area", value: "1850 sqft", icon: <RedAreaIcon /> },
-                  {
-                    label: "Facing",
-                    value: "East Facing",
-                    icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain" />,
-                  },
-                  { label: "Status", value: "Ready to Move", icon: <PromiseIcon /> },
-                ].map((item) => (
-                <div key={item.label} className={["rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-[14px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-4 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]", item.label === "Status" ? "sm:hidden" : ""].join(" ")}>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] sm:text-[12px]">
-                    {item.label}
+            {facts.length > 0 && (
+              <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-5 border-y border-[#F3F4F6] py-4 sm:mt-8 sm:grid-cols-3 sm:gap-4 sm:border-0 sm:py-0">
+                {facts.map((item) => (
+                  <div key={item.label} className="rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-[14px] sm:border sm:border-[#F3F4F6] sm:bg-white sm:p-4">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] sm:text-[12px]">{item.label}</div>
+                    <div className="mt-2 flex items-center gap-2 text-[12px] font-bold text-[#111827] sm:text-[16px]">
+                      {item.icon}
+                      <span>{item.value}</span>
+                    </div>
                   </div>
-                  <div className="mt-2 flex items-center gap-2 text-[12px] font-bold text-[#111827] sm:text-[16px]">
-                    {item.icon}
-                    <span>{item.value}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-5 border-y border-[#F3F4F6] py-4 sm:hidden">
-              {[
-                { label: "Bedrooms", value: "3 BHK", icon: <RedBedIcon /> },
-                { label: "Super Area", value: "1850 sqft", icon: <RedAreaIcon /> },
-                { label: "Orientation", value: "West Facing", icon: <img src="/icons/compass.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" /> },
-                { label: "Status", value: "Ready to Move", icon: <RedKeyIcon /> },
-              ].map((item) => (
-                <div key={item.label} className="min-w-0">
-                  <div className="flex items-center gap-2 text-[14px] font-bold leading-5 text-[#111827]">
-                    {item.icon}
-                    <span className="truncate">{item.value}</span>
-                  </div>
-                  <div className="ml-6 text-[11px] leading-4 text-[#6B7280]">{item.label}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {realListing && <AreaOutlook city={property.city} locality={property.locality} />}
 
-            <section className="mt-8 w-full lg:mt-10 lg:max-w-[1024px]">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
-              <div className="mt-4 space-y-8 text-[14px] leading-6 text-[#4B5563] sm:text-[15px] sm:leading-8">
-                <p className="w-full max-h-[144px] overflow-hidden sm:max-h-none">
-                  {property.title} is a landmark residential development in {property.location.split(",")[0]},
-                  thoughtfully spread across 25 acres of beautifully planned landscapes, open spaces, and world-class
-                  lifestyle amenities. Designed for modern urban living, the project seamlessly blends luxury,
-                  comfort, and convenience while offering breathtaking views of the surrounding cityscape.
-                </p>
-                <p className="hidden w-full sm:block">
-                  This spacious {property.details.toLowerCase()} residence features intelligently planned interiors,
-                  expansive living and dining areas, premium finishes, large windows for abundant natural light, and
-                  well-appointed bedrooms that maximize comfort and functionality. Every detail has been carefully
-                  crafted to deliver a refined living experience, from high-quality materials to thoughtfully designed
-                  community spaces.
-                </p>
-                {isAboutExpanded ? (
-                  <p className="w-full">
-                    The project also benefits from curated amenities, a well-connected address, and a neighborhood
-                    profile that makes day-to-day living practical for families and investors alike. With premium
-                    planning, verified documentation, and strong builder credentials, this listing stands out as a
-                    compelling long-term choice in the local market.
-                  </p>
-                ) : null}
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAboutExpanded((value) => !value)}
-                aria-expanded={isAboutExpanded}
-                className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold text-[#E51C23]"
-              >
-                {isAboutExpanded ? 'Read less' : 'Read more'}
-                <span className={isAboutExpanded ? 'rotate-180 transition-transform' : 'transition-transform'}>
-                  <ChevronDownIcon />
-                </span>
-              </button>
-            </section>
-            <div className="relative left-1/2 mx-0 mt-8 h-[415px] w-[402px] max-w-none -translate-x-1/2 rounded-[16px] bg-[#F9FAFB] px-8 pt-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:relative sm:left-auto sm:mx-0 sm:mt-10 sm:h-auto sm:w-full sm:max-w-none sm:translate-x-0 sm:p-8 sm:shadow-none">
-              <h2 className="flex items-center gap-2 text-[18px] font-extrabold leading-tight text-[#111827]"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E51C23] text-[12px] font-bold text-white">i</span>Property Details</h2>
-              <div className="mt-6 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-2 sm:gap-y-8">
-                {[
-                  { label: "Status", value: "Ready to Move" },
-                  { label: "Floor", value: "24th of 60 Floors" },
-                  { label: "Furnishing", value: "Semi-Furnished" },
-                  { label: "Parking", value: "2 Covered" },
-                  { label: "Age of Property", value: "New Construction" },
-                  { label: "Gated Community", value: "Yes" },
-                ].map((item) => (
-                  <div key={item.label} className="mt-4 flex h-[33px] items-center justify-between border-b border-[#E5E7EB] first:mt-0 last:border-b-0 sm:h-auto sm:items-end sm:pb-4 sm:first:mt-4 sm:last:border-b">
-                    <div className="pr-4 text-[14px] leading-tight text-[#6B7280] sm:text-[16px]">{item.label}</div>
-                    <div className="whitespace-nowrap text-right text-[14px] font-bold leading-tight text-[#111827] sm:text-[16px]">
-                      {item.value}
+            {(property.description || property.aboutExtended) && (
+              <section className="mt-8 w-full lg:mt-10 lg:max-w-[1024px]">
+                <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">About this Property</h2>
+                <div className="mt-4 space-y-4 whitespace-pre-line text-[14px] leading-6 text-[#4B5563] sm:text-[15px] sm:leading-8" data-no-translate>
+                  {property.description && <p>{property.description}</p>}
+                  {property.aboutExtended && <p>{property.aboutExtended}</p>}
+                </div>
+              </section>
+            )}
+            {details.length > 0 && (
+              <div className="mt-8 rounded-[16px] bg-[#F9FAFB] px-6 py-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] sm:mt-10 sm:px-8">
+                <h2 className="text-[18px] font-extrabold leading-tight text-[#111827]">Property Details</h2>
+                <div className="mt-4 grid grid-cols-1 gap-x-12 sm:grid-cols-2">
+                  {details.map((item) => (
+                    <div key={item.label} className="flex items-center justify-between border-b border-[#E5E7EB] py-3">
+                      <div className="pr-4 text-[14px] leading-tight text-[#6B7280] sm:text-[16px]">{item.label}</div>
+                      <div className="text-right text-[14px] font-bold leading-tight text-[#111827] sm:text-[16px]">{item.value}</div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="mx-0 mt-8 rounded-none border-0 bg-transparent p-0 sm:mx-0 sm:rounded-[16px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-5">
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-[20px] font-bold leading-[28px] tracking-[-0.0088em] text-[#111827] sm:text-[20px] sm:font-extrabold sm:leading-tight sm:tracking-normal">Amenities &amp; Lifestyle</h2>
-                <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">
-                  32 Total
-                </span>
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-1 md:mt-6 md:grid-cols-4 md:gap-4">
-                {AMENITY_LIFESTYLE.map((amenity) => (
-                  <div
-                    key={amenity.label}
-                    className="flex min-h-[86px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-white px-2 py-3 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:min-h-[136px] md:rounded-[14px] md:px-3 md:py-5"
-                  >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9FAFB] md:h-14 md:w-14">
-                      {amenity.icon}
+            {property.tags?.length > 0 && (
+              <div className="mt-8 sm:rounded-[16px] sm:border sm:border-[#E5E7EB] sm:p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <h2 className="text-[20px] font-extrabold leading-[28px] text-[#111827]">Amenities</h2>
+                  <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9CA3AF]">{property.tags.length} Total</span>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-2 md:mt-6 md:grid-cols-4 md:gap-4">
+                  {property.tags.map((name) => (
+                    <div key={name} className="flex min-h-[86px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9FAFB] md:h-14 md:w-14">{amenityIcon(name)}</div>
+                      <div className="mt-2 text-[14px] font-semibold leading-tight text-[#111827] md:mt-4 md:text-[16px]" data-no-translate>{titleWords(name)}</div>
                     </div>
-                    <div className="mt-2 text-[14px] font-semibold leading-tight text-[#111827] md:mt-4 md:text-[16px]">{amenity.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative left-1/2 mt-8 h-[352.48px] w-[402px] -translate-x-1/2 rounded-none border-0 bg-transparent px-7 py-6 shadow-none sm:relative sm:left-auto sm:mt-10 sm:h-auto sm:w-auto sm:translate-x-0 sm:rounded-[18px] sm:border sm:border-[#E5E7EB] sm:bg-white sm:p-8 sm:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Market Trends &amp; Insights</h2>
-              <p className="mt-1 text-[12px] text-[#6B7280] sm:text-[14px]">
-                How has {property.location.split(",")[0]} performed over the last 3 years?
-              </p>
-
-              <div className="mt-[12.68px] h-[135.8px] w-[337.086px] max-w-full overflow-hidden rounded-[12px] bg-white sm:mt-8 sm:h-auto sm:w-full">
-                <svg viewBox="0 0 880 320" className="h-[135.8px] w-full sm:h-full" fill="none" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#FDECEC" stopOpacity="0.7" />
-                      <stop offset="100%" stopColor="#FDECEC" stopOpacity="0.08" />
-                    </linearGradient>
-                  </defs>
-                  <rect x="0" y="0" width="880" height="320" rx="12" fill="#FFFFFF" />
-                  <g stroke="#F3F4F6" strokeWidth="1">
-                    <line x1="80" y1="40" x2="80" y2="250" />
-                    <line x1="240" y1="40" x2="240" y2="250" />
-                    <line x1="400" y1="40" x2="400" y2="250" />
-                    <line x1="560" y1="40" x2="560" y2="250" />
-                    <line x1="720" y1="40" x2="720" y2="250" />
-                    <line x1="80" y1="250" x2="840" y2="250" />
-                    <line x1="80" y1="200" x2="840" y2="200" />
-                    <line x1="80" y1="150" x2="840" y2="150" />
-                    <line x1="80" y1="100" x2="840" y2="100" />
-                    <line x1="80" y1="50" x2="840" y2="50" />
-                  </g>
-                  <path
-                    d="M80 188 L240 180 L400 164 L560 154 L720 138 L840 126 L840 250 L80 250 Z"
-                    fill="url(#trendFill)"
-                  />
-                  <path
-                    d="M80 188 L240 180 L400 164 L560 154 L720 138 L840 126"
-                    stroke="#E51C23"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  {[
-                    [80, 188],
-                    [240, 180],
-                    [400, 164],
-                    [560, 154],
-                    [720, 138],
-                    [840, 126],
-                  ].map(([x, y]) => (
-                    <circle key={`${x}-${y}`} cx={x} cy={y} r="4.5" fill="#E51C23" />
                   ))}
-                  {[
-                    ["₹0", 40, 254],
-                    ["₹5k", 40, 204],
-                    ["₹10k", 34, 154],
-                    ["₹15k", 34, 104],
-                    ["₹20k", 34, 54],
-                    ["Jan 2022", 80, 276],
-                    ["Jul 2022", 240, 276],
-                    ["Jan 2023", 400, 276],
-                    ["Jul 2023", 560, 276],
-                    ["Jan 2024", 720, 276],
-                    ["Presents", 840, 276],
-                  ].map(([label, x, y]) => (
-                    <text
-                      key={label}
-                      x={x}
-                      y={y}
-                      fill="#6B7280"
-                      fontSize="12"
-                      fontFamily="Lato, sans-serif"
-                      textAnchor={label.startsWith("Jan") || label.startsWith("Jul") || label === "Presents" ? "middle" : "start"}
-                    >
-                      {label}
-                    </text>
-                  ))}
-                </svg>
+                </div>
               </div>
+            )}
 
-              <div className="mt-4 grid h-[96px] grid-cols-3 gap-6 sm:mt-8 sm:h-auto sm:gap-4">
-                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
-                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Annual Appreciation</div>
-                  <div className="mt-2 text-[13px] font-black leading-tight text-[#16A34A] sm:text-[26px]">+8.4%</div>
-                </div>
-                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
-                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Estimated Rent</div>
-                  <div className="mt-2 text-[13px] font-black leading-tight text-[#111827] sm:text-[26px]">₹1.2L / mo</div>
-                </div>
-                <div className="h-20 rounded-[14px] bg-[#F9FAFB] p-4 sm:h-auto">
-                  <div className="text-[8px] font-semibold text-[#6B7280] sm:text-[12px]">Locality Rating</div>
-                  <div className="mt-2 flex items-center gap-1 text-[13px] font-black leading-tight text-[#111827] sm:text-[26px]">
-                    <span>4.5</span>
-                    <img src="/icons/star.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5" />
-                  </div>
+            {marketFacts.length > 0 && (
+              <div className="mt-8 sm:rounded-[18px] sm:border sm:border-[#E5E7EB] sm:p-6">
+                <h2 className="text-[20px] font-extrabold leading-tight text-[#111827]">From this listing</h2>
+                <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4">
+                  {marketFacts.map((m) => (
+                    <div key={m.label} className="rounded-[14px] bg-[#F9FAFB] p-4">
+                      <div className="text-[10px] font-semibold text-[#6B7280] sm:text-[12px]">{m.label}</div>
+                      <div className="mt-2 text-[14px] font-black leading-tight text-[#111827] sm:text-[24px]">{m.value}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-4">
-              <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Frequently Asked Questions</h2>
-              <div className="mt-4 space-y-3">
-                {FAQS.map((item, index) => {
-                  const isOpen = openFaqIndex === index;
-                  return (
-                    <button
-                      key={item.question}
-                      type="button"
-                      onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                      className="w-full rounded-[14px] border border-[#F3F4F6] bg-white px-4 py-4 text-left transition hover:border-[#E5E7EB] sm:px-5"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[14px] font-semibold text-[#111827] sm:text-[14px]">{item.question}</span>
-                        <span className="text-[18px] font-bold leading-none text-[#9CA3AF]">{isOpen ? "−" : "+"}</span>
-                      </div>
-                      {isOpen ? <p className="mt-3 text-[14px] leading-7 text-[#6B7280]">{item.answer}</p> : null}
-                    </button>
-                  );
-                })}
-              </div>
+              {property.faqs?.length > 0 && (
+                <>
+                  <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[20px]">Frequently Asked Questions</h2>
+                  <div className="mt-4 space-y-3">
+                    {property.faqs.map((item, index) => {
+                      const isOpen = openFaqIndex === index;
+                      return (
+                        <button
+                          key={item.question}
+                          type="button"
+                          onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                          className="w-full rounded-[14px] border border-[#F3F4F6] bg-white px-4 py-4 text-left transition hover:border-[#E5E7EB]"
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <span className="text-[14px] font-semibold text-[#111827] sm:text-[14px]" data-no-translate>{item.question}</span>
+                            <span className="text-[18px] font-bold leading-none text-[#9CA3AF]">{isOpen ? "−" : "+"}</span>
+                          </div>
+                          {isOpen ? <p className="mt-3 text-[14px] leading-7 text-[#6B7280]" data-no-translate>{item.answer}</p> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
               <p className="mt-6 w-[370px] max-w-full text-justify text-[8px] font-normal uppercase leading-[16.25px] tracking-[1px] text-[#9CA3AF] sm:w-auto sm:text-left sm:text-[11px] sm:leading-5 sm:tracking-[0.08em] sm:text-[#CBD5E1]">
                 Disclaimer: The information provided on this page is based on data collected from the builder or primary
                 source. PropertySerch.com does not guarantee the accuracy of this information. Buyers are advised to
@@ -872,46 +686,46 @@ function PropertyDetailPage() {
               </div>
 
               <div className="mt-6 border-t border-[#F3F4F6] pt-4 text-center text-[12px] text-[#6B7280]">
-                Secure &amp; Direct Verification
+                Your A R Buildwel representative handles your enquiry
               </div>
             </div>
 
               <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-[0_16px_32px_rgba(15,23,42,0.08)]">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] border border-[#F3F4F6] bg-[#FAFAFA] text-[11px] font-bold uppercase tracking-[0.14em] text-[#C4B5A5]">
-                    {property.builderName
-                      ? property.builderName.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("")
-                      : "—"}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[18px] font-bold leading-tight text-[#111827]">{property.builderName || "Builder details unavailable"}</div>
-                    <div className="mt-1 flex items-center gap-1.5 text-[13px] font-semibold text-[#6B7280]">
-                      <div className="flex items-center gap-0.5">
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
+                {property.builderName && (
+                  <div className="mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] border border-[#F3F4F6] bg-[#F9FAFB] text-[18px] font-black text-[#111827]">
+                        {property.builderName.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("")}
                       </div>
-                      <span>4.9/5</span>
+                      <div className="min-w-0">
+                        <div className="text-[18px] font-bold leading-tight text-[#111827]" data-no-translate>{property.builderName}</div>
+                        {property.builderRating != null && (
+                          <div className="mt-1 flex items-center gap-1.5 text-[13px] font-semibold text-[#6B7280]"><StarIcon /><span>{property.builderRating}/5</span></div>
+                        )}
+                      </div>
                     </div>
+                    {(property.builderExperienceYears != null || property.builderProjectsCount != null) && (
+                      <div className="mt-5 grid grid-cols-2 gap-3">
+                        {property.builderExperienceYears != null && (
+                          <div className="rounded-[12px] bg-[#F9FAFB] px-4 py-4 text-center">
+                            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF]">Exp.</div>
+                            <div className="mt-1 text-[18px] font-black leading-tight text-[#111827]">{property.builderExperienceYears} Yrs</div>
+                          </div>
+                        )}
+                        {property.builderProjectsCount != null && (
+                          <div className="rounded-[12px] bg-[#F9FAFB] px-4 py-4 text-center">
+                            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF]">Projects</div>
+                            <div className="mt-1 text-[18px] font-black leading-tight text-[#111827]">{property.builderProjectsCount}</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                </div>
-
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  <div className="rounded-[12px] bg-[#F9FAFB] px-4 py-4 text-center">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF]">Exp.</div>
-                    <div className="mt-1 text-[18px] font-black leading-tight text-[#111827]">40 Yrs</div>
-                  </div>
-                  <div className="rounded-[12px] bg-[#F9FAFB] px-4 py-4 text-center">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF]">Projects</div>
-                    <div className="mt-1 text-[18px] font-black leading-tight text-[#111827]">32+</div>
-                  </div>
-                </div>
+                )}
 
                 <Link
                   to={`/properties?purpose=all${property.city ? `&city=${encodeURIComponent(property.city)}` : ""}`}
-                  className="mt-5 inline-flex h-[42px] w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] font-bold text-[#374151] transition hover:border-[#D1D5DB]"
+                  className="inline-flex h-[42px] w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] font-bold text-[#374151] transition hover:border-[#D1D5DB]"
                 >
                   View more properties{property.city ? ` in ${property.city}` : ""}
                 </Link>
@@ -925,8 +739,8 @@ function PropertyDetailPage() {
                   <div>
                     <div className="text-[16px] font-bold leading-tight text-[#111827]">PropertySerch Promise</div>
                     <p className="mt-1 text-[13px] leading-6 text-[#6B7280]">
-                      We guarantee direct developer pricing and 100% verified documentation for this listing. No hidden
-                      charges.
+                      Your contact details stay private. Every enquiry goes through your A R Buildwel representative, and any
+                      professional fee is agreed with you in advance.
                     </p>
                   </div>
                 </div>
@@ -936,23 +750,25 @@ function PropertyDetailPage() {
         </div>
       </section>
 
+      {similar.length > 0 && (
       <section className="mx-auto max-w-full px-4 sm:px-6 lg:px-12">
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 className="text-[20px] font-extrabold leading-tight text-[#111827] sm:text-[22px]">Similar Properties</h2>
-            <p className="mt-1 text-[12px] text-[#6B7280] sm:text-[14px]">Curated listings matching your search criteria</p>
+            <p className="mt-1 text-[12px] text-[#6B7280] sm:text-[14px]">Live listings in the same city and type</p>
           </div>
-          <Link to="/properties" className="mb-5 inline-flex items-center gap-2 text-[12px] font-semibold text-[#E51C23] sm:text-[14px]">
+          <Link to={`/properties?city=${encodeURIComponent(property.city || "")}`} className="mb-5 inline-flex items-center gap-2 text-[12px] font-semibold text-[#E51C23] sm:text-[14px]">
             View All
             <img src="/icons/Img%20(1).png" alt="" aria-hidden="true" className="h-[12px] w-[7.5px] shrink-0 object-contain" />
           </Link>
         </div>
         <div className="scrollbar-hide mt-5 flex gap-4 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible xl:grid-cols-4">
-          {SIMILAR_PROPERTIES.map((item, index) => (
+          {similar.map((item, index) => (
             <SimilarPropertyCard key={`${item.title}-${item.location}-${index}`} item={item} />
           ))}
         </div>
       </section>
+      )}
 
       <EnquiryModal
         open={enquiryOpen}

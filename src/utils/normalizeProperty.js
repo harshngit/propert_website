@@ -18,9 +18,7 @@ const buildLocation = (parts) => {
 
 // Maps a property object returned by the real backend (backendapi's
 // /search/properties[/:id]) into the shape PropertyCard/PropertiesPage/
-// PropertyDetailPage already render - same field names the site's static
-// mock data (src/data/propertyResults.js) used, so no other UI code needs
-// to change.
+// PropertyDetailPage render.
 const formatInr = (value) => {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return null;
@@ -59,8 +57,10 @@ export function normalizeProperty(p) {
     location: buildLocation([p.locality, p.city]),
     city: p.city,
     locality: p.locality || null,
+    latitude: p.latitude ?? null,
+    longitude: p.longitude ?? null,
     details: p.bedrooms != null ? `${p.bedrooms} BHK` : typeLabel(p.property_type),
-    area: p.area_sqft != null ? `${p.area_sqft} sq.ft` : undefined,
+    area: p.area_sqft != null ? `${Number(p.area_sqft)} sq.ft` : undefined,
     image,
     images,
     tags: p.amenities || [],
@@ -89,5 +89,22 @@ export function normalizeProperty(p) {
     occupancyPercent: p.occupancy_percent,
     yieldPercent: p.yield_percent,
     yieldQualifier: p.yield_qualifier,
+    // Detail-page facts - shown only when the listing actually has them.
+    carpetAreaSqft: p.carpet_area_sqft != null ? Number(p.carpet_area_sqft) : null,
+    aboutExtended: p.about_extended || null,
+    facing: p.facing || null,
+    reraNumber: p.rera_number || null,
+    possessionStatus: p.possession_status || null,
+    floorNumber: p.floor_number ?? null,
+    totalFloors: p.total_floors ?? null,
+    furnishing: p.furnishing || null,
+    parkingSpots: p.parking_spots ?? null,
+    parkingType: p.parking_type || null,
+    ageOfProperty: p.age_of_property || null,
+    gatedCommunity: p.gated_community ?? null,
+    faqs: Array.isArray(p.faqs) ? p.faqs.filter((f) => f?.question && f?.answer) : [],
+    builderRating: p.builder_rating != null ? Number(p.builder_rating) : null,
+    builderExperienceYears: p.builder_experience_years ?? null,
+    builderProjectsCount: p.builder_projects_count ?? null,
   };
 }

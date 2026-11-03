@@ -11,7 +11,7 @@ function DealSupportSection({
   onFinancing,
   title = "Special Situation Properties",
   description = "Curated bank auction, NBFC, and ARC-sourced deals, each carrying an Investment Score. Access for verified brokers, NRI, and HNI users.",
-  pills = ["Verified Documents", "Ready for Possession", "Legally Clear"],
+  pills = ["Investment Score", "Liquidity Score", "Do your own due diligence"],
   buttonText = "View Curated Deals",
   financeTitle = "Need financing?",
   financeDescription = "Home loan, construction finance, loan against property, and NRI mortgage across leading banks and NBFCs.",

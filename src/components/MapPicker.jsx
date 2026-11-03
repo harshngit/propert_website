@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Map picker for "map location" fields: click the map (or drag the pin) to set
 // the point. Uses Leaflet with OpenStreetMap tiles, loaded on demand - no key
@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from "react";
 // If the map cannot load, the latitude / longitude boxes still work.
 
 const VERSION = "1.9.4";
-const TILES = import.meta.env.VITE_MAP_TILE_URL || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+export const TILES = import.meta.env.VITE_MAP_TILE_URL || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const INDIA = [22.6, 79.0];
 let loading = null;
 
-function loadLeaflet() {
+export function loadLeaflet() {
   if (window.L?.map) return Promise.resolve(window.L);
   if (loading) return loading;
   loading = new Promise((resolve, reject) => {

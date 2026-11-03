@@ -1,5 +1,3 @@
-export const CITY_OPTIONS = ["Mumbai", "Delhi", "Bengaluru", "Pune", "Hyderabad"];
-
 export function toCitySlug(city) {
   return String(city || "")
     .trim()
@@ -15,7 +13,7 @@ export function fromCitySlug(slug) {
     .trim();
 
   if (!normalized) {
-    return "Mumbai";
+    return "";
   }
 
   return normalized

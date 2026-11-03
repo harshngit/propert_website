@@ -69,7 +69,7 @@ function BuyerProfile({ meta }) {
           <label className={labelClass}>Organisation<input id="ib-org" className={inputClass} value={f.organisationName} onChange={set("organisationName")} /></label>
           <label className={labelClass}>Budget from (₹ Cr)<input id="ib-min" type="number" min="0" step="any" className={inputClass} value={f.budgetMinCr} onChange={set("budgetMinCr")} /></label>
           <label className={labelClass}>Budget up to (₹ Cr)<input id="ib-max" type="number" min="0" step="any" className={inputClass} value={f.budgetMaxCr} onChange={set("budgetMaxCr")} /></label>
-          <label className={`${labelClass} sm:col-span-2`}>Cities / states you are looking in<input id="ib-geo" className={inputClass} placeholder="Delhi, Gurugram, Pan India" value={f.geographies} onChange={set("geographies")} /></label>
+          <label className={`${labelClass} sm:col-span-2`}>Cities / states you are looking in<input id="ib-geo" className={inputClass} placeholder="Cities or states, or Pan India" value={f.geographies} onChange={set("geographies")} /></label>
           <fieldset className="sm:col-span-2">
             <legend className={labelClass}>Asset types</legend>
             <div className="mt-2 flex flex-wrap gap-2">

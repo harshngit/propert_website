@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
+  Badge, CityOptions, Card, EmptyState, LoadState, Modal, Notice, PROPERTY_TYPES, SectionHeader,
   formatDate, formatINR, inputClass, labelClass, linkButton, primaryButton, secondaryButton, typeLabel, useLoad,
 } from "./ui";
 import FeeConsent, { EMPTY_CONSENT, MandateStatus } from "./FeeConsent";
@@ -179,9 +179,7 @@ function ListingForm({ existing, onSaved, onCancel }) {
         <CoreField k="city" label="City *" className={labelClass}>
           <input required list="listing-cities" value={form.city} onChange={set("city")} className={inputClass} />
           <datalist id="listing-cities">
-            {CITY_SUGGESTIONS.map((c) => (
-              <option key={c} value={c} />
-            ))}
+            <CityOptions />
           </datalist>
         </CoreField>
         <CoreField k="locality" label="Locality / sector *" className={labelClass}>

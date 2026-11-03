@@ -209,7 +209,7 @@ function InvestorProfilePage() {
             </label>
             <label className="block text-xs font-semibold text-[#374151] sm:col-span-2">
               Preferred cities (comma separated)
-              <input value={form.preferredCities} onChange={set("preferredCities")} placeholder="Delhi, Gurugram, Noida" className={inputClass} />
+              <input value={form.preferredCities} onChange={set("preferredCities")} placeholder="Cities, separated by commas" className={inputClass} />
             </label>
           </div>
 

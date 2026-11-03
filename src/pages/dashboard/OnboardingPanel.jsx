@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
-import { CITY_SUGGESTIONS, PROPERTY_TYPES, inputClass, labelClass, primaryButton, Notice } from "./ui";
+import { CityOptions, PROPERTY_TYPES, inputClass, labelClass, primaryButton, Notice } from "./ui";
 
 // Onboarding (Screen 2): what the person wants to do, plus buyer / tenant
 // preferences used to match properties, and for NRI / HNI investors their
@@ -258,11 +258,9 @@ function OnboardingPanel({ profile, onDone }) {
           <p className="font-['Plus_Jakarta_Sans'] text-[14px] font-bold text-[#111827] sm:col-span-2">What are you looking for?</p>
           <label className={labelClass}>
             Preferred city
-            <input list="onboarding-cities" value={form.city} onChange={set("city")} placeholder="e.g. Gurugram" className={inputClass} />
+            <input list="onboarding-cities" value={form.city} onChange={set("city")} placeholder="Your city" className={inputClass} />
             <datalist id="onboarding-cities">
-              {CITY_SUGGESTIONS.map((c) => (
-                <option key={c} value={c} />
-              ))}
+              <CityOptions />
             </datalist>
           </label>
           <label className={labelClass}>

@@ -82,7 +82,7 @@ function LeaseForm({ listings, onSaved, onCancel }) {
         {!form.propertyId && (
           <label className={`${labelClass} sm:col-span-2`}>
             Property address *
-            <input required value={form.propertyLabel} onChange={set("propertyLabel")} placeholder="Flat 402, Palm Heights, Sector 56, Gurugram" className={inputClass} />
+            <input required value={form.propertyLabel} onChange={set("propertyLabel")} placeholder="Flat number, building, locality, city" className={inputClass} />
           </label>
         )}
         <label className={labelClass}>

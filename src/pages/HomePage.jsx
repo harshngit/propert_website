@@ -3,7 +3,6 @@ import SiteHeader from "../components/SiteHeader";
 import HomeHeroSection from "../components/home/HomeHeroSection";
 import VerifiedListingsSection from "../components/home/VerifiedListingsSection";
 import ExclusiveCitySection from "../components/home/ExclusiveCitySection";
-import BuilderDirectSection from "../components/home/BuilderDirectSection";
 import PremiumRealEstateSection from "../components/home/PremiumRealEstateSection";
 import PremiumInvestmentSection from "../components/home/PremiumInvestmentSection";
 import PropertyManagementSection from "../components/home/PropertyManagementSection";
@@ -136,7 +135,6 @@ function HomePage() {
                 : "Latest listings in our most active city"
             }
           />
-          <BuilderDirectSection />
           <DealSupportSection topDeal={home?.auctionHighlights?.[0]} onFinancing={() => openEnquiry("Home Loan & Financing")} />
           <PremiumInvestmentSection onContactDesk={() => openEnquiry("Institutional Desk")} />
           <PropertyManagementSection onTalkToManager={() => openEnquiry("NRI Property Management")} />

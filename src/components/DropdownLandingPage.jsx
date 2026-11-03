@@ -703,20 +703,20 @@ function DropdownLandingPage({
               <div className="flex h-[41px] min-w-0 flex-1 items-center gap-4 overflow-x-auto rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4">
                 <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[14px] text-[#0F172A]">
                   <LocationIcon />
-                  <span className="font-semibold">Mumbai, Andheri West</span>
+                  <span className="font-semibold">All cities</span>
                 </div>
 
                 <Divider />
 
-                <FilterField label="Type:" value="Buy" />
+                <FilterField label="Type:" value="Any" />
 
                 <Divider />
 
-                <FilterField label="Property:" value="Flat" />
+                <FilterField label="Property:" value="Any" />
 
                 <Divider />
 
-                <FilterField label="Budget:" value="₹1 Cr - ₹5 Cr" />
+                <FilterField label="Budget:" value="Any" />
               </div>
 
               <div className="flex shrink-0 items-center gap-3 md:gap-4">

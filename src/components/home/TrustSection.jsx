@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GuideCard from "../GuideCard";
-import { searchTags, whyItems } from "../../data/homeContent";
+import { whyItems } from "../../data/homeContent";
+import { useCitySearchTags } from "../../hooks/useCities";
 import { listTestimonials } from "../../api/content";
 import { useGuideCards } from "../../hooks/useArticles";
 
@@ -10,6 +11,7 @@ function TrustSection({
   subtitle = "Trusted by owners, buyers and institutions",
   city,
 }) {
+  const searchTags = useCitySearchTags();
   // Testimonials are published from the CRM (Website Content > Testimonials);
   // a city page shows that city's own first. With none published the block
   // is left out rather than showing sample quotes.
@@ -86,7 +88,7 @@ function TrustSection({
           <div>
             <h4 className="text-[18px] font-black text-[#0f172a]">Popular Searches</h4>
             <div className="mx-auto mt-6 grid w-full max-w-[520px] grid-cols-2 gap-x-3 gap-y-3">
-              {searchTags.map((tag) => (
+              {searchTags.map(({ label: tag }) => (
                 <span
                   key={tag}
                   className="flex w-full items-center justify-center whitespace-nowrap rounded-full border border-[#d7dfee] bg-[#F3F4F6] px-3 py-1.5 text-center text-[12px] leading-5 text-[#4B5563]"

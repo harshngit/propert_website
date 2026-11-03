@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MapPicker from "./MapPicker";
 import { apiRequest } from "../api/client";
 import { useAuth } from "../context/AuthContext";

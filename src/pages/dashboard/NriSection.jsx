@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { portal } from "../../api/portal";
 import { useAuth } from "../../context/AuthContext";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, SectionHeader, StatCard, formatDate, formatINR,
+  Badge, CityOptions, Card, EmptyState, LoadState, Modal, Notice, SectionHeader, StatCard, formatDate, formatINR,
   inputClass, labelClass, linkButton, monthLabel, primaryButton, secondaryButton, useLoad,
 } from "./ui";
 
@@ -76,7 +76,7 @@ function PropertyForm({ property, onSaved, onCancel }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className={`${labelClass} sm:col-span-2`}>Property name *<input required value={f.title} onChange={set("title")} placeholder="e.g. 3 BHK, Palm Heights" className={inputClass} /></label>
         <label className={labelClass}>City *<input required list="nri-cities" value={f.city} onChange={set("city")} className={inputClass} /></label>
-        <datalist id="nri-cities">{CITY_SUGGESTIONS.map((c) => <option key={c} value={c} />)}</datalist>
+        <datalist id="nri-cities"><CityOptions /></datalist>
         <label className={labelClass}>Locality<input value={f.locality} onChange={set("locality")} className={inputClass} /></label>
         <label className={labelClass}>Area (sq.ft)<input type="number" min="0" value={f.areaSqft} onChange={set("areaSqft")} className={inputClass} /></label>
         <label className={labelClass}>Purchase price (₹)<input type="number" min="0" value={f.purchasePrice} onChange={set("purchasePrice")} className={inputClass} /></label>

@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿import ResultsMap from "../components/ResultsMap";
+import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CompanyFooterSection from "../components/home/CompanyFooterSection";
 import SiteHeader from "../components/SiteHeader";
@@ -1383,97 +1384,6 @@ function MapResultCard({
   );
 }
 
-function MapPlaceholder() {
-  return (
-    <div className="relative min-h-[821px] w-full overflow-hidden">
-      <div className="relative h-full w-full">
-        <img
-          src="/images/map image.png"
-          alt="Mumbai map"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-
-        <div className="absolute left-[18%] top-[24%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
-          ₹1.15 Cr
-        </div>
-
-        <div className="absolute left-[28%] top-[42%] rounded-full bg-[#E51C23] px-[12px] py-[4px] text-[12px] font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
-          ₹1.45 Cr
-        </div>
-
-        <div className="absolute left-[40%] top-[42%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
-          ₹1.45 Cr
-        </div>
-
-        <div className="absolute left-[18%] top-[66%] rounded-full bg-white px-[10px] py-[4px] text-[12px] font-bold text-[#374151] shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
-          ₹2.45 Cr
-        </div>
-
-        <div className="absolute left-[31%] top-[51%] w-[224px] rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_10px_25px_rgba(0,0,0,0.15)]">
-          <div className="flex gap-[8px] p-[8px]">
-            <img
-              src="/images/1st,4th.png"
-              alt=""
-              className="h-[48px] w-[56px] rounded-[8px] object-cover"
-            />
-
-            <div className="min-w-0 flex-1">
-              <div className="text-[12px] font-bold leading-[18px] text-[#111827]">
-                ₹4.20 Cr
-              </div>
-              <div className="truncate text-[11px] font-semibold leading-[16px] text-[#111827]">
-                Oberoi Sky City
-              </div>
-              <div className="truncate text-[10px] leading-[14px] text-[#6B7280]">
-                Borivali East, Mumbai
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border-t border-[#F3F4F6] px-[8px] py-[6px] text-[10px] font-semibold text-[#E51C23]">
-            <span>VIEW DETAILS</span>
-            <span className="text-[#E51C23]">&rsaquo;</span>
-          </div>
-        </div>
-
-        <div className="absolute right-[40px] bottom-[40px] flex h-[153px] w-[40px] flex-col gap-[8px]">
-          <div className="flex h-[105px] w-[40px] flex-col overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
-            <button
-              type="button"
-              className="flex h-[52px] w-full items-center justify-center text-[22px] font-light leading-none text-[#64748B]"
-              aria-label="Zoom in"
-            >
-              +
-            </button>
-            <div className="mx-auto h-px w-full bg-[#F3F4F6]" />
-            <button
-              type="button"
-              className="flex h-[52px] w-full items-center justify-center text-[22px] font-light leading-none text-[#64748B]"
-              aria-label="Zoom out"
-            >
-              −
-            </button>
-          </div>
-
-        <button
-          type="button"
-          className="flex h-[40px] w-[40px] items-center justify-center rounded-[8px] border border-[#E5E7EB] bg-white text-[#64748B] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
-          aria-label="Recenter map"
-        >
-          <img
-            src="/images/nav.png"
-            alt=""
-            aria-hidden="true"
-            className="h-[16px] w-[16px] object-contain"
-          />
-        </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
 /* -------------------------------------------------------------------------- */
 /*                                  DATA                                      */
 /* -------------------------------------------------------------------------- */
@@ -2694,7 +2604,7 @@ function PropertiesPage({
                   <>
                     {/* MAP VIEW */}
                     <div className="grid w-full grid-cols-1 gap-[16px] xl:grid-cols-[minmax(0,1fr)_588px]">
-                      <MapPlaceholder />
+                      <ResultsMap items={pagedResults} />
 
                       <div className="flex min-w-0 w-full max-w-[570px] justify-self-end flex-col gap-[16px] py-[24px] xl:pr-[9px]">
                         <div className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] pb-[12px]">

@@ -4,7 +4,7 @@ import { portal } from "../../api/portal";
 import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
 import {
-  Badge, CITY_SUGGESTIONS, Card, EmptyState, LoadState, Modal, Notice, SectionHeader, StatCard, formatDate, formatINR,
+  Badge, CityOptions, Card, EmptyState, LoadState, Modal, Notice, SectionHeader, StatCard, formatDate, formatINR,
   inputClass, labelClass, linkButton, primaryButton, secondaryButton, useLoad,
 } from "./ui";
 
@@ -74,7 +74,7 @@ function InvestmentForm({ investment, onSaved, onCancel }) {
         <label className={`${labelClass} sm:col-span-2`}>Investment name *<input required value={f.title} onChange={set("title")} placeholder="e.g. Office floor, Cyber City" className={inputClass} /></label>
         <label className={labelClass}>Asset class<select value={f.assetClass} onChange={set("assetClass")} className={inputClass}>{ASSET_CLASSES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></label>
         <label className={labelClass}>City<input list="hni-cities" value={f.city} onChange={set("city")} className={inputClass} /></label>
-        <datalist id="hni-cities">{CITY_SUGGESTIONS.map((c) => <option key={c} value={c} />)}</datalist>
+        <datalist id="hni-cities"><CityOptions /></datalist>
         <label className={labelClass}>Acquired on<input type="date" value={f.acquisitionDate} onChange={set("acquisitionDate")} className={inputClass} /></label>
         <label className={labelClass}>Acquisition cost (₹) *<input required type="number" min="0" value={f.acquisitionCost} onChange={set("acquisitionCost")} className={inputClass} /></label>
         <label className={labelClass}>Stamp duty, fees etc. (₹)<input type="number" min="0" value={f.additionalCosts} onChange={set("additionalCosts")} className={inputClass} /></label>
@@ -314,7 +314,7 @@ function PortfolioIdeas() {
         </label>
         <div className="flex items-end"><button type="button" className={primaryButton} disabled={busy || !(Number(form.budget) >= 5)} onClick={run}>{busy ? "Working…" : "Suggest"}</button></div>
       </div>
-      <datalist id="hni-cities">{CITY_SUGGESTIONS.map((c) => <option key={c} value={c} />)}</datalist>
+      <datalist id="hni-cities"><CityOptions /></datalist>
       {error && <div className="mt-3"><Notice tone="red">{error}</Notice></div>}
       {result && (
         <div className="mt-4 space-y-2">

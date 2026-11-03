@@ -214,11 +214,11 @@ function ServiceForm({ config }) {
           <div className="grid gap-[14px] sm:grid-cols-2">
             <label className="block">
               <span className={labelClass}>City</span>
-              <input required value={form.city} onChange={set("city")} placeholder="e.g. Delhi" className={inputClass} />
+              <input required value={form.city} onChange={set("city")} placeholder="Your city" className={inputClass} />
             </label>
             <label className="block">
               <span className={labelClass}>Locality</span>
-              <input value={form.locality} onChange={set("locality")} placeholder="e.g. Rajouri Garden" className={inputClass} />
+              <input value={form.locality} onChange={set("locality")} placeholder="Your locality" className={inputClass} />
             </label>
           </div>
           <div className="grid gap-[14px] sm:grid-cols-2">
@@ -240,7 +240,7 @@ function ServiceForm({ config }) {
       ) : (
         <label className="block">
           <span className={labelClass}>City</span>
-          <input value={form.city} onChange={set("city")} placeholder="e.g. Delhi" className={inputClass} />
+          <input value={form.city} onChange={set("city")} placeholder="Your city" className={inputClass} />
         </label>
       )}
       <label className="block">

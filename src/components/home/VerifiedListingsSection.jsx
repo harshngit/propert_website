@@ -1,14 +1,13 @@
 import React from "react";
 import SectionHeading from "../SectionHeading";
 import PropertyCard from "../PropertyCard";
-import { verifiedListings } from "../../data/homeContent";
 
 function VerifiedListingsSection({
   title = "Verified Listings",
   accent,
   cityLandingMobile = false,
   subtitle = "Curated properties with verified details",
-  items = verifiedListings,
+  items = [],
   showMessage = true,
   viewAllTo,
 }) {
