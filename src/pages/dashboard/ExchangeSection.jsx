@@ -30,6 +30,7 @@ function AiEstimate({ id, review: r, open, onDone }) {
     setError(null);
     try {
       await apiRequest(`/exchange/requests/${id}/ai-estimate`, { method: "POST", token: accessToken });
+      window.dispatchEvent(new Event("ai-credits-changed"));
       wallet.reload();
       onDone();
     } catch (err) {
@@ -58,7 +59,7 @@ function AiEstimate({ id, review: r, open, onDone }) {
       ) : (
         <p className="mt-1 text-[#6B7280]">Optional: an AI reading of your property's age, floor, furnishing and description, paid from your AI credits (balance {wallet.data?.balance ?? 0}). Your estimate above stays as it is.</p>
       )}
-      {short && !error && <p className="mt-1 text-[12px] text-[#B91C1C]">Not enough AI credits - ask your A R Buildwel representative about adding credits.</p>}
+      {short && !error && <p className="mt-1 text-[12px] text-[#B91C1C]">Not enough AI credits. <Link to="/dashboard/ai-credits" className="font-bold underline">Buy AI credits</Link></p>}
       {error && <p className="mt-1 text-[12px] text-[#B91C1C]">{error}</p>}
     </div>
   );

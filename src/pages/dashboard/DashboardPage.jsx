@@ -32,6 +32,8 @@ import HomeLoanSection from "./HomeLoanSection";
 import InsuranceSection from "./InsuranceSection";
 import WorkFromHomeSection from "./WorkFromHomeSection";
 import DraftDocumentsSection from "./DraftDocumentsSection";
+import AiCreditsSection from "./AiCreditsSection";
+import CreditBalance from "./CreditBalance";
 
 // My Dashboard - the Lite Dashboard (Annexure A sec. 13.1 / 13.2A) for a
 // customer account acting as buyer, tenant, seller and/or owner. Which
@@ -57,6 +59,7 @@ const SECTIONS = [
   { key: "reviews", label: "Reviews", roles: null, Component: ReviewsSection },
   { key: "work-from-home", label: "Work From Home", roles: null, Component: WorkFromHomeSection },
   { key: "rewards", label: "Rewards", roles: null, Component: RewardsSection },
+  { key: "ai-credits", label: "AI credits", roles: null, Component: AiCreditsSection },
   { key: "legal-help", label: "Legal help", roles: null, Component: LegalHelpSection },
   { key: "home-loan", label: "Home loan", roles: null, Component: HomeLoanSection },
   { key: "insurance", label: "Insurance", roles: null, Component: InsuranceSection },
@@ -168,6 +171,7 @@ function DashboardPage() {
               </a>
             )}
           </div>
+          <CreditBalance />
           <nav className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
             {visible.map((s) => (
               <NavLink
