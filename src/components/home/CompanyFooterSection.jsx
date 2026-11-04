@@ -137,6 +137,9 @@ function CompanyFooterSection({ className = "" }) {
               <Link to="/legal#privacy" className="whitespace-nowrap transition hover:text-slate-600">
                 PRIVACY POLICY
               </Link>
+              <Link to="/status" className="whitespace-nowrap transition hover:text-slate-600">
+                STATUS
+              </Link>
               <Link
                 to="/legal#rera"
                 className="col-span-2 whitespace-nowrap transition hover:text-slate-600 md:col-span-1"

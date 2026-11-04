@@ -103,7 +103,7 @@ function TransferForm({ pack, details, onDone }) {
 
 export default function AiCreditsSection({ profile }) {
   const { accessToken } = useAuth();
-  const w = useLoad((token) => apiRequest("/ai-credits/wallet", { token }).then((r) => r.data));
+  const w = useLoad((token) => apiRequest("/ai-credits/wallet?audience=customer", { token }).then((r) => r.data));
   const [buying, setBuying] = useState(null);
   const [transfer, setTransfer] = useState(null);
   const [notice, setNotice] = useState(null);
@@ -256,7 +256,7 @@ export default function AiCreditsSection({ profile }) {
           <ul className="mt-3 divide-y divide-[#F3F4F6]">
             {d.invoices.map((i) => (
               <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-[13px]">
-                <span><span className="font-mono font-semibold text-[#111827]">{i.invoiceNumber}</span> <span className="text-[#6B7280]">· {i.packName} · {n(i.credits)} credits · {formatINR(i.totalInr)} · {formatDate(i.paidAt)}</span>{i.status === "refunded" && <Badge tone="gray">{i.refundedCredits} refunded</Badge>}</span>
+                <span><span className="font-mono font-semibold text-[#111827]">{i.invoiceNumber}</span> <span className="text-[#6B7280]">· {i.packName} · {n(i.credits)} credits · {formatINR(i.totalInr)} · {formatDate(i.paidAt)}</span>{i.status === "refunded" && <Badge tone="gray">{i.refundedCredits} refunded{i.refundInr != null ? ` · ${formatINR(i.refundInr)} ${i.refundStatus === "processed" ? "returned" : "on its way back"}` : ""}</Badge>}</span>
                 <button type="button" className={linkButton} onClick={() => download(i.id, i.invoiceNumber)}>Download PDF</button>
               </li>
             ))}

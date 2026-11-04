@@ -15,7 +15,7 @@ import { useSeo } from "../lib/seo";
 
 const input = "mt-1 h-[42px] w-full rounded-[10px] border border-[#E5E7EB] bg-white px-3 text-[14px] text-[#111827] outline-none focus:border-[#E51C23]";
 const label = "block text-[13px] font-semibold text-[#374151]";
-const blank = { institutionName: "", assetClass: "k12_school", boardAffiliation: "", yearEstablished: "", city: "", locality: "", address: "", latitude: "", longitude: "", campusAreaAcres: "", builtUpAreaSqft: "", studentEnrollment: "", capacityUnits: "", facultyCount: "", nocStatus: "valid", landOwnership: "owned", dealType: "full_sale", askingPriceCr: "", annualRevenueCr: "", ebitdaCr: "", infrastructure: "" };
+const blank = { institutionName: "", assetClass: "k12_school", boardAffiliation: "", yearEstablished: "", city: "", locality: "", address: "", pincode: "", latitude: "", longitude: "", campusAreaAcres: "", builtUpAreaSqft: "", studentEnrollment: "", capacityUnits: "", facultyCount: "", nocStatus: "valid", landOwnership: "owned", dealType: "full_sale", askingPriceCr: "", annualRevenueCr: "", ebitdaCr: "", infrastructure: "" };
 
 function PostInstitutionalPage() {
   const { accessToken, isAuthenticated, isReady, user } = useAuth();
@@ -52,7 +52,7 @@ function PostInstitutionalPage() {
         yearEstablished: n(f.yearEstablished), latitude: n(f.latitude), longitude: n(f.longitude), campusAreaAcres: n(f.campusAreaAcres), builtUpAreaSqft: n(f.builtUpAreaSqft),
         studentEnrollment: education ? n(f.studentEnrollment) : undefined, capacityUnits: education ? undefined : n(f.capacityUnits), facultyCount: n(f.facultyCount),
         askingPriceCr: n(f.askingPriceCr), annualRevenueCr: n(f.annualRevenueCr), ebitdaCr: n(f.ebitdaCr),
-        boardAffiliation: f.boardAffiliation || undefined, locality: f.locality || undefined, address: f.address || undefined, infrastructure: f.infrastructure || undefined,
+        boardAffiliation: f.boardAffiliation || undefined, locality: f.locality || undefined, address: f.address || undefined, pincode: f.pincode || undefined, infrastructure: f.infrastructure || undefined,
         approvals: approvals.filter((a) => a.name.trim()),
         customFields: toPayload(custom),
       });
@@ -111,9 +111,10 @@ function PostInstitutionalPage() {
               <CoreField k="city" label="City" className={label}><input id="pi-city" required className={input} value={f.city} onChange={set("city")} /></CoreField>
               <CoreField k="locality" label="Locality" className={label}><input id="pi-locality" className={input} value={f.locality} onChange={set("locality")} /></CoreField>
               <CoreField k="address" label="Address (confidential)" className={`${label} sm:col-span-2`}><input id="pi-address" className={input} value={f.address} onChange={set("address")} /></CoreField>
-              <CoreField k="latitude" label="Latitude" className={label}><input id="pi-lat" required type="number" step="any" min="-90" max="90" className={input} value={f.latitude} onChange={set("latitude")} /></CoreField>
-              <CoreField k="longitude" label="Longitude" className={label}><input id="pi-lng" required type="number" step="any" min="-180" max="180" className={input} value={f.longitude} onChange={set("longitude")} /></CoreField>
-              <p className="text-[12px] text-[#6B7280] sm:col-span-2">The campus location is required. <button type="button" onClick={fillMyLocation} className="font-bold text-[#E51C23]">Use my current location</button> if you are on campus, or copy the coordinates from a map.</p>
+              <CoreField k="latitude" label="Latitude" className={label}><input id="pi-lat" required={!/^\d{6}$/.test(f.pincode)} type="number" step="any" min="-90" max="90" className={input} value={f.latitude} onChange={set("latitude")} /></CoreField>
+              <CoreField k="longitude" label="Longitude" className={label}><input id="pi-lng" required={!/^\d{6}$/.test(f.pincode)} type="number" step="any" min="-180" max="180" className={input} value={f.longitude} onChange={set("longitude")} /></CoreField>
+              <CoreField k="pincode" label="Pincode" className={label}><input id="pi-pincode" inputMode="numeric" maxLength={6} pattern="\d{6}" className={input} value={f.pincode} onChange={(e) => setF((x) => ({ ...x, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) }))} /></CoreField>
+              <p className="text-[12px] text-[#6B7280] sm:col-span-2">The campus location is required. <button type="button" onClick={fillMyLocation} className="font-bold text-[#E51C23]">Use my current location</button> if you are on campus, or copy the coordinates from a map. If you cannot, give the 6-digit pincode and we will place the campus from it.</p>
               <CoreField k="campusAreaAcres" label="Campus area (acres)" className={label}><input id="pi-acres" type="number" step="any" min="0" className={input} value={f.campusAreaAcres} onChange={set("campusAreaAcres")} /></CoreField>
               <CoreField k="builtUpAreaSqft" label="Built-up area (sq ft)" className={label}><input id="pi-built" type="number" min="0" className={input} value={f.builtUpAreaSqft} onChange={set("builtUpAreaSqft")} /></CoreField>
               <CoreField k="infrastructure" label="Infrastructure" className={`${label} sm:col-span-2`}><textarea id="pi-infra" rows={2} maxLength={2000} className={`${input} h-auto py-2`} placeholder="Labs, hostel, transport, operating theatres, banquet halls…" value={f.infrastructure} onChange={set("infrastructure")} /></CoreField>

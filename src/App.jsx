@@ -15,6 +15,7 @@ import SpecialSituationPropertiesPage from "./pages/SpecialSituationPropertiesPa
 import GetInvolvedPage from "./pages/GetInvolvedPage";
 import InsightsGuidesPage from "./pages/InsightsGuidesPage";
 import PublicLegalPage from "./pages/PublicLegalPage";
+import StatusPage from "./pages/StatusPage";
 import BlogContentPage from "./pages/BlogContentPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -113,6 +114,7 @@ function App() {
         <Route path="/for-nri" element={<InvestorLandingPage kind="nri" />} />
         <Route path="/for-hni" element={<InvestorLandingPage kind="hni" />} />
         <Route path="/legal" element={<PublicLegalPage />} />
+        <Route path="/status" element={<StatusPage />} />
         {/* Launch sitemap pages (sec. 21.4) - content in data/marketingPages.js */}
         {Object.entries(MARKETING_PAGES).map(([slug, page]) => (
           <Route key={slug} path={page.path} element={<MarketingPage slug={slug} />} />

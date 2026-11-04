@@ -183,6 +183,7 @@ export const ROUTE_META = [
   [/^\/services\/get-involved/, { title: "Get Involved - Careers, Brokers, Franchise & City Requests", description: "Join PropertySerch as a broker, builder or franchise partner, apply for a role or request your city." }],
   [/^\/news-guide\/insights-guides/, { title: "Property Insights & Guides", description: "Guides on buying, selling, investing, documentation, stamp duty and NRI property in India." }],
   [/^\/news-guide\/article\/.+/, { title: "Guide", type: "article" }],
+  [/^\/status\/?$/, { title: "Platform status", description: "Whether PropertySerch is working, any open incident or planned maintenance, and when it is expected to be fixed." }],
   [/^\/legal/, { title: "Legal, Terms & Privacy", description: "Terms of service, privacy policy, RERA compliance and disclaimers for PropertySerch.com." }],
   [/^\/requirements/, { title: "Buyer & Tenant Requirements", description: "Requirements posted by buyers and tenants - area and locality only. Have a matching property? Tell us and a representative will connect." }],
   [/^\/(login|register|dashboard|account|console|post-)/, { title: "My account", noindex: true }],
